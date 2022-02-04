@@ -1,90 +1,89 @@
 .. _path-resolution:
 
 **********************
-Import Path Resolution
+Résolution du chemin d'importation
 **********************
 
-In order to be able to support reproducible builds on all platforms, the Solidity compiler has to
-abstract away the details of the filesystem where source files are stored.
-Paths used in imports must work the same way everywhere while the command-line interface must be
-able to work with platform-specific paths to provide good user experience.
-This section aims to explain in detail how Solidity reconciles these requirements.
+Afin de pouvoir supporter des constructions reproductibles sur toutes les plateformes, le compilateur Solidity doit
+faire abstraction des détails du système de fichiers où sont stockés les fichiers sources.
+Les chemins utilisés dans les importations doivent fonctionner de la même manière partout, tandis que l'interface de la ligne
+de commande doit être capable de travailler avec des chemins spécifiques à la plate-forme pour fournir une bonne expérience utilisateur.
+Cette section vise à expliquer en détail comment Solidity concilie ces exigences.
 
 .. index:: ! virtual filesystem, ! VFS, ! source unit name
 .. _virtual-filesystem:
 
-Virtual Filesystem
+Système de fichiers virtuel
 ==================
 
-The compiler maintains an internal database (*virtual filesystem* or *VFS* for short) where each
-source unit is assigned a unique *source unit name* which is an opaque and unstructured identifier.
-When you use the :ref:`import statement <import>`, you specify an *import path* that references a
-source unit name.
+Le compilateur maintient une base de données interne (*système de fichiers virtuel* ou *VFS* en abrégé) dans laquelle chaque
+unité source se voit attribuer un *nom d'unité source* unique qui est un identifiant opaque et non structuré.
+Lorsque vous utilisez l'instruction :ref:`import <import>`, vous spécifiez un *chemin d'accès à l'importation* qui fait référence à
+un nom d'unité source.
 
 .. index:: ! import callback, ! Host Filesystem Loader
 .. _import-callback:
 
-Import Callback
+Rappel d'importation
 ---------------
 
-The VFS is initially populated only with files the compiler has received as input.
-Additional files can be loaded during compilation using an *import callback*, which is different
-depending on the type of compiler you use (see below).
-If the compiler does not find any source unit name matching the import path in the VFS, it invokes
-the callback, which is responsible for obtaining the source code to be placed under that name.
-An import callback is free to interpret source unit names in an arbitrary way, not just as paths.
-If there is no callback available when one is needed or if it fails to locate the source code,
-compilation fails.
+Le VFS n'est initialement peuplé que de fichiers que le compilateur a reçus en entrée.
+Des fichiers supplémentaires peuvent être chargés pendant la compilation en utilisant un *import callback*, qui est différent
+selon le type de compilateur que vous utilisez (voir ci-dessous).
+Si le compilateur ne trouve pas de nom d'unité source correspondant au chemin d'importation dans le VFS, il invoque
+le callback, qui est chargé d'obtenir le code source à placer sous ce nom.
+Un callback d'importation est libre d'interpréter les noms d'unité source d'une manière arbitraire, pas seulement comme des chemins.
+S'il n'y a pas de callback disponible lorsqu'on en a besoin ou s'il ne parvient pas à localiser le code source,
+la compilation échoue.
 
-The command-line compiler provides the *Host Filesystem Loader* - a rudimentary callback
-that interprets a source unit name as a path in the local filesystem.
-The `JavaScript interface <https://github.com/ethereum/solc-js>`_ does not provide any by default,
-but one can be provided by the user.
-This mechanism can be used to obtain source code from locations other then the local filesystem
-(which may not even be accessible, e.g. when the compiler is running in a browser).
-For example the `Remix IDE <https://remix.ethereum.org/>`_ provides a versatile callback that
-lets you `import files from HTTP, IPFS and Swarm URLs or refer directly to packages in NPM registry
+Le compilateur en ligne de commande fournit le *Host Filesystem Loader* - un rappel rudimentaire
+qui interprète un nom d'unité source comme un chemin dans le système de fichiers local.
+L'interface `JavaScript <https://github.com/ethereum/solc-js>`_ n'en fournit pas par défaut,
+mais un peut être fourni par l'utilisateur.
+Ce mécanisme peut être utilisé pour obtenir du code source à partir d'emplacements autres que le système de fichiers local
+(qui peut même ne pas être accessible, par exemple lorsque le compilateur est exécuté dans un navigateur).
+Par exemple l'IDE `Remix <https://remix.ethereum.org/>`_ fournit un callback polyvalent qui
+vous permet `d'importer des fichiers à partir d'URL HTTP, IPFS et Swarm ou de vous référer directement à des paquets dans le registre NPM
 <https://remix-ide.readthedocs.io/en/latest/import.html>`_.
 
 .. note::
 
-    Host Filesystem Loader's file lookup is platform-dependent.
-    For example backslashes in a source unit name can be interpreted as directory separators or not
-    and the lookup can be case-sensitive or not, depending on the underlying platform.
+    La recherche de fichiers du Host Filesystem Loader dépend de la plate-forme.
+    Par exemple, les barres obliques inverses dans le nom d'une unité source peuvent être interprétées comme des séparateurs de répertoire ou non,
+    et la recherche peut être sensible à la casse ou non, selon la plate-forme sous-jacente.
 
-    For portability it is recommended to avoid using import paths that will work correctly only
-    with a specific import callback or only on one platform.
-    For example you should always use forward slashes since they work as path separators also on
-    platforms that support backslashes.
+    Pour des raisons de portabilité, il est recommandé d'éviter d'utiliser des chemins d'importation qui ne fonctionnent correctement qu'avec
+    avec une fonction d'appel d'importation spécifique ou uniquement sur une plate-forme.
+    Par exemple, vous devriez toujours utiliser des slashs avant car ils fonctionnent comme des séparateurs de chemin également sur
+    plateformes qui prennent en charge les barres obliques inversées.
 
-Initial Content of the Virtual Filesystem
+Contenu initial du système de fichiers virtuel
 -----------------------------------------
 
-The initial content of the VFS depends on how you invoke the compiler:
+Le contenu initial du VFS dépend de la façon dont vous invoquez le compilateur :
 
 #. **solc / command-line interface**
 
-   When you compile a file using the command-line interface of the compiler, you provide one or
-   more paths to files containing Solidity code:
+   Lorsque vous compilez un fichier à l'aide de l'interface de ligne de commande du compilateur, vous fournissez un ou
+   plusieurs chemins d'accès à des fichiers contenant du code Solidity :
 
    .. code-block:: bash
 
        solc contract.sol /usr/local/dapp-bin/token.sol
 
-   The source unit name of a file loaded this way is constructed by converting its path to a
-   canonical form and, if possible, making it relative to either the base path or one of the
-   include paths.
-   See :ref:`CLI Path Normalization and Stripping <cli-path-normalization-and-stripping>` for
-   a detailed description of this process.
+   Le nom de l'unité source d'un fichier chargé de cette façon est construit en convertissant son chemin d'accès à une
+   forme canonique et, si possible, en le rendant relatif au chemin de base ou à l'un des chemins d'inclusion.
+   Reportez-vous à :ref:`CLI Path Normalization and Stripping <cli-path-normalization-and-stripping>` pour une
+   une description détaillée de ce processus.
 
    .. index:: standard JSON
 
 #. **Standard JSON**
 
-   When using the :ref:`Standard JSON <compiler-api>` API (via either the `JavaScript interface
-   <https://github.com/ethereum/solc-js>`_ or the ``--standard-json`` command-line option)
-   you provide input in JSON format, containing, among other things, the content of all your source
-   files:
+   Le nom de l'unité source d'un fichier chargé de cette façon est construit en convertissant son chemin d'accès à une
+   forme canonique et, si possible, en le rendant relatif au chemin de base ou à l'un des chemins d'inclusion.
+   Reportez-vous à :ref:`CLI Path Normalization and Stripping <cli-path-normalization-and-stripping>` pour
+   une description détaillée de ce processus.
 
    .. code-block:: json
 
@@ -104,15 +103,15 @@ The initial content of the VFS depends on how you invoke the compiler:
            "settings": {"outputSelection": {"*": { "*": ["metadata", "evm.bytecode"]}}}
        }
 
-   The ``sources`` dictionary becomes the initial content of the virtual filesystem and its keys
-   are used as source unit names.
+   Le dictionnaire ``sources`` devient le contenu initial du système de fichiers virtuel et ses clés
+   sont utilisées comme noms d'unités sources.
 
    .. _initial-vfs-content-standard-json-with-import-callback:
 
 #. **Standard JSON (via import callback)**
 
-   With Standard JSON it is also possible to tell the compiler to use the import callback to obtain
-   the source code:
+   Avec Standard JSON, il est également possible d'indiquer au compilateur d'utiliser le callback d'importation pour obtenir
+   le code source :
 
    .. code-block:: json
 
@@ -129,40 +128,40 @@ The initial content of the VFS depends on how you invoke the compiler:
            "settings": {"outputSelection": {"*": { "*": ["metadata", "evm.bytecode"]}}}
        }
 
-   If an import callback is available, the compiler will give it the strings specified in
-   ``urls`` one by one, until one is loaded successfully or the end of the list is reached.
+   Si un import callback est disponible, le compilateur lui donnera les chaînes spécifiées dans
+   ``urls`` une par une, jusqu'à ce qu'une soit chargée avec succès ou que la fin de la liste soit atteinte.
 
-   The source unit names are determined the same way as when using ``content`` - they are keys of
-   the ``sources`` dictionary and the content of ``urls`` does not affect them in any way.
+   Les noms des unités de sources sont déterminés de la même manière que lors de l'utilisation de ``content`` - ce sont des
+   clés du dictionnaire ``sources`` et le contenu de ``urls`` ne les affecte en aucune façon.
 
    .. index:: standard input, stdin, <stdin>
 
-#. **Standard input**
+#. **Entrée standard**
 
-   On the command line it is also possible to provide the source by sending it to compiler's
-   standard input:
+   En ligne de commande, il est également possible de fournir la source en l'envoyant à
+   l'entrée standard du compilateur :
 
    .. code-block:: bash
 
        echo 'import "./util.sol"; contract C {}' | solc -
 
-   ``-`` used as one of the arguments instructs the compiler to place the content of the standard
-   input in the virtual filesystem under a special source unit name: ``<stdin>``.
+   ``-`` utilisé comme l'un des arguments indique au compilateur de placer le contenu de l'entrée standard
+   dans le système de fichiers virtuel sous un nom d'unité source spécial : ``<stdin>``.
 
-Once the VFS is initialized, additional files can still be added to it only through the import
-callback.
+Une fois le VFS initialisé, des fichiers supplémentaires ne peuvent y être ajoutés que par le biais de la fonction import
+pour y ajouter des fichiers.
 
 .. index:: ! import; path
 
-Imports
+Importations
 =======
 
-The import statement specifies an *import path*.
-Based on how the import path is specified, we can divide imports into two categories:
+L'instruction d'importation spécifie un *chemin d'importation*.
+En fonction de la façon dont le chemin d'importation est spécifié, nous pouvons diviser les importations en deux catégories :
 
-- :ref:`Direct imports <direct-imports>`, where you specify the full source unit name directly.
-- :ref:`Relative imports <relative-imports>`, where you specify a path starting with ``./`` or ``../``
-  to be combined with the source unit name of the importing file.
+- :ref:`Imports directs <direct-imports>`, où vous spécifiez directement le nom complet de l'unité source.
+- :ref:`Relative imports <relative-imports>`, où vous spécifiez un chemin commençant par ``./`` ou ``../``
+  à combiner avec le nom de l'unité source du fichier d'importation.
 
 
 .. code-block:: solidity
@@ -171,151 +170,149 @@ Based on how the import path is specified, we can divide imports into two catego
     import "./math/math.sol";
     import "contracts/tokens/token.sol";
 
-In the above ``./math/math.sol`` and ``contracts/tokens/token.sol`` are import paths while the
-source unit names they translate to are ``contracts/math/math.sol`` and ``contracts/tokens/token.sol``
-respectively.
+Dans l'exemple ci-dessus, ``./math/math.sol`` et ``contracts/tokens/token.sol`` sont des chemins d'importation alors que les
+noms d'unités sources vers lesquels ils sont traduits sont respectivement ``contracts/math/math.sol`` et ``contracts/tokens/token.sol``.
 
 .. index:: ! direct import, import; direct
 .. _direct-imports:
 
-Direct Imports
+Importations directes
 --------------
 
-An import that does not start with ``./`` or ``../`` is a *direct import*.
+Une importation qui ne commence pas par ``./`` ou ``../`` est une *importation directe*.
 
 .. code-block:: solidity
 
-    import "/project/lib/util.sol";         // source unit name: /project/lib/util.sol
-    import "lib/util.sol";                  // source unit name: lib/util.sol
-    import "@openzeppelin/address.sol";     // source unit name: @openzeppelin/address.sol
-    import "https://example.com/token.sol"; // source unit name: https://example.com/token.sol
+    import "/project/lib/util.sol";         // nom de l'unité source: /project/lib/util.sol
+    import "lib/util.sol";                  // nom de l'unité source: lib/util.sol
+    import "@openzeppelin/address.sol";     // nom de l'unité source: @openzeppelin/address.sol
+    import "https://example.com/token.sol"; // nom de l'unité source: https://example.com/token.sol
 
-After applying any :ref:`import remappings <import-remapping>` the import path simply becomes the
-source unit name.
-
-.. note::
-
-    A source unit name is just an identifier and even if its value happens to look like a path, it
-    is not subject to the normalization rules you would typically expect in a shell.
-    Any ``/./`` or ``/../`` seguments or sequences of multiple slashes remain a part of it.
-    When the source is provided via Standard JSON interface it is entirely possible to associate
-    different content with source unit names that would refer to the same file on disk.
-
-When the source is not available in the virtual filesystem, the compiler passes the source unit name
-to the import callback.
-The Host Filesystem Loader will attempt to use it as a path and look up the file on disk.
-At this point the platform-specific normalization rules kick in and names that were considered
-different in the VFS may actually result in the same file being loaded.
-For example ``/project/lib/math.sol`` and ``/project/lib/../lib///math.sol`` are considered
-completely different in the VFS even though they refer to the same file on disk.
+Après avoir appliqué tout :ref:`import remappings <import-remapping>`, le chemin d'importation devient simplement le
+nom de l'unité source.
 
 .. note::
 
-    Even if an import callback ends up loading source code for two different source unit names from
-    the same file on disk, the compiler will still see them as separate source units.
-    It is the source unit name that matters, not the physical location of the code.
+    Le nom d'une unité source n'est qu'un identifiant et même si sa valeur ressemble à un chemin, il
+    n'est pas soumis aux règles de normalisation que l'on peut attendre d'un shell.
+    Tous les segments ``/./`` ou ``../`` ou les séquences de barres obliques multiples en font toujours partie.
+    Lorsque la source est fournie via une interface JSON standard, il est tout à fait possible d'associer
+    différents contenus à des noms d'unités de source qui feraient référence au même fichier sur le disque.
+
+Lorsque la source n'est pas disponible dans le système de fichiers virtuel, le compilateur transmet le nom de l'unité source
+à l'import callback.
+Le Host Filesystem Loader tentera de l'utiliser comme chemin et de rechercher le fichier sur le disque.
+À ce stade, les règles de normalisation spécifiques à la plate-forme entrent en jeu et les noms qui étaient considérés comme
+différents dans le VFS peuvent en fait aboutir au chargement du même fichier.
+Par exemple, ``/projet/lib/math.sol`` et ``/projet/lib/../lib///math.sol`` sont considérés comme
+complètement différents dans le VFS même s'ils font référence au même fichier sur le disque.
+
+.. note::
+
+    Même si un callback d'importation finit par charger du code source pour deux noms d'unité source différents à partir du
+    même fichier sur le disque, le compilateur les verra toujours comme des unités sources distinctes.
+    C'est le nom de l'unité source qui importe, pas l'emplacement physique du code.
 
 .. index:: ! relative import, ! import; relative
 .. _relative-imports:
 
-Relative Imports
+Importations relatives
 ----------------
 
-An import starting with ``./`` or ``../`` is a *relative import*.
-Such imports specify a path relative to the source unit name of the importing source unit:
+Une importation commençant par ``./`` ou ``../`` est une importation *relative*.
+Ces importations spécifient un chemin relatif au nom de l'unité source de l'unité source importatrice :
 
 .. code-block:: solidity
     :caption: /project/lib/math.sol
 
-    import "./util.sol" as util;    // source unit name: /project/lib/util.sol
-    import "../token.sol" as token; // source unit name: /project/token.sol
+    import "./util.sol" as util;    // nom de l'unité source: /project/lib/util.sol
+    import "../token.sol" as token; // nom de l'unité source: /project/token.sol
 
 .. code-block:: solidity
     :caption: lib/math.sol
 
-    import "./util.sol" as util;    // source unit name: lib/util.sol
-    import "../token.sol" as token; // source unit name: token.sol
+    import "./util.sol" as util;    // nom de l'unité source: lib/util.sol
+    import "../token.sol" as token; // nom de l'unité source: token.sol
 
 .. note::
 
-    Relative imports **always** start with ``./`` or ``../`` so ``import "util.sol"``, unlike
-    ``import "./util.sol"``, is a direct import.
-    While both paths would be considered relative in the host filesystem, ``util.sol`` is actually
-    absolute in the VFS.
+    Les importations relatives commencent toujours par ``./`` ou ``../``.
+    ``import "./util.sol"``, est une importation directe.
+    Alors que les deux chemins seraient considérés comme relatifs dans le système de fichiers hôte, ``util.sol`` est en fait
+    absolu dans le VFS.
 
-Let us define a *path segment* as any non-empty part of the path that does not contain a separator
-and is bounded by two path separators.
-A separator is a forward slash or the beginning/end of the string.
-For example in ``./abc/..//`` there are three path segments: ``.``, ``abc`` and ``..``.
+Définissons un *segment de chemin* comme toute partie non vide du chemin qui ne contient pas de séparateur
+et qui est délimitée par deux séparateurs de chemin.
+Un séparateur est un slash avant ou le début/la fin de la chaîne.
+Par exemple, dans ``./abc/..//``, il y a trois segments de chemin : ``.``, ``abc`` et ``..``.
 
-The compiler computes a source unit name from the import path in the following way:
+Le compilateur calcule un nom d'unité source à partir du chemin d'importation de la manière suivante :
 
-1. First a prefix is computed
+1. Un préfixe est d'abord calculé
 
-    - Prefix is initialized with the source unit name of the importing source unit.
-    - The last path segment with preceding slashes is removed from the prefix.
-    - Then, the leading part of the normalized import path, consisting only of ``/`` and ``.``
-      characters is considered.
-      For every ``..`` segment found in this part the last path segment with preceding slashes is
-      removed from the prefix.
+    - Le préfixe est initialisé avec le nom de l'unité source de l'unité source importatrice.
+    - Le dernier segment de chemin avec les barres obliques précédentes est supprimé du préfixe.
+    - Ensuite, la partie avant du chemin d'importation normalisé, composée uniquement de caractères ``/`` et ``.``, est prise en compte.
+      Pour chaque segment ``..`` trouvé dans cette partie, le dernier segment de chemin avec les barres obliques
+      précédant est supprimé du préfixe.
 
-2. Then the prefix is prepended to the normalized import path.
-   If the prefix is non-empty, a single slash is inserted between it and the import path.
+2. Ensuite, le préfixe est ajouté au chemin d'importation normalisé.
+   Si le préfixe n'est pas vide, une seule barre oblique est insérée entre lui et le chemin d'importation.
 
-The removal of the last path segment with preceding slashes is understood to
-work as follows:
+L'élimination du dernier segment de chemin avec les barres obliques précédentes
+fonctionne comme suit :
 
-1. Everything past the last slash is removed (i.e. ``a/b//c.sol`` becomes ``a/b//``).
-2. All trailing slashes are removed (i.e. ``a/b//`` becomes ``a/b``).
+1. Tout ce qui dépasse la dernière barre oblique est supprimé (c'est-à-dire que ``a/b//c.sol`` devient ``a/b//``).
+2. Toutes les barres obliques de fin de ligne sont supprimées (par exemple, ``a/b//`` devient ``a/b``).
 
-The normalization rules are the same as for UNIX paths, namely:
+Les règles de normalisation sont les mêmes que pour les chemins UNIX, à savoir :
 
-- All the internal ``.`` segments are removed.
-- Every internal ``..`` segment backtracks one level up in the hierarchy.
-- Multiple slashes are squashed into a single one.
+- Tous les segments internes ``.`` sont supprimés.
+- Chaque segment interne ``..`` remonte d'un niveau dans la hiérarchie.
+- Les slashs multiples sont écrasés en un seul.
 
-Note that normalization is performed only on the import path.
-The source unit name of the importing module that is used for the prefix remains unnormalized.
-This ensures that the ``protocol://`` part does not turn into ``protocol:/`` if the importing file
-is identified with a URL.
+Notez que la normalisation est effectuée uniquement sur le chemin d'importation.
+Le nom de l'unité source du module d'importation qui est utilisé pour le préfixe n'est pas normalisé.
+Cela garantit que la partie ``protocol://`` ne se transforme pas en ``protocol:/`` si le fichier d'importation
+est identifié par une URL.
 
-If your import paths are already normalized, you can expect the above algorithm to produce very
-intuitive results.
-Here are some examples of what you can expect if they are not:
+Si vos chemins d'importation sont déjà normalisés, vous pouvez vous attendre à ce que l'algorithme ci-dessus produise des
+résultats très intuitifs.
+Voici quelques exemples de ce que vous pouvez attendre s'ils ne le sont pas :
 
 .. code-block:: solidity
     :caption: lib/src/../contract.sol
 
-    import "./util/./util.sol";         // source unit name: lib/src/../util/util.sol
-    import "./util//util.sol";          // source unit name: lib/src/../util/util.sol
-    import "../util/../array/util.sol"; // source unit name: lib/src/array/util.sol
-    import "../.././../util.sol";       // source unit name: util.sol
-    import "../../.././../util.sol";    // source unit name: util.sol
+    import "./util/./util.sol";         // nom de l'unité source: lib/src/../util/util.sol
+    import "./util//util.sol";          // nom de l'unité source: lib/src/../util/util.sol
+    import "../util/../array/util.sol"; // nom de l'unité source: lib/src/array/util.sol
+    import "../.././../util.sol";       // nom de l'unité source: util.sol
+    import "../../.././../util.sol";    // nom de l'unité source: util.sol
 
 .. note::
 
-    The use of relative imports containing leading ``..`` segments is not recommended.
-    The same effect can be achieved in a more reliable way by using direct imports with
-    :ref:`base path and include paths <base-and-include-paths>`.
+    L'utilisation d'importations relatives contenant des segments ``..`` en tête n'est pas recommandée.
+    Le même effet peut être obtenu de manière plus fiable en utilisant des importations directes avec
+    :ref:`base path et include path <base-et-include-paths>`.
 
 .. index:: ! base path, ! --base-path, ! include paths, ! --include-path
 .. _base-and-include-paths:
 
-Base Path and Include Paths
+Chemin de base et chemins d'inclusion
 ===========================
 
-The base path and include paths represent directories that the Host Filesystem Loader will load files from.
-When a source unit name is passed to the loader, it prepends the base path to it and performs a
-filesystem lookup.
-If the lookup does not succeed, the same is done with all directories on the include path list.
+Le chemin de base et les chemins d'inclusion représentent les répertoires à partir desquels le Host Filesystem Loader chargera les fichiers.
+Lorsqu'un nom d'unité source est transmis au chargeur, il y ajoute en préambule le chemin de base et effectue une
+recherche dans le système de fichiers.
+Si la recherche n'aboutit pas, la même chose est faite avec tous les répertoires de la liste des chemins d'inclusion.
 
-It is recommended to set the base path to the root directory of your project and use include paths to
-specify additional locations that may contain libraries your project depends on.
-This lets you import from these libraries in a uniform way, no matter where they are located in the
-filesystem relative to your project.
-For example, if you use npm to install packages and your contract imports
-``@openzeppelin/contracts/utils/Strings.sol``, you can use these options to tell the compiler that
-the library can be found in one of the npm package directories:
+Il est recommandé de définir le chemin de base au répertoire racine de votre projet et d'utiliser les chemins d'inclusion
+pour spécifier des emplacements supplémentaires qui peuvent contenir des bibliothèques dont dépend votre projet.
+Cela vous permet d'importer à partir de ces bibliothèques d'une manière uniforme, peu importe où elles sont situées dans le
+système de fichiers par rapport à votre projet.
+Par exemple, si vous utilisez npm pour installer des paquets et que votre contrat importe
+``@openzeppelin/contracts/utils/Strings.sol``, vous pouvez utiliser ces options pour indiquer au compilateur que
+que la bibliothèque peut être trouvée dans l'un des répertoires de paquets npm :
 
 .. code-block:: bash
 
@@ -324,88 +321,86 @@ the library can be found in one of the npm package directories:
         --include-path node_modules/ \
         --include-path /usr/local/lib/node_modules/
 
-Your contract will compile (with the same exact metadata) no matter whether you install the library
-in the local or global package directory or even directly under your project root.
+Votre contrat sera compilé (avec les mêmes métadonnées exactes), peu importe que vous installiez la bibliothèque
+dans le répertoire du paquetage local ou global ou même directement sous la racine de votre projet.
 
-By default the base path is empty, which leaves the source unit name unchanged.
-When the source unit name is a relative path, this results in the file being looked up in the
-directory the compiler has been invoked from.
-It is also the only value that results in absolute paths in source unit names being actually
-interpreted as absolute paths on disk.
-If the base path itself is relative, it is interpreted as relative to the current working directory
-of the compiler.
-
-.. note::
-
-    Include paths cannot have empty values and must be used together with a non-empty base path.
+Par défaut, le chemin de base est vide, ce qui laisse le nom de l'unité source inchangé.
+Lorsque le nom de l'unité source est un chemin relatif, cela a pour conséquence que le fichier est recherché dans le répertoire
+à partir duquel le compilateur a été invoqué.
+C'est aussi la seule valeur qui permet d'interpréter les chemins absolus dans les noms d'unités sources
+interprétés comme des chemins absolus sur le disque.
+Si le chemin de base est lui-même relatif, il est interprété comme relatif au répertoire de travail actuel du compilateur.
+du compilateur.
 
 .. note::
 
-    Include paths and base path can overlap as long as it does not make import resolution ambiguous.
-    For example, you can specify a directory inside base path as an include directory or have an
-    include directory that is a subdirectory of another include directory.
-    The compiler will only issue an error if the source unit name passed to the Host Filesystem
-    Loader represents an existing path when combined with multiple include paths or an include path
-    and base path.
+    Les chemins d'inclusion ne peuvent pas avoir de valeurs vides et doivent être utilisés avec un chemin de base non vide.
+
+.. note::
+
+    Les chemins d'inclusion et de base peuvent se chevaucher tant que cela ne rend pas la résolution des importations ambiguë.
+    Par exemple, vous pouvez spécifier un répertoire à l'intérieur du chemin de base comme un répertoire d'inclusion ou avoir un répertoire d'inclusion
+    qui est un sous-répertoire d'un autre répertoire include.
+    Le compilateur n'émettra une erreur que si le nom de l'unité source transmis au Host Filesystem
+    Loader représente un chemin existant lorsqu'il est combiné avec plusieurs chemins d'inclusion ou un chemin d'inclusion
+    et un chemin de base.
 
 .. _cli-path-normalization-and-stripping:
 
-CLI Path Normalization and Stripping
+Normalisation et suppression des chemins CLI
 ------------------------------------
 
-On the command line the compiler behaves just as you would expect from any other program:
-it accepts paths in a format native to the platform and relative paths are relative to the current
-working directory.
-The source unit names assigned to files whose paths are specified on the command line, however,
-should not change just because the project is being compiled on a different platform or because the
-compiler happens to have been invoked from a different directory.
-To achieve this, paths to source files coming from the command line must be converted to a canonical
-form, and, if possible, made relative to the base path or one of the include paths.
+Sur la ligne de commande, le compilateur se comporte comme vous le feriez avec n'importe quel autre programme :
+Il accepte les chemins dans un format natif de la plate-forme et les chemins relatifs sont relatifs au répertoire de travail actuel.
+Les noms d'unités sources attribués aux fichiers dont les chemins sont spécifiés sur la ligne de commande, cependant,
+ne doivent pas changer simplement parce que le projet est compilé sur une plate-forme différente ou parce que le
+compilateur a été invoqué à partir d'un répertoire différent.
+Pour cela, les chemins des fichiers sources provenant de la ligne de commande doivent être convertis en une forme canonique
+et, si possible, rendus relatifs au chemin de base ou à l'un des chemins d'inclusion.
 
-The normalization rules are as follows:
+Les règles de normalisation sont les suivantes :
 
-- If a path is relative, it is made absolute by prepending the current working directory to it.
-- Internal ``.`` and ``..`` segments are collapsed.
-- Platform-specific path separators are replaced with forward slashes.
-- Sequences of multiple consecutive path separators are squashed into a single separator (unless
-  they are the leading slashes of an `UNC path <https://en.wikipedia.org/wiki/Path_(computing)#UNC>`_).
-- If the path includes a root name (e.g. a drive letter on Windows) and the root is the same as the
-  root of the current working directory, the root is replaced with ``/``.
-- Symbolic links in the path are **not** resolved.
+- Si un chemin est relatif, il est rendu absolu en y ajoutant le répertoire de travail actuel.
+- Les segments internes ``.`` et ``.`'' sont réduits.
+- Les séparateurs de chemin spécifiques à la plate-forme sont remplacés par des barres obliques.
+- Les séquences de plusieurs séparateurs de chemin consécutifs sont écrasées en un seul séparateur (à moins
+  qu'il s'agisse des barres obliques de tête d'un chemin `UNC <https://en.wikipedia.org/wiki/Path_(computing)#UNC>`_).
+- Si le chemin comprend un nom de racine (par exemple une lettre de lecteur sous Windows) et que la racine est la même que la
+  racine du répertoire de travail actuel, la racine est remplacée par ``/``.
+- Les liens symboliques dans le chemin ne sont **pas** résolus.
 
-  - The only exception is the path to the current working directory prepended to relative paths in
-    the process of making them absolute.
-    On some platforms the working directory is reported always with symbolic links resolved so for
-    consistency the compiler resolves them everywhere.
+  - La seule exception est le chemin d'accès au répertoire de travail actuel ajouté aux chemins relatifs
+    dans le but de les rendre absolus.
+    Sur certaines plateformes, le répertoire de travail est toujours signalé avec les liens symboliques résolus,
+    donc pour des raisons de cohérence, le compilateur les résout partout.
 
-- The original case of the path is preserved even if the filesystem is case-insensitive but
-  `case-preserving <https://en.wikipedia.org/wiki/Case_preservation>`_ and the actual case on
-  disk is different.
-
-.. note::
-
-    There are situations where paths cannot be made platform-independent.
-    For example on Windows the compiler can avoid using drive letters by referring to the root
-    directory of the current drive as ``/`` but drive letters are still necessary for paths leading
-    to other drives.
-    You can avoid such situations by ensuring that all the files are available within a single
-    directory tree on the same drive.
-
-After normalization the compiler attempts to make the source file path relative.
-It tries the base path first and then the include paths in the order they were given.
-If the base path is empty or not specified, it is treated as if it was equal to the path to the
-current working directory (with all symbolic links resolved).
-The result is accepted only if the normalized directory path is the exact prefix of the normalized
-file path.
-Otherwise the file path remains absolute.
-This makes the conversion unambiguous and ensures that the relative path does not start with ``../``.
-The resulting file path becomes the source unit name.
+- La casse originale du chemin est préservée même si le système de fichiers est insensible à la casse mais
+  `case-preserving <https://en.wikipedia.org/wiki/Case_preservation>`_ et que la casse réelle sur le
+  disque est différent.
 
 .. note::
 
-    The relative path produced by stripping must remain unique within the base path and include paths.
-    For example the compiler will issue an error for the following command if both
-    ``/project/contract.sol`` and ``/lib/contract.sol`` exist:
+    Il existe des situations où les chemins ne peuvent pas être rendus indépendants de la plate-forme.
+    Par exemple, sous Windows, le compilateur peut éviter d'utiliser les lettres de lecteur en se référant au répertoire racine
+    du lecteur actuel comme ``/`` mais les lettres de lecteur sont toujours nécessaires pour les chemins menant
+    à d'autres lecteurs.
+    Vous pouvez éviter de telles situations en vous assurant que tous les fichiers sont disponibles dans une seule arborescence
+    de répertoire sur le même lecteur.
+
+Après la normalisation, le compilateur essaie de rendre le chemin du fichier source relatif.
+Il essaie d'abord le chemin de base, puis les chemins d'inclusion dans l'ordre où ils ont été donnés.
+Si le chemin de base est vide ou non spécifié, il est traité comme s'il était égal au chemin du
+répertoire de travail actuel (avec tous les liens symboliques résolus).
+Le résultat est accepté seulement si le chemin du répertoire normalisé est le préfixe exact du chemin du fichier normalisé.
+Sinon, le chemin du fichier reste absolu.
+Cela rend la conversion non ambiguë et assure que le chemin relatif ne commence pas par ``../``.
+Le chemin de fichier résultant devient le nom de l'unité source.
+
+.. note::
+
+    Le chemin relatif produit par le dépouillement doit rester unique dans le chemin de base et les chemins d'inclusion.
+    Par exemple, le compilateur émettra une erreur pour la commande suivante si à la fois
+    ``/projet/contract.sol`` et ``/lib/contract.sol`` existent :
 
     .. code-block:: bash
 
@@ -413,34 +408,34 @@ The resulting file path becomes the source unit name.
 
 .. note::
 
-    Prior to version 0.8.8, CLI path stripping was not performed and the only normalization applied
-    was the conversion of path separators.
-    When working with older versions of the compiler it is recommended to invoke the compiler from
-    the base path and to only use relative paths on the command line.
+    Avant la version 0.8.8, la suppression des chemins d'accès de l'interface CLI n'était pas effectuée et la seule normalisation appliquée
+    était la conversion des séparateurs de chemin.
+    Lorsque vous travaillez avec des versions plus anciennes du compilateur, il est recommandé d'invoquer le compilateur à partir du
+    chemin de base et de n'utiliser que des chemins relatifs sur la ligne de commande.
 
 .. index:: ! allowed paths, ! --allow-paths, remapping; target
 .. _allowed-paths:
 
-Allowed Paths
+Chemins autorisés
 =============
 
-As a security measure, the Host Filesystem Loader will refuse to load files from outside of a few
-locations that are considered safe by default:
+Par mesure de sécurité, le Host Filesystem Loader refusera de charger des fichiers en dehors de quelques
+emplacements qui sont considérés comme sûrs par défaut :
 
-- Outside of Standard JSON mode:
+- En dehors du mode JSON standard :
 
-  - The directories containing input files listed on the command line.
-  - The directories used as :ref:`remapping <import-remapping>` targets.
-    If the target is not a directory (i.e does not end with ``/``, ``/.`` or ``/..``) the directory
-    containing the target is used instead.
-  - Base path and include paths.
+  - Les répertoires contenant les fichiers d'entrée listés sur la ligne de commande.
+  - Les répertoires utilisés comme cibles :ref:`remapping <import-remapping>`.
+    Si la cible n'est pas un répertoire (c'est-à-dire ne se termine pas par ``/``, ``/.`` ou ``/..``), le répertoire
+    contenant la cible est utilisé à la place.
+  - Chemin de base et chemins d'inclusion.
 
-- In Standard JSON mode:
+- En mode JSON standard :
 
-  - Base path and include paths.
+  - Le chemin de base et les chemins d'inclusion.
 
-Additional directories can be whitelisted using the ``--allow-paths`` option.
-The option accepts a comma-separated list of paths:
+Des répertoires supplémentaires peuvent être mis sur une liste blanche en utilisant l'option ``--allow-paths``.
+L'option accepte une liste de chemins séparés par des virgules :
 
 .. code-block:: bash
 
@@ -451,103 +446,100 @@ The option accepts a comma-separated list of paths:
         --include-path=/lib/ \
         --allow-paths=../utils/,/tmp/libraries
 
-When the compiler is invoked with the command shown above, the Host Filesystem Loader will allow
-importing files from the following directories:
+Lorsque le compilateur est invoqué avec la commande indiquée ci-dessus, le Host Filesystem Loader permet
+d'importer des fichiers depuis les répertoires suivants :
 
-- ``/home/user/project/token/`` (because ``token/`` contains the input file and also because it is
-  the base path),
-- ``/lib/`` (because ``/lib/`` is one of the include paths),
-- ``/home/user/project/libs/`` (because ``libs/`` is a directory containing a remapping target),
-- ``/home/user/utils/`` (because of ``../utils/`` passed to ``--allow-paths``),
-- ``/tmp/libraries/`` (because of ``/tmp/libraries`` passed to ``--allow-paths``),
-
-.. note::
-
-    The working directory of the compiler is one of the paths allowed by default only if it
-    happens to be the base path (or the base path is not specified or has an empty value).
+- ``/home/user/project/token/`` (parce que ``token/`` contient le fichier d'entrée et aussi parce qu'il s'agit du
+  chemin de base),
+- ``/lib/`` (parce que ``/lib/`` est un des chemins d'inclusion),
+- `/home/user/project/libs/`` (parce que `libs/`` est un répertoire contenant une cible de remappage),
+- ``/home/user/utils/`` (à cause de `../utils/`` passé à `--allow-paths``),
+- ``/tmp/libraries/`` (à cause de ``/tmp/libraries`` passé dans `--allow-paths``),
 
 .. note::
 
-    The compiler does not check if allowed paths actually exist and whether they are directories.
-    Non-existent or empty paths are simply ignored.
-    If an allowed path matches a file rather than a directory, the file is considered whitelisted, too.
+    Le répertoire de travail du compilateur est l'un des chemins autorisés par défaut uniquement s'il
+    se trouve être le chemin de base (ou le chemin de base n'est pas spécifié ou a une valeur vide).
 
 .. note::
 
-    Allowed paths are case-sensitive even if the filesystem is not.
-    The case must exactly match the one used in your imports.
-    For example ``--allow-paths tokens`` will not match ``import "Tokens/IERC20.sol"``.
+    Le compilateur ne vérifie pas si les chemins autorisés existent réellement et s'ils sont des répertoires.
+    Les chemins inexistants ou vides sont simplement ignorés.
+    Si un chemin autorisé correspond à un fichier plutôt qu'à un répertoire, le fichier est également considéré comme étant sur la liste blanche.
+
+.. note::
+
+    Les chemins autorisés sont sensibles à la casse, même si le système de fichiers ne l'est pas.
+    La casse doit correspondre exactement à celle utilisée dans vos importations.
+    Par exemple, ``--allow-paths tokens`` ne correspondra pas à ``import "Tokens/IERC20.sol"``.
 
 .. warning::
 
-    Files and directories only reachable through symbolic links from allowed directories are not
-    automatically whitelisted.
-    For example if ``token/contract.sol`` in the example above was actually a symlink pointing at
-    ``/etc/passwd`` the compiler would refuse to load it unless ``/etc/`` was one of the allowed
-    paths too.
+    Les fichiers et répertoires accessibles uniquement par des liens symboliques à partir de répertoires autorisés ne sont pas
+    automatiquement sur la liste blanche.
+    Par exemple, si ``token/contract.sol`` dans l'exemple ci-dessus était en fait un lien symbolique
+    pointant sur ``/etc/passwd``, le compilateur refuserait de le charger à moins que ``/etc/`` ne fasse aussi partie des chemins autorisés.
 
 .. index:: ! remapping; import, ! import; remapping, ! remapping; context, ! remapping; prefix, ! remapping; target
 .. _import-remapping:
 
-Import Remapping
+Remappage des importations
 ================
 
-Import remapping allows you to redirect imports to a different location in the virtual filesystem.
-The mechanism works by changing the translation between import paths and source unit names.
-For example you can set up a remapping so that any import from the virtual directory
-``github.com/ethereum/dapp-bin/library/`` would be seen as an import from ``dapp-bin/library/`` instead.
+Le remappage des importations vous permet de rediriger les importations vers un emplacement différent dans le système de fichiers virtuel.
+Le mécanisme fonctionne en modifiant la traduction entre les chemins d'importation et les noms d'unités sources.
+Par exemple, vous pouvez configurer un remappage de sorte que toute importation à partir du répertoire virtuel
+``github.com/ethereum/dapp-bin/library/`` soit considérée comme une importation depuis ``dapp-bin/library/``.
 
-You can limit the scope of a remapping by specifying a *context*.
-This allows creating remappings that apply only to imports located in a specific library or a specific file.
-Without a context a remapping is applied to every matching import in all the files in the virtual
-filesystem.
+Vous pouvez limiter la portée d'un remappage en spécifiant un *contexte*.
+Cela permet de créer des remappages qui ne s'appliquent qu'aux importations situées dans une bibliothèque spécifique ou un fichier spécifique.
+Sans contexte, un remappage est appliqué à chaque import correspondant dans tous les fichiers du système de fichiers virtuel.
 
-Import remappings have the form of ``context:prefix=target``:
+Les remappages d'importation ont la forme de ``context:prefix=target`` :
 
-- ``context`` must match the beginning of the source unit name of the file containing the import.
-- ``prefix`` must match the beginning of the source unit name resulting from the import.
-- ``target`` is the value the prefix is replaced with.
+- ``context`` doit correspondre au début du nom de l'unité source du fichier contenant l'importation.
+- ``prefix`` doit correspondre au début du nom de l'unité source résultant de l'importation.
+- ``target`` est la valeur avec laquelle le préfixe est remplacé.
 
-For example, if you clone https://github.com/ethereum/dapp-bin/ locally to ``/project/dapp-bin``
-and run the compiler with:
+Par exemple, si vous clonez https://github.com/ethereum/dapp-bin/ localement dans ``/projet/dapp-bin``
+et que vous exécutez le compilateur avec :
 
 .. code-block:: bash
 
     solc github.com/ethereum/dapp-bin/=dapp-bin/ --base-path /project source.sol
 
-you can use the following in your source file:
+vous pouvez utiliser ce qui suit dans votre fichier source :
 
 .. code-block:: solidity
 
     import "github.com/ethereum/dapp-bin/library/math.sol"; // source unit name: dapp-bin/library/math.sol
 
-The compiler will look for the file in the VFS under ``dapp-bin/library/math.sol``.
-If the file is not available there, the source unit name will be passed to the Host Filesystem
-Loader, which will then look in ``/project/dapp-bin/library/iterable_mapping.sol``.
+Le compilateur cherchera le fichier dans le VFS sous ``dapp-bin/library/math.sol``.
+Si le fichier n'est pas disponible à cet endroit, le nom de l'unité source sera transmis au Host Filesystem
+Loader, qui cherchera alors dans ``/project/dapp-bin/library/iterable_mapping.sol``.
 
 .. warning::
 
-    Information about remappings is stored in contract metadata.
-    Since the binary produced by the compiler has a hash of the metadata embedded in it, any
-    modification to the remappings will result in different bytecode.
+    Les informations sur les remappages sont stockées dans les métadonnées du contrat.
+    Comme le binaire produit par le compilateur contient un hachage des métadonnées, toute
+    modification des réaffectations se traduira par un bytecode différent.
 
-    For this reason you should be careful not to include any local information in remapping targets.
-    For example if your library is located in ``/home/user/packages/mymath/math.sol``, a remapping
-    like ``@math/=/home/user/packages/mymath/`` would result in your home directory being included in
-    the metadata.
-    To be able to reproduce the same bytecode with such a remapping on a different machine, you
-    would need to recreate parts of your local directory structure in the VFS and (if you rely on
-    Host Filesystem Loader) also in the host filesystem.
+    C'est pourquoi vous devez veiller à ne pas inclure d'informations locales dans les cibles de remappage.
+    Par exemple, si votre bibliothèque est située dans le répertoire ``/home/user/packages/mymath/math.sol``, un remappage
+    comme ``@math/=/home/user/packages/mymath/`` aurait pour conséquence d'inclure votre répertoire personnel dans les métadonnées.
+    Pour être en mesure de reproduire le même bytecode avec un tel remappage sur une autre machine,
+    vous devrez recréer des parties de votre structure de répertoire locale dans le VFS et (si vous utilisez le
+    Host Filesystem Loader) également dans le système de fichiers de l'hôte.
 
-    To avoid having your local directory structure embedded in the metadata, it is recommended to
-    designate the directories containing libraries as *include paths* instead.
-    For example, in the example above ``--include-path /home/user/packages/`` would let you use
-    imports starting with ``mymath/``.
-    Unlike remapping, the option on its own will not make ``mymath`` appear as ``@math`` but this
-    can be achieved by creating a symbolic link or renaming the package subdirectory.
+    Pour éviter que votre structure de répertoire locale ne soit intégrée dans les métadonnées, il est recommandé de
+    désigner les répertoires contenant les bibliothèques comme des *chemins d'inclusion*.
+    Par exemple, dans l'exemple ci-dessus, ``--include-path /home/user/packages/`` vous permettrait d'utiliser
+    les importations commençant par ``mymath/``.
+    Contrairement au remappage, l'option seule ne fera pas apparaître ``mymath`` comme ``@math``,
+    mais cela peut être réalisé en créant un lien symbolique ou en renommant le sous-répertoire du paquetage.
 
-As a more complex example, suppose you rely on a module that uses an old version of dapp-bin that
-you checked out to ``/project/dapp-bin_old``, then you can run:
+Pour un exemple plus complexe, supposons que vous dépendez d'un module qui utilise une ancienne version de dapp-bin
+que vous avez extraite vers ``/project/dapp-bin_old``, alors vous pouvez exécuter :
 
 .. code-block:: bash
 
@@ -556,29 +548,29 @@ you checked out to ``/project/dapp-bin_old``, then you can run:
          --base-path /project \
          source.sol
 
-This means that all imports in ``module2`` point to the old version but imports in ``module1``
-point to the new version.
+Cela signifie que tous les imports de ``module2`` pointent vers l'ancienne version mais que les imports de ``module1``
+pointent vers la nouvelle version.
 
-Here are the detailed rules governing the behaviour of remappings:
+Voici les règles détaillées qui régissent le comportement des remappages :
 
-#. **Remappings only affect the translation between import paths and source unit names.**
+#. **Les remappages n'affectent que la traduction entre les chemins d'importation et les noms d'unités sources.**
 
-   Source unit names added to the VFS in any other way cannot be remapped.
-   For example the paths you specify on the command-line and the ones in ``sources.urls`` in
-   Standard JSON are not affected.
+   Les noms d'unités sources ajoutés au VFS de toute autre manière ne peuvent pas être remappés.
+   Par exemple, les chemins que vous spécifiez sur la ligne de commande et ceux qui se trouvent dans ``sources.urls`` en
+   JSON standard ne sont pas affectés.
 
    .. code-block:: bash
 
        solc /project/=/contracts/ /project/contract.sol # source unit name: /project/contract.sol
 
-   In the example above the compiler will load the source code from ``/project/contract.sol`` and
-   place it under that exact source unit name in the VFS, not under ``/contract/contract.sol``.
+   Dans l'exemple ci-dessus, le compilateur chargera le code source à partir de ``/project/contract.sol`` et
+   le placera sous ce nom exact d'unité source dans le VFS, et non sous ``/contract/contract.sol``.
 
-#. **Context and prefix must match source unit names, not import paths.**
+#. **Le contexte et le préfixe doivent correspondre aux noms des unités sources, et non aux chemins d'importation.**
 
-   - This means that you cannot remap ``./`` or ``../`` directly since they are replaced during
-     the translation to source unit name but you can remap the part of the name they are replaced
-     with:
+   - Cela signifie que vous ne pouvez pas remapper ``./`` ou ``./`` directement puisqu'ils sont remplacés pendant
+     la traduction en nom d'unité source, mais vous pouvez remapper la partie du nom par laquelle ils sont remplacés
+     avec :
 
      .. code-block:: bash
 
@@ -589,8 +581,8 @@ Here are the detailed rules governing the behaviour of remappings:
 
          import "./util.sol" as util; // source unit name: b/util.sol
 
-   - You cannot remap base path or any other part of the path that is only added internally by an
-     import callback:
+   - Vous ne pouvez pas remapper le chemin de base ou toute autre partie du chemin qui est seulement ajouté en interne par un
+     rappel d'importation :
 
      .. code-block:: bash
 
@@ -601,21 +593,21 @@ Here are the detailed rules governing the behaviour of remappings:
 
          import "util.sol" as util; // source unit name: util.sol
 
-#. **Target is inserted directly into the source unit name and does not necessarily have to be a valid path.**
+#. **La cible est insérée directement dans le nom de l'unité source et ne doit pas nécessairement être un chemin d'accès valide.**
 
-   - It can be anything as long as the import callback can handle it.
-     In case of the Host Filesystem Loader this includes also relative paths.
-     When using the JavaScript interface you can even use URLs and abstract identifiers if
-     your callback can handle them.
+   - Il peut s'agir de n'importe quoi tant que le callback d'importation peut le gérer.
+     Dans le cas du Host Filesystem Loader, cela inclut également les chemins relatifs.
+     Lorsque vous utilisez l'interface JavaScript, vous pouvez même utiliser des URL et des identifiants abstraits si
+     votre callback peut les gérer.
 
-   - Remapping happens after relative imports have already been resolved into source unit names.
-     This means that targets starting with ``./`` and ``../`` have no special meaning and are
-     relative to the base path rather than to the location of the source file.
+   - Le remappage se produit après que les importations relatives aient déjà été résolues en noms d'unités sources.
+     Cela signifie que les cibles commençant par ``./`` et ``./`` n'ont pas de signification particulière et
+     sont relatives au chemin de base plutôt qu'à l'emplacement du fichier source.
 
-   - Remapping targets are not normalized so ``@root/=./a/b//`` will remap ``@root/contract.sol``
-     to ``./a/b//contract.sol`` and not ``a/b/contract.sol``.
+   - Les cibles de remappage ne sont pas normalisées, donc ``@root/=./a/b//`` remappera ``@root/contract.sol`` en ``./a/b/``.
+     vers ``./a/b//contract.sol`` et non ``a/b/contract.sol``.
 
-   - If the target does not end with a slash, the compiler will not add one automatically:
+   - Si la cible ne se termine pas par un slash, le compilateur ne l'ajoutera pas automatiquement :
 
      .. code-block:: bash
 
@@ -626,42 +618,41 @@ Here are the detailed rules governing the behaviour of remappings:
 
          import "/project/util.sol" as util; // source unit name: /contractsutil.sol
 
-#. **Context and prefix are patterns and matches must be exact.**
+#. **Le contexte et le préfixe sont des modèles et les correspondances doivent être exactes.**
 
-   - ``a//b=c`` will not match ``a/b``.
-   - source unit names are not normalized so ``a/b=c`` will not match ``a//b`` either.
-   - Parts of file and directory names can match as well.
-     ``/newProject/con:/new=old`` will match ``/newProject/contract.sol`` and remap it to
-     ``oldProject/contract.sol``.
+   - ``a//b=c`` ne correspondra pas à `a/b``.
+   - Les noms des unités sources ne sont pas normalisés, donc ``a/b=c`` ne correspondra pas non plus à ``a//b``.
+   - Les parties des noms de fichiers et de répertoires peuvent également correspondre.
+     ``/newProject/con:/new=old`` correspondra à ``/newProject/contract.sol`` et le remappera à
+     ``oldProject/contrat.sol``.
 
-#. **At most one remapping is applied to a single import.**
+#. **Un remappage au maximum est appliqué à une seule importation.**
 
-   - If multiple remappings match the same source unit name, the one with the longest matching
-     prefix is chosen.
-   - If prefixes are identical, the one specified last wins.
-   - Remappings do not work on other remappings. For example ``a=b b=c c=d`` will not result in ``a``
-     being remapped to ``d``.
+   - Si plusieurs réaffectations correspondent au même nom d'unité source, celle dont le préfixe est
+     le plus long est choisi.
+   - Si les préfixes sont identiques, celui qui est spécifié en dernier l'emporte.
+   - Les réaffectations ne fonctionnent pas sur d'autres réaffectations. Par exemple, ``a=b b=c c=d`` n'aura pas pour résultat de transformer `a``
+     en ``d``.
 
-#. **Prefix cannot be empty but context and target are optional.**
+#. **Le préfixe ne peut être vide, mais le contexte et la cible sont facultatifs.**
 
-   - If ``target`` is the empty string, ``prefix`` is simply removed from import paths.
-   - Empty ``context`` means that the remapping applies to all imports in all source units.
+   - Si ``target`` est une chaîne vide, ``prefix`` est simplement supprimé des chemins d'importation.
+   - Un ``context`` vide signifie que le remappage s'applique à toutes les importations dans toutes les unités sources.
 
 .. index:: Remix IDE, file://
 
-Using URLs in imports
+Utilisation des URLs dans les importations
 =====================
 
-Most URL prefixes such as ``https://`` or ``data://`` have no special meaning in import paths.
-The only exception is ``file://`` which is stripped from source unit names by the Host Filesystem
-Loader.
+La plupart des préfixes d'URL tels que ``https://`` ou ``data://`` n'ont pas de signification particulière dans les chemins d'importation.
+La seule exception est ``file://`` qui est supprimé des noms d'unités sources par le Host Filesystem Loader.
 
-When compiling locally you can use import remapping to replace the protocol and domain part with a
-local path:
+Lorsque vous compilez localement, vous pouvez utiliser le remappage d'importation pour remplacer la partie protocole et domaine par une partie
+chemin local :
 
 .. code-block:: bash
 
     solc :https://github.com/ethereum/dapp-bin=/usr/local/dapp-bin contract.sol
 
-Note the leading ``:``, which is necessary when the remapping context is empty.
-Otherwise the ``https:`` part would be interpreted by the compiler as the context.
+Notez le premier ``:``, qui est nécessaire lorsque le contexte de remappage est vide.
+Sinon, la partie ``https:`` serait interprétée par le compilateur comme le contexte.

@@ -2,43 +2,43 @@
 .. index: ir breaking changes
 
 *********************************
-Solidity IR-based Codegen Changes
+Changements apportés au Codegen basé sur Solidity IR
 *********************************
 
-Solidity can generate EVM bytecode in two different ways:
-Either directly from Solidity to EVM opcodes ("old codegen") or through
-an intermediate representation ("IR") in Yul ("new codegen" or "IR-based codegen").
+Solidity peut générer du bytecode EVM de deux manières différentes :
+Soit directement de Solidity vers les opcodes EVM ("old codegen"), soit par le biais d'une
+représentation intermédiaire ("IR") dans Yul ("new codegen" ou "IR-based codegen").
 
-The IR-based code generator was introduced with an aim to not only allow
-code generation to be more transparent and auditable but also
-to enable more powerful optimization passes that span across functions.
+Le générateur de code basé sur l'IR a été introduit dans le but non seulement de permettre
+génération de code plus transparente et plus vérifiable, mais aussi
+de permettre des passes d'optimisation plus puissantes qui couvrent plusieurs fonctions.
 
-Currently, the IR-based code generator is still marked experimental,
-but it supports all language features and has received a lot of testing,
-so we consider it almost ready for production use.
+Actuellement, le générateur de code basé sur IR est toujours marqué comme expérimental,
+mais il supporte toutes les fonctionnalités du langage et a fait l'objet de nombreux tests.
+Nous considérons donc qu'il est presque prêt à être utilisé en production.
 
-You can enable it on the command line using ``--experimental-via-ir``
-or with the option ``{"viaIR": true}`` in standard-json and we
-encourage everyone to try it out!
+Vous pouvez l'activer sur la ligne de commande en utilisant ``--experimental-via-ir``.
+ou avec l'option ``{"viaIR" : true}`` dans le standard-json et nous
+encourageons tout le monde à l'essayer !
 
-For several reasons, there are tiny semantic differences between the old
-and the IR-based code generator, mostly in areas where we would not
-expect people to rely on this behaviour anyway.
-This section highlights the main differences between the old and the IR-based codegen.
+Pour plusieurs raisons, il existe de minuscules différences sémantiques entre l'ancien
+générateur de code basé sur l'IR, principalement dans des domaines
+où nous ne nous attendons pas à ce que les gens se fient à ce comportement de toute façon.
+Cette section met en évidence les principales différences entre l'ancien et le générateur de code basé sur la RI.
 
-Semantic Only Changes
+Changements uniquement sémantiques
 =====================
 
-This section lists the changes that are semantic-only, thus potentially
-hiding new and different behavior in existing code.
+Cette section énumère les changements qui sont uniquement sémantiques, donc potentiellement
+cacher un comportement nouveau et différent dans le code existant.
 
-- When storage structs are deleted, every storage slot that contains
-  a member of the struct is set to zero entirely. Formerly, padding space
-  was left untouched.
-  Consequently, if the padding space within a struct is used to store data
-  (e.g. in the context of a contract upgrade), you have to be aware that
-  ``delete`` will now also clear the added member (while it wouldn't
-  have been cleared in the past).
+- Lorsque les structures de stockage sont supprimées, chaque emplacement de stockage qui contient
+  un membre de la structure est entièrement mis à zéro. Auparavant, l'espace de remplissage
+  n'était pas modifié.
+  Par conséquent, si l'espace de remplissage dans une structure est utilisé pour stocker des données
+  (par exemple, dans le contexte d'une mise à jour de contrat), vous devez être conscient que
+  que ``delete`` effacera maintenant aussi le membre ajouté (alors qu'il
+  n'aurait pas été effacé dans le passé).
 
   .. code-block:: solidity
 
@@ -54,22 +54,21 @@ hiding new and different behavior in existing code.
           function f() public {
               // ...
               delete s;
-              // s occupies only first 16 bytes of the 32 bytes slot
-              // delete will write zero to the full slot
+              // s occupe seulement les 16 premiers octets de l'emplacement de 32 octets.
+              // delete écrira zéro dans l'emplacement complet
           }
       }
 
-  We have the same behavior for implicit delete, for example when array of structs is shortened.
+  Nous avons le même comportement pour la suppression implicite, par exemple lorsque le tableau de structs est raccourci.
 
-- Function modifiers are implemented in a slightly different way regarding function parameters and return variables.
-  This especially has an effect if the placeholder ``_;`` is evaluated multiple times in a modifier.
-  In the old code generator, each function parameter and return variable has a fixed slot on the stack.
-  If the function is run multiple times because ``_;`` is used multiple times or used in a loop, then a
-  change to the function parameter's or return variable's value is visible in the next execution of the function.
-  The new code generator implements modifiers using actual functions and passes function parameters on.
-  This means that multiple evaluations of a function's body will get the same values for the parameters,
-  and the effect on return variables is that they are reset to their default (zero) value for each
-  execution.
+- Les modificateurs de fonction sont mis en œuvre d'une manière légèrement différente en ce qui concerne les paramètres de fonction et les variables de retour.
+  Cela a notamment un effet si le caractère générique ``_;`` est évalué plusieurs fois dans un modificateur.
+  Dans l'ancien générateur de code, chaque paramètre de fonction et variable de retour a un emplacement fixe sur la pile.
+  Si la fonction est exécutée plusieurs fois parce que ``_;`` est utilisé plusieurs fois ou utilisé dans une boucle, alors un
+  changement de la valeur du paramètre de fonction ou de la variable de retour est visible lors de la prochaine exécution de la fonction.
+  Le nouveau générateur de code implémente les modificateurs à l'aide de fonctions réelles et transmet les paramètres de fonction.
+  Cela signifie que plusieurs évaluations du corps d'une fonction obtiendront les mêmes valeurs pour les paramètres,
+  et l'effet sur les variables de retour est qu'elles sont réinitialisées à leur valeur par défaut (zéro) à chaque exécution.
 
   .. code-block:: solidity
 
@@ -82,8 +81,8 @@ hiding new and different behavior in existing code.
           modifier mod() { _; _; }
       }
 
-  If you execute ``f(0)`` in the old code generator, it will return ``2``, while
-  it will return ``1`` when using the new code generator.
+  Si vous exécutez ``f(0)`` dans l'ancien générateur de code, il retournera ``2``, alors
+  qu'il retournera ``1`` en utilisant le nouveau générateur de code.
 
   .. code-block:: solidity
 
@@ -105,34 +104,34 @@ hiding new and different behavior in existing code.
           }
       }
 
-  The function ``C.foo()`` returns the following values:
+  La fonction ``C.foo()`` renvoie les valeurs suivantes :
 
-  - Old code generator: ``1`` as the return variable is initialized to ``0`` only once before the first ``_;``
-    evaluation and then overwritten by the ``return 1;``. It is not initialized again for the second ``_;``
-    evaluation and ``foo()`` does not explicitly assign it either (due to ``active == false``), thus it keeps
-    its first value.
-  - New code generator: ``0`` as all parameters, including return parameters, will be re-initialized before
-    each ``_;`` evaluation.
+  - Ancien générateur de code : ``1`` comme variable de retour est initialisé à ``0`` une seule fois avant la première évaluation ``_;``
+    et ensuite écrasée par la variable ``return 1;``. Elle n'est pas initialisée à nouveau pour la seconde
+    évaluation et ``foo()`` ne l'assigne pas explicitement non plus (à cause de ``active == false``), il garde donc
+    sa première valeur.
+  - Nouveau générateur de code : ``0`` car tous les paramètres, y compris les paramètres de retour, seront ré-initialisés avant
+    chaque évaluation ``_;``.
 
-- The order of contract initialization has changed in case of inheritance.
+- L'ordre d'initialisation des contrats a changé en cas d'héritage.
 
-  The order used to be:
+  L'ordre était auparavant le suivant :
 
-  - All state variables are zero-initialized at the beginning.
-  - Evaluate base constructor arguments from most derived to most base contract.
-  - Initialize all state variables in the whole inheritance hierarchy from most base to most derived.
-  - Run the constructor, if present, for all contracts in the linearized hierarchy from most base to most derived.
+  - Toutes les variables d'état sont initialisées à zéro au début.
+  - Évaluer les arguments du constructeur de base du contrat le plus dérivé au contrat le plus basique.
+  - Initialiser toutes les variables d'état dans toute la hiérarchie d'héritage, de la plus basique à la plus dérivée.
+  - Exécuter le constructeur, s'il est présent, pour tous les contrats dans la hiérarchie linéarisée du plus bas au plus dérivé.
 
-  New order:
+  Nouvel ordre :
 
-  - All state variables are zero-initialized at the beginning.
-  - Evaluate base constructor arguments from most derived to most base contract.
-  - For every contract in order from most base to most derived in the linearized hierarchy execute:
+  - Toutes les variables d'état sont initialisées à zéro au début.
+  - Évaluer les arguments du constructeur de base du contrat le plus dérivé au contrat le plus basique.
+  - Pour chaque contrat dans l'ordre du plus basique au plus dérivé dans la hiérarchie linéarisée, exécuter :
 
-      1. If present at declaration, initial values are assigned to state variables.
-      2. Constructor, if present.
+      1. Si elles sont présentes à la déclaration, les valeurs initiales sont assignées aux variables d'état.
+      2. Le constructeur, s'il est présent.
 
-This causes differences in some contracts, for example:
+Cela entraîne des différences dans certains contrats, par exemple :
 
   .. code-block:: solidity
 
@@ -152,14 +151,14 @@ This causes differences in some contracts, for example:
           uint public y = f();
       }
 
-  Previously, ``y`` would be set to 0. This is due to the fact that we would first initialize state variables: First, ``x`` is set to 0, and when initializing ``y``, ``f()`` would return 0 causing ``y`` to be 0 as well.
-  With the new rules, ``y`` will be set to 42. We first initialize ``x`` to 0, then call A's constructor which sets ``x`` to 42. Finally, when initializing ``y``, ``f()`` returns 42 causing ``y`` to be 42.
+  Auparavant, ``y`` était fixé à 0. Cela est dû au fait que nous initialisions d'abord les variables d'état : D'abord, ``x`` est mis à 0, et lors de l'initialisation de ``y``, ``f()`` renvoie 0, ce qui fait que ``y`` est également 0.
+  Avec les nouvelles règles, ``y`' sera fixé à 42. Nous commençons par initialiser ``x`` à 0, puis nous appelons le constructeur de A qui fixe ``x`` à 42. Enfin, lors de l'initialisation de ``y``, ``f()`` renvoie 42, ce qui fait que ``y`` est 42.
 
-- Copying ``bytes`` arrays from memory to storage is implemented in a different way.
-  The old code generator always copies full words, while the new one cuts the byte
-  array after its end. The old behaviour can lead to dirty data being copied after
-  the end of the array (but still in the same storage slot).
-  This causes differences in some contracts, for example:
+- La copie de tableaux d'"octets" de la mémoire vers le stockage est implémentée d'une manière différente.
+  L'ancien générateur de code copie toujours des mots entiers, alors que le nouveau coupe le tableau d'octets
+  après sa fin. L'ancien comportement peut conduire à ce que des données sales soient copiées
+  après la fin du tableau (mais toujours dans le même emplacement de stockage).
+  Cela entraîne des différences dans certains contrats, par exemple :
 
   .. code-block:: solidity
 
@@ -181,18 +180,18 @@ This causes differences in some contracts, for example:
           }
       }
 
-  Previously ``f()`` would return ``0x6465616462656566313564656164000000000000000000000000000000000010``
-  (it has correct length, and correct first 8 elements, but then it contains dirty data which was set via assembly).
-  Now it is returning ``0x6465616462656566000000000000000000000000000000000000000000000010`` (it has
-  correct length, and correct elements, but does not contain superfluous data).
+    Auparavant, ``f()`` retournait ``0x6465616462656566313564656164000000000000000000000000000000000010``
+  (il a une longueur correcte, et les 8 premiers éléments sont corrects, mais ensuite il contient des données sales qui ont été définies via l'assemblage).
+  Maintenant, il renvoie ``0x6465616462656566000000000000000000000000000000000000000000000010`` (il a une
+  longueur correcte, et des éléments corrects, mais il ne contient pas de données superflues).
 
   .. index:: ! evaluation order; expression
 
-- For the old code generator, the evaluation order of expressions is unspecified.
-  For the new code generator, we try to evaluate in source order (left to right), but do not guarantee it.
-  This can lead to semantic differences.
+- Pour l'ancien générateur de code, l'ordre d'évaluation des expressions n'est pas spécifié.
+  Pour le nouveau générateur de code, nous essayons d'évaluer dans l'ordre de la source (de gauche à droite), mais nous ne le garantissons pas.
+  Cela peut conduire à des différences sémantiques.
 
-  For example:
+  Par exemple :
 
   .. code-block:: solidity
 
@@ -204,16 +203,16 @@ This causes differences in some contracts, for example:
           }
       }
 
-  The function ``preincr_u8(1)`` returns the following values:
+  La fonction ``preincr_u8(1)`` retourne les valeurs suivantes :
 
-  - Old code generator: 3 (``1 + 2``) but the return value is unspecified in general
-  - New code generator: 4 (``2 + 2``) but the return value is not guaranteed
+  - Ancien générateur de code : 3 (``1 + 2``) mais la valeur de retour n'est pas spécifiée en général.
+  - Nouveau générateur de code : 4 (``2 + 2``) mais la valeur de retour n'est pas garantie
 
   .. index:: ! evaluation order; function arguments
 
-  On the other hand, function argument expressions are evaluated in the same order
-  by both code generators with the exception of the global functions ``addmod`` and ``mulmod``.
-  For example:
+  D'autre part, les expressions des arguments de fonction sont évaluées dans le même ordre
+  par les deux générateurs de code, à l'exception des fonctions globales ``addmod`` et ``mulmod``.
+  Par exemple :
 
   .. code-block:: solidity
 
@@ -228,14 +227,14 @@ This causes differences in some contracts, for example:
           }
       }
 
-  The function ``g(1, 2)`` returns the following values:
+  La fonction ``g(1, 2)`` renvoie les valeurs suivantes :
 
-  - Old code generator: ``10`` (``add(2 + 3, 2 + 3)``) but the return value is unspecified in general
-  - New code generator: ``10`` but the return value is not guaranteed
+  - Ancien générateur de code : ``10`` (``add(2 + 3, 2 + 3)``) mais la valeur de retour n'est pas spécifiée en général.
+  - Nouveau générateur de code : ``10`` mais la valeur de retour n'est pas garantie
 
-  The arguments to the global functions ``addmod`` and ``mulmod`` are evaluated right-to-left by the old code generator
-  and left-to-right by the new code generator.
-  For example:
+  Les arguments des fonctions globales ``addmod`` et ``mulmod`` sont évalués de droite à gauche par l'ancien générateur de code
+  et de gauche à droite par le nouveau générateur de code.
+  Par exemple :
 
   .. code-block:: solidity
 
@@ -251,17 +250,17 @@ This causes differences in some contracts, for example:
           }
       }
 
-  The function ``f()`` returns the following values:
+  La fonction ``f()`` renvoie les valeurs suivantes :
 
-  - Old code generator: ``aMod = 0`` and ``mMod = 2``
-  - New code generator: ``aMod = 4`` and ``mMod = 0``
+  - Ancien générateur de code : " aMod = 0 " et " mMod = 2 ".
+  - Nouveau générateur de code : " aMod = 4 " et " mMod = 0 ".
 
-- The new code generator imposes a hard limit of ``type(uint64).max``
-  (``0xffffffffffffffff``) for the free memory pointer. Allocations that would
-  increase its value beyond this limit revert. The old code generator does not
-  have this limit.
+- Le nouveau générateur de code impose une limite dure de ``type(uint64).max``
+  (``0xffffffffffffffff``) pour le pointeur de mémoire libre. Les allocations qui
+  augmenteraient sa valeur au-delà de cette limite. L'ancien générateur de code n'a pas
+  n'a pas cette limite.
 
-  For example:
+  Par exemple :
 
   .. code-block:: solidity
       :force:
@@ -279,43 +278,44 @@ This causes differences in some contracts, for example:
           }
       }
 
-  The function `f()` behaves as follows:
+  La fonction `f()` se comporte comme suit :
 
-  - Old code generator: runs out of gas while zeroing the array contents after the large memory allocation
-  - New code generator: reverts due to free memory pointer overflow (does not run out of gas)
+  - Ancien générateur de code : manque de gaz lors de la mise à zéro du contenu du tableau après la grande allocation de mémoire.
+  - Nouveau générateur de code : retour en arrière en raison d'un débordement du pointeur de mémoire libre (ne tombe pas en panne sèche).
 
 
-Internals
+Internes
 =========
 
-Internal function pointers
+Pointeurs de fonctions internes
 --------------------------
 
 .. index:: function pointers
 
-The old code generator uses code offsets or tags for values of internal function pointers. This is especially complicated since
-these offsets are different at construction time and after deployment and the values can cross this border via storage.
-Because of that, both offsets are encoded at construction time into the same value (into different bytes).
+L'ancien générateur de code utilise des décalages de code ou des balises pour les valeurs des pointeurs de fonctions internes.
+Ceci est particulièrement compliqué car ces offsets sont différents au moment de la construction et après le déploiement et les
+valeurs peuvent traverser cette frontière via le stockage.
+Pour cette raison, les deux offsets sont codés au moment de la construction dans la même valeur (dans différents octets).
 
-In the new code generator, function pointers use internal IDs that are allocated in sequence. Since calls via jumps are not possible,
-calls through function pointers always have to use an internal dispatch function that uses the ``switch`` statement to select
-the right function.
+Dans le nouveau générateur de code, les pointeurs de fonction utilisent des ID internes qui sont alloués en séquence. Comme
+les appels via des pointeurs de fonction doivent toujours utiliser une fonction de distribution interne qui utilise l'instruction ``switch`` pour sélectionner
+la bonne fonction.
 
-The ID ``0`` is reserved for uninitialized function pointers which then cause a panic in the dispatch function when called.
+L'ID ``0`` est réservé aux pointeurs de fonction non initialisés qui provoquent une panique dans la fonction de répartition lorsqu'ils sont appelés.
 
-In the old code generator, internal function pointers are initialized with a special function that always causes a panic.
-This causes a storage write at construction time for internal function pointers in storage.
+Dans l'ancien générateur de code, les pointeurs de fonctions internes sont initialisés avec une fonction spéciale qui provoque toujours une panique.
+Cela provoque une écriture en mémoire au moment de la construction pour les pointeurs de fonctions internes en mémoire.
 
-Cleanup
+Nettoyage
 -------
 
 .. index:: cleanup, dirty bits
 
-The old code generator only performs cleanup before an operation whose result could be affected by the values of the dirty bits.
-The new code generator performs cleanup after any operation that can result in dirty bits.
-The hope is that the optimizer will be powerful enough to eliminate redundant cleanup operations.
+L'ancien générateur de code n'effectue le nettoyage qu'avant une opération dont le résultat pourrait être affecté par les valeurs des bits sales.
+Le nouveau générateur de code effectue le nettoyage après toute opération qui peut entraîner des bits sales.
+L'espoir est que l'optimiseur sera suffisamment puissant pour éliminer les opérations de nettoyage redondantes.
 
-For example:
+Par exemple :
 
 .. code-block:: solidity
     :force:
@@ -333,11 +333,11 @@ For example:
         }
     }
 
-The function ``f(1)`` returns the following values:
+La fonction ``f(1)`` renvoie les valeurs suivantes :
 
-- Old code generator: (``fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe``, ``00000000000000000000000000000000000000000000000000000000000000fe``)
-- New code generator: (``00000000000000000000000000000000000000000000000000000000000000fe``, ``00000000000000000000000000000000000000000000000000000000000000fe``)
+- Ancien générateur de code: (``fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe``, ``00000000000000000000000000000000000000000000000000000000000000fe``)
+- Nouveau générateur de codes: (``00000000000000000000000000000000000000000000000000000000000000fe``, ``00000000000000000000000000000000000000000000000000000000000000fe``)
 
-Note that, unlike the new code generator, the old code generator does not perform a cleanup after the bit-not assignment (``_a = ~_a``).
-This results in different values being assigned (within the inline assembly block) to return value ``_r1`` between the old and new code generators.
-However, both code generators perform a cleanup before the new value of ``_a`` is assigned to ``_r2``.
+Notez que, contrairement au nouveau générateur de code, l'ancien générateur de code n'effectue pas de nettoyage après l'affectation bit-non (``_a = ~_a``).
+Il en résulte que des valeurs différentes sont assignées (dans le bloc d'assemblage en ligne) à la valeur de retour ``_r1`` entre l'ancien et le nouveau générateur de code.
+Cependant, les deux générateurs de code effectuent un nettoyage avant que la nouvelle valeur de ``_a`` soit assignée à ``_r2``.

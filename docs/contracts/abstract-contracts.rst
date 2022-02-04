@@ -3,15 +3,15 @@
 .. _abstract-contract:
 
 ******************
-Abstract Contracts
+Contrats abstraits
 ******************
 
-Contracts need to be marked as abstract when at least one of their functions is not implemented.
-Contracts may be marked as abstract even though all functions are implemented.
+Les contrats doivent être marqués comme abstraits lorsqu'au moins une de leurs fonctions n'est pas implémentée.
+Les contrats peuvent être marqués comme abstraits même si toutes les fonctions sont implémentées.
 
-This can be done by using the ``abstract`` keyword as shown in the following example. Note that this contract needs to be
-defined as abstract, because the function ``utterance()`` was defined, but no implementation was
-provided (no implementation body ``{ }`` was given).
+Cela peut être fait en utilisant le mot-clé ``abstract`` comme le montre l'exemple suivant. Notez que ce contrat
+doit être défini comme abstrait, car la fonction ``utterance()`` a été définie, mais aucune implémentation
+n'a été fournie (aucun corps d'implémentation ``{ }`` n'a été donné).
 
 .. code-block:: solidity
 
@@ -22,8 +22,8 @@ provided (no implementation body ``{ }`` was given).
         function utterance() public virtual returns (bytes32);
     }
 
-Such abstract contracts can not be instantiated directly. This is also true, if an abstract contract itself does implement
-all defined functions. The usage of an abstract contract as a base class is shown in the following example:
+Ces contrats abstraits ne peuvent pas être instanciés directement. Cela est également vrai si un contrat abstrait met en œuvre
+toutes les fonctions définies. L'utilisation d'un contrat abstrait comme classe de base est illustrée dans l'exemple suivant :
 
 .. code-block:: solidity
 
@@ -38,32 +38,32 @@ all defined functions. The usage of an abstract contract as a base class is show
         function utterance() public pure override returns (bytes32) { return "miaow"; }
     }
 
-If a contract inherits from an abstract contract and does not implement all non-implemented
-functions by overriding, it needs to be marked as abstract as well.
+Si un contrat hérite d'un contrat abstrait et qu'il n'implémente pas toutes les fonctions non implémentées
+en les surchargeant, il doit également être marqué comme abstrait.
 
-Note that a function without implementation is different from
-a :ref:`Function Type <function_types>` even though their syntax looks very similar.
+Notez qu'une fonction sans implémentation est différente
+d'une :ref:`Fonction Type <function_types>`, même si leur syntaxe est très similaire.
 
-Example of function without implementation (a function declaration):
+Exemple de fonction sans implémentation (une déclaration de fonction) :
 
 .. code-block:: solidity
 
     function foo(address) external returns (address);
 
-Example of a declaration of a variable whose type is a function type:
+Exemple de déclaration d'une variable dont le type est un type de fonction :
 
 .. code-block:: solidity
 
     function(address) external returns (address) foo;
 
-Abstract contracts decouple the definition of a contract from its
-implementation providing better extensibility and self-documentation and
-facilitating patterns like the `Template method <https://en.wikipedia.org/wiki/Template_method_pattern>`_ and removing code duplication.
-Abstract contracts are useful in the same way that defining methods
-in an interface is useful. It is a way for the designer of the
-abstract contract to say "any child of mine must implement this method".
+Les contrats abstraits découplent la définition d'un contrat de son
+implémentation fournissant une meilleure extensibilité et auto-documentation et
+facilitant les modèles comme la méthode `Template <https://en.wikipedia.org/wiki/Template_method_pattern>`_ et supprimant la duplication du code.
+Les contrats abstraits sont utiles de la même façon que définir des méthodes
+dans une interface est utile. C'est un moyen pour le concepteur du
+contrat abstrait de dire "tout enfant de moi doit implémenter cette méthode".
 
 .. note::
 
-  Abstract contracts cannot override an implemented virtual function with an
-  unimplemented one.
+  Les contrats abstraits ne peuvent pas remplacer une fonction virtuelle implémentée
+  par une fonction virtuelle non implémentée.

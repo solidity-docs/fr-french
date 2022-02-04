@@ -3,26 +3,26 @@
 .. _contract_structure:
 
 ***********************
-Structure of a Contract
+Structure d'un contrat
 ***********************
 
-Contracts in Solidity are similar to classes in object-oriented languages.
-Each contract can contain declarations of :ref:`structure-state-variables`, :ref:`structure-functions`,
-:ref:`structure-function-modifiers`, :ref:`structure-events`, :ref:`structure-errors`, :ref:`structure-struct-types` and :ref:`structure-enum-types`.
-Furthermore, contracts can inherit from other contracts.
+Les contrats dans Solidity sont similaires aux classes dans les langages orientés objet.
+Chaque contrat peut contenir des déclarations de :ref:`structure-state-variables`, :ref:`structure-functions`,
+:ref:`structure-function-modifiers`, :ref:`structure-events`, :ref:`structure-errors`, :ref:`structure-structure-types` et :ref:`structure-enum-types`.
+De plus, les contrats peuvent hériter d'autres contrats.
 
-There are also special kinds of contracts called :ref:`libraries<libraries>` and :ref:`interfaces<interfaces>`.
+Il existe également des types spéciaux de contrats appelés :ref:`libraries<libraries>` et :ref:`interfaces<interfaces>`.
 
-The section about :ref:`contracts<contracts>` contains more details than this section,
-which serves to provide a quick overview.
+La section sur les :ref:`contrats<contrats>` contient plus de détails que cette section,
+qui sert à donner un aperçu rapide.
 
 .. _structure-state-variables:
 
-State Variables
+Variables d'état
 ===============
 
-State variables are variables whose values are permanently stored in contract
-storage.
+Les variables d'état sont des variables dont les valeurs sont stockées de manière permanente dans le contrat
+stockage.
 
 .. code-block:: solidity
 
@@ -30,22 +30,22 @@ storage.
     pragma solidity >=0.4.0 <0.9.0;
 
     contract SimpleStorage {
-        uint storedData; // State variable
+        uint storedData; // Variable d'état
         // ...
     }
 
-See the :ref:`types` section for valid state variable types and
-:ref:`visibility-and-getters` for possible choices for
-visibility.
+Voir la section :ref:`types` pour les types de variables d'état valides et la section
+:ref:`visibility-and-getters` pour les choix possibles en matière de
+visibilité.
 
 .. _structure-functions:
 
-Functions
+Fonctions
 =========
 
-Functions are the executable units of code. Functions are usually
-defined inside a contract, but they can also be defined outside of
-contracts.
+Les fonctions sont les unités exécutables du code. Les fonctions sont généralement
+définies à l'intérieur d'un contrat, mais elles peuvent aussi être définies en dehors des
+contrats.
 
 .. code-block:: solidity
 
@@ -53,33 +53,33 @@ contracts.
     pragma solidity >=0.7.1 <0.9.0;
 
     contract SimpleAuction {
-        function bid() public payable { // Function
+        function bid() public payable { // Fonction
             // ...
         }
     }
 
-    // Helper function defined outside of a contract
+    // Fonction d'aide définie en dehors d'un contrat
     function helper(uint x) pure returns (uint) {
         return x * 2;
     }
 
-:ref:`function-calls` can happen internally or externally
-and have different levels of :ref:`visibility<visibility-and-getters>`
-towards other contracts. :ref:`Functions<functions>` accept :ref:`parameters and return variables<function-parameters-return-variables>` to pass parameters
-and values between them.
+:ref:`function-calls` peut se produire en interne ou en externe
+et avoir différents niveaux de :ref:`visibilité<visibility-and-getters>`
+vers d'autres contrats. :ref:`Les fonctions<functions>` acceptent les :ref:`paramètres et variables de retour<function-parameters-return-variables>`
+pour passer des paramètres et des valeurs entre elles.
 
 .. _structure-function-modifiers:
 
-Function Modifiers
+Modificateurs de fonction
 ==================
 
-Function modifiers can be used to amend the semantics of functions in a declarative way
-(see :ref:`modifiers` in the contracts section).
+Les modificateurs de fonctions peuvent être utilisés pour modifier la sémantique des fonctions de manière déclarative
+(voir :ref:`modifiers` dans la section sur les contrats).
 
-Overloading, that is, having the same modifier name with different parameters,
-is not possible.
+La surcharge, c'est-à-dire le fait d'avoir le même nom de modificateur avec différents paramètres,
+n'est pas possible.
 
-Like functions, modifiers can be :ref:`overridden <modifier-overriding>`.
+Comme les fonctions, les modificateurs peuvent être :ref:`overridden <modifier-overriding>`.
 
 .. code-block:: solidity
 
@@ -89,25 +89,25 @@ Like functions, modifiers can be :ref:`overridden <modifier-overriding>`.
     contract Purchase {
         address public seller;
 
-        modifier onlySeller() { // Modifier
+        modifier onlySeller() { // Modificateur
             require(
                 msg.sender == seller,
-                "Only seller can call this."
+                "Seul le vendeur peut l'appeler."
             );
             _;
         }
 
-        function abort() public view onlySeller { // Modifier usage
+        function abort() public view onlySeller { // Utilisation des modificateurs
             // ...
         }
     }
 
 .. _structure-events:
 
-Events
-======
+Événements
+==========
 
-Events are convenience interfaces with the EVM logging facilities.
+Les événements sont des interfaces pratiques avec les fonctions de journalisation de l'EVM.
 
 .. code-block:: solidity
 
@@ -115,35 +115,34 @@ Events are convenience interfaces with the EVM logging facilities.
     pragma solidity >=0.4.21 <0.9.0;
 
     contract SimpleAuction {
-        event HighestBidIncreased(address bidder, uint amount); // Event
+        event HighestBidIncreased(address bidder, uint amount); // Événement
 
         function bid() public payable {
             // ...
-            emit HighestBidIncreased(msg.sender, msg.value); // Triggering event
+            emit HighestBidIncreased(msg.sender, msg.value); // Événement déclencheur
         }
     }
 
-See :ref:`events` in contracts section for information on how events are declared
-and can be used from within a dapp.
+Voir :ref:`events` dans la section contrats pour des informations sur la façon dont les événements sont déclarés
+et peuvent être utilisés à l'intérieur d'une application.
 
 .. _structure-errors:
 
-Errors
-======
+Erreurs
+=======
 
-Errors allow you to define descriptive names and data for failure situations.
-Errors can be used in :ref:`revert statements <revert-statement>`.
-In comparison to string descriptions, errors are much cheaper and allow you
-to encode additional data. You can use NatSpec to describe the error to
-the user.
+Les erreurs vous permettent de définir des noms et des données descriptives pour les situations d'échec.
+Les erreurs peuvent être utilisées dans :ref:`revert statements <revert-statement>`.
+Par rapport aux descriptions de chaînes de caractères, les erreurs sont beaucoup moins coûteuses et vous permettent
+d'encoder des données supplémentaires. Vous pouvez utiliser NatSpec pour décrire l'erreur à l'utilisateur.
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity ^0.8.4;
 
-    /// Not enough funds for transfer. Requested `requested`,
-    /// but only `available` available.
+    /// Pas assez de fonds pour le transfert. Demandé `requested`,
+    /// mais seulement `available` disponible.
     error NotEnoughFunds(uint requested, uint available);
 
     contract Token {
@@ -158,15 +157,15 @@ the user.
         }
     }
 
-See :ref:`errors` in the contracts section for more information.
+Voir :ref:`errors` dans la section sur les contrats pour plus d'informations.
 
 .. _structure-struct-types:
 
-Struct Types
-=============
+Types de structures
+====================
 
-Structs are custom defined types that can group several variables (see
-:ref:`structs` in types section).
+Les structures sont des types personnalisés qui peuvent regrouper plusieurs variables (voir
+:ref:`structs` dans la section sur les types).
 
 .. code-block:: solidity
 
@@ -174,7 +173,7 @@ Structs are custom defined types that can group several variables (see
     pragma solidity >=0.4.0 <0.9.0;
 
     contract Ballot {
-        struct Voter { // Struct
+        struct Voter { // Structure
             uint weight;
             bool voted;
             address delegate;
@@ -184,11 +183,11 @@ Structs are custom defined types that can group several variables (see
 
 .. _structure-enum-types:
 
-Enum Types
+Types d'Enum
 ==========
 
-Enums can be used to create custom types with a finite set of 'constant values' (see
-:ref:`enums` in types section).
+Les Enums peuvent être utilisées pour créer des types personnalisés avec un ensemble fini de "valeurs constantes" (voir
+:ref:`enums` dans la section sur les types).
 
 .. code-block:: solidity
 

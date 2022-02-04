@@ -1,149 +1,144 @@
 #########
-Resources
+Ressources
 #########
 
-General Resources
+Ressources générales
 =================
 
 * `Ethereum.org Developer Portal <https://ethereum.org/en/developers/>`_
 * `Ethereum StackExchange <https://ethereum.stackexchange.com/>`_
 * `Solidity Portal <https://soliditylang.org/>`_
 * `Solidity Changelog <https://github.com/ethereum/solidity/blob/develop/Changelog.md>`_
-* `Solidity Source Code on GitHub <https://github.com/ethereum/solidity/>`_
-* `Solidity Language Users Chat <https://matrix.to/#/#ethereum_solidity:gitter.im>`_
-* `Solidity Compiler Developers Chat <https://matrix.to/#/#ethereum_solidity-dev:gitter.im>`_
+* `Solidity Source Code sur GitHub <https://github.com/ethereum/solidity/>`_
+* `Solidity Chat des utilisateurs de langues <https://matrix.to/#/#ethereum_solidity:gitter.im>`_
+* `Solidity Chat des développeurs de compilateurs <https://matrix.to/#/#ethereum_solidity-dev:gitter.im>`_
 * `Awesome Solidity <https://github.com/bkrem/awesome-solidity>`_
-* `Solidity by Example <https://solidity-by-example.org/>`_
-* `Solidity Documentation Community Translations <https://github.com/solidity-docs>`_
+* `Solidity par Example <https://solidity-by-example.org/>`_
 
-Integrated (Ethereum) Development Environments
+
+Environnements de développement intégrés (Ethereum)
 ==============================================
 
     * `Brownie <https://eth-brownie.readthedocs.io/en/stable/>`_
-        Python-based development and testing framework for smart contracts targeting the Ethereum Virtual Machine.
+        Cadre de développement et de test basé sur Python pour les contrats intelligents ciblant la machine virtuelle Ethereum.
 
     * `Dapp <https://dapp.tools/>`_
-        Tool for building, testing and deploying smart contracts from the command line.
+        Outil pour construire, tester et déployer des contrats intelligents à partir de la ligne de commande.
 
     * `Embark <https://framework.embarklabs.io/>`_
-        Developer platform for building and deploying decentralized applications.
-
-    * `Foundry <https://github.com/gakonst/foundry>`_
-        Fast, portable and modular toolkit for Ethereum application development written in Rust.
+        Plateforme de développeurs pour la création et le déploiement d'applications décentralisées.
 
     * `Hardhat <https://hardhat.org/>`_
-        Ethereum development environment with local Ethereum network, debugging features and plugin ecosystem.
+        Environnement de développement Ethereum avec réseau Ethereum local, fonctions de débogage et écosystème de plugins.
 
     * `Remix <https://remix.ethereum.org/>`_
-        Browser-based IDE with integrated compiler and Solidity runtime environment without server-side components.
+        IDE basé sur un navigateur avec compilateur intégré et environnement d'exécution Solidity sans composants côté serveur.
+
+    * `Scaffold-ETH <https://github.com/austintgriffith/scaffold-eth>`_
+        Pile de développement Ethereum axée sur des itérations rapides du produit.
 
     * `Truffle <https://www.trufflesuite.com/truffle>`_
-        Ethereum development framework.
+        Cadre de développement Ethereum.
 
-Editor Integrations
+Intégrations de l'éditeur
 ===================
 
 * Atom
 
     * `Etheratom <https://github.com/0mkara/etheratom>`_
-        Plugin for the Atom editor that features syntax highlighting, compilation and a runtime environment (Backend node & VM compatible).
+        Plugin pour l'éditeur Atom qui propose la coloration syntaxique, la compilation et un environnement
+        d'exécution (compatible avec les nœuds Backend et VM).
 
     * `Atom Solidity Linter <https://atom.io/packages/linter-solidity>`_
-        Plugin for the Atom editor that provides Solidity linting.
+        Plugin pour l'éditeur Atom qui fournit le linting Solidity.
 
     * `Atom Solium Linter <https://atom.io/packages/linter-solium>`_
-        Configurable Solidity linter for Atom using Solium (now Ethlint) as a base.
+        Linter Solidity configurable pour Atom utilisant Solium (maintenant Ethlint) comme base.
 
 * Emacs
 
     * `Emacs Solidity <https://github.com/ethereum/emacs-solidity/>`_
-        Plugin for the Emacs editor providing syntax highlighting and compilation error reporting.
+        Plugin pour l'éditeur Emacs fournissant la coloration syntaxique et le signalement des erreurs de compilation.
 
 * IntelliJ
 
     * `IntelliJ IDEA plugin <https://plugins.jetbrains.com/plugin/9475-intellij-solidity>`_
-        Solidity plugin for IntelliJ IDEA (and all other JetBrains IDEs)
+        Plugin Solidity pour IntelliJ IDEA (et tous les autres IDE de JetBrains)
 
 * Sublime
 
     * `Package for SublimeText - Solidity language syntax <https://packagecontrol.io/packages/Ethereum/>`_
-        Solidity syntax highlighting for SublimeText editor.
+        Coloration syntaxique Solidity pour l'éditeur SublimeText.
 
 * Vim
 
     * `Vim Solidity <https://github.com/tomlion/vim-solidity/>`_
-        Plugin for the Vim editor providing syntax highlighting.
+        Plugin pour l'éditeur Vim fournissant une coloration syntaxique.
 
     * `Vim Syntastic <https://github.com/vim-syntastic/syntastic>`_
-        Plugin for the Vim editor providing compile checking.
+        Plugin pour l'éditeur Vim permettant de vérifier la compilation.
 
 * Visual Studio Code
 
     * `Visual Studio Code extension <https://juan.blanco.ws/solidity-contracts-in-visual-studio-code/>`_
-        Solidity plugin for Microsoft Visual Studio Code that includes syntax highlighting and the Solidity compiler.
+        Plugin Solidity pour Microsoft Visual Studio Code qui comprend la coloration syntaxique et le compilateur Solidity.
 
-Solidity Tools
+Outils Solidity
 ==============
 
 * `ABI to Solidity interface converter <https://gist.github.com/chriseth/8f533d133fa0c15b0d6eaf3ec502c82b>`_
-    A script for generating contract interfaces from the ABI of a smart contract.
+    Un script pour générer des interfaces de contrat à partir de l'ABI d'un contrat intelligent.
 
 * `abi-to-sol <https://github.com/gnidan/abi-to-sol>`_
-    Tool to generate Solidity interface source from a given ABI JSON.
+    Outil permettant de générer une source d'interface Solidity à partir d'un JSON ABI donné.
 
 * `Doxity <https://github.com/DigixGlobal/doxity>`_
-    Documentation Generator for Solidity.
+    Générateur de documentation pour Solidity.
 
 * `Ethlint <https://github.com/duaraghav8/Ethlint>`_
-    Linter to identify and fix style and security issues in Solidity.
+    Linter pour identifier et corriger les problèmes de style et de sécurité dans Solidity.
 
 * `evmdis <https://github.com/Arachnid/evmdis>`_
-    EVM Disassembler that performs static analysis on the bytecode to provide a higher level of abstraction than raw EVM operations.
+    EVM Disassembler qui effectue une analyse statique sur le bytecode pour fournir un niveau d'abstraction plus élevé que les opérations EVM brutes.
 
 * `EVM Lab <https://github.com/ethereum/evmlab/>`_
-    Rich tool package to interact with the EVM. Includes a VM, Etherchain API, and a trace-viewer with gas cost display.
+    Ensemble d'outils riches pour interagir avec l'EVM. Comprend une VM, une API Etherchain et un visualiseur de traces avec affichage du coût du gaz.
 
 * `hevm <https://github.com/dapphub/dapptools/tree/master/src/hevm#readme>`_
-    EVM debugger and symbolic execution engine.
+    Débogueur EVM et moteur d'exécution symbolique.
 
 * `leafleth <https://github.com/clemlak/leafleth>`_
-    A documentation generator for Solidity smart-contracts.
+    Un générateur de documentation pour les smart-contracts de Solidity.
 
 * `PIET <https://piet.slock.it/>`_
-    A tool to develop, audit and use Solidity smart contracts through a simple graphical interface.
-
-* `Scaffold-ETH <https://github.com/scaffold-eth/scaffold-eth>`_
-    Forkable Ethereum development stack focused on fast product iterations.
+    Un outil pour développer, auditer et utiliser les contrats intelligents Solidity à travers une interface graphique simple.
 
 * `sol2uml <https://www.npmjs.com/package/sol2uml>`_
-    Unified Modeling Language (UML) class diagram generator for Solidity contracts.
+    Générateur de diagrammes de classe en langage de modélisation unifié (UML) pour les contrats Solidity.
 
 * `solc-select <https://github.com/crytic/solc-select>`_
     A script to quickly switch between Solidity compiler versions.
 
 * `Solidity prettier plugin <https://github.com/prettier-solidity/prettier-plugin-solidity>`_
-    A Prettier Plugin for Solidity.
+    Un plugin Prettier pour Solidity.
 
 * `Solidity REPL <https://github.com/raineorshine/solidity-repl>`_
-    Try Solidity instantly with a command-line Solidity console.
+    Essayez Solidity instantanément avec une console Solidity en ligne de commande.
 
 * `solgraph <https://github.com/raineorshine/solgraph>`_
-    Visualize Solidity control flow and highlight potential security vulnerabilities.
+    Visualisez le flux de contrôle Solidity et mettez en évidence les vulnérabilités potentielles en matière de sécurité.
 
 * `Solhint <https://github.com/protofire/solhint>`_
-    Solidity linter that provides security, style guide and best practice rules for smart contract validation.
-
-* `Sourcify <https://sourcify.dev/>`_
-    Decentralized automated contract verification service and public repository of contract metadata.
+    Linter Solidity qui fournit la sécurité, un guide de style et des règles de bonnes pratiques pour la validation des contrats intelligents.
 
 * `Sūrya <https://github.com/ConsenSys/surya/>`_
-    Utility tool for smart contract systems, offering a number of visual outputs and information about the contracts' structure. Also supports querying the function call graph.
+    Outil utilitaire pour les systèmes de contrats intelligents, offrant un certain nombre de sorties visuelles et des informations sur la structure des contrats.  Il permet également d'interroger le graphe des appels de fonction.
 
 * `Universal Mutator <https://github.com/agroce/universalmutator>`_
-    A tool for mutation generation, with configurable rules and support for Solidity and Vyper.
+    Un outil pour la génération de mutations, avec des règles configurables et le support de Solidity et Vyper.
 
-Third-Party Solidity Parsers and Grammars
+Analyseurs et grammaires Solidity tiers
 =========================================
 
 * `Solidity Parser for JavaScript <https://github.com/solidity-parser/parser>`_
-    A Solidity parser for JS built on top of a robust ANTLR4 grammar.
+    Un analyseur Solidity pour JS construit à partir d'une grammaire ANTLR4 robuste.

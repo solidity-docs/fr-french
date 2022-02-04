@@ -1,86 +1,85 @@
 ####################
-Solidity Brand Guide
+Guide de la marque Solidity
 ####################
 
-This brand guide features information on Solidity's brand policy and
-logo usage guidelines.
+Ce guide de la marque contient des informations sur la politique de la marque Solidity et les
+directives d'utilisation du logo.
 
-The Solidity Brand
+La marque Solidity
 ==================
 
-The Solidity programming language is an open-source, community project
-governed by a core team. The core team is sponsored by the `Ethereum
+Le langage de programmation Solidity est un projet communautaire à code source ouvert
+dirigé par une équipe centrale. L'équipe centrale est parrainée par la `Ethereum
 Foundation <https://ethereum.foundation/>`_.
 
-This document aims to provide information about how to best use the
-Solidity brand name and logo.
+Ce document a pour objectif de fournir des informations sur la meilleure façon d'utiliser la
+marque et le logo Solidity.
 
-We encourage you to read this document carefully before using the
-brand name or the logo. Your cooperation is highly appreciated!
+Nous vous encourageons à lire attentivement ce document avant d'utiliser la
+marque ou le logo. Votre coopération est très appréciée !
 
-Solidity Brand Name
+Nom de marque Solidity
 ===================
 
-"Solidity" should be used to refer to the Solidity programming language
-solely.
+Le terme "Solidity" doit être utilisé pour faire référence au langage de programmation Solidity
+uniquement.
 
-Please do not use "Solidity":
+Veuillez ne pas utiliser "Solidity" :
 
-- To refer to any other programming language.
+- Pour faire référence à tout autre langage de programmation.
 
-- In a way that is misleading or may imply association of unrelated
-  modules, tools, documentation, or other resources with the Solidity
-  programming language.
+- D'une manière qui pourrait induire en erreur ou impliquer l'association de modules,
+  d'outils, de documentation ou d'autres ressources sans rapport avec le langage Solidity.
 
-- In ways that confuse the community as to whether the Solidity
-  programming language is open-source and free to use.
+- D'une manière qui sème la confusion dans la communauté quant à savoir si le langage de programmation Solidity
+  est open-source et libre d'utilisation.
 
-Solidity Logo License
+Licence du logo Solidity
 =====================
 
 .. image:: https://i.creativecommons.org/l/by/4.0/88x31.png
   :width: 88
-  :alt: Creative Commons License
+  :alt: Licence Creative Commons
 
-The Solidity logo is distributed and licensed under a `Creative Commons
+Le logo Solidity est distribué et mis sous licence `Creative Commons'.
 Attribution 4.0 International License <https://creativecommons.org/licenses/by/4.0/>`_.
 
-This is the most permissive Creative Commons license and allows reuse
-and modifications for any purpose.
+Il s'agit de la licence Creative Commons la plus permissive, qui autorise la réutilisation et les modifications à toutes fins.
+et les modifications dans n'importe quel but.
 
-You are free to:
+Vous êtes libre de :
 
-- **Share** — Copy and redistribute the material in any medium or format.
+- **Partager** - Copier et redistribuer le matériel sur tout support ou format.
 
-- **Adapt** — Remix, transform, and build upon the material for any
-  purpose, even commercially.
+- **Adapter** - Remixer, transformer et construire à partir de ce matériel dans n'importe quel but, même commercial.
+  dans n'importe quel but, même commercial.
 
-Under the following terms:
+Aux conditions suivantes :
 
-- **Attribution** — You must give appropriate credit, provide a link to
-  the license, and indicate if changes were made. You may do so in any
-  reasonable manner, but not in any way that suggests that the Solidity
-  core team endorses you or your use.
+- **Attribution** - Vous devez donner le crédit approprié, fournir un lien à la
+  la licence, et indiquer si des modifications ont été apportées. Vous pouvez le faire de toute
+  manière raisonnable, mais pas d'une manière qui suggère que l'équipe centrale de Solidity
+  vous approuve ou approuve votre utilisation.
 
-When using the Solidity logo, please respect the Solidity logo guidelines.
+Lorsque vous utilisez le logo Solidity, veuillez respecter les directives relatives au logo Solidity.
 
-Solidity Logo Guidelines
+Directives relatives au logo Solidity
 ========================
 
 .. image:: logo.svg
   :width: 256
 
-*(Right click on the logo to download it.)*
+*(Cliquez avec le bouton droit de la souris sur le logo pour le télécharger.)*
 
-Please do not:
+Veuillez ne pas :
 
-- Change the ratio of the logo (do not stretch it or cut it).
+- Modifier le ratio du logo (ne pas l'étirer ou le couper).
 
-- Change the colors of the logo, unless it is absolutely necessary.
+- Modifier les couleurs du logo, sauf si cela est absolument nécessaire.
 
-Credits
+Crédits
 =======
 
-This document was, in parts, derived from the `Python Software
-Foundation Trademark Usage Policy <https://www.python.org/psf/trademarks/>`_
-and the `Rust Media Guide <https://www.rust-lang.org/policies/media-guide>`_.
+Ce document a été, en partie, dérivé de la `Python Software
+Foundation sur l'utilisation des marques déposées <https://www.python.org/psf/trademarks/>`_
+et du `Guide des médias de Rust <https://www.rust-lang.org/policies/media-guide>`_.

@@ -1,95 +1,93 @@
 .. _metadata:
 
 #################
-Contract Metadata
+Métadonnées du contrat
 #################
 
 .. index:: metadata, contract verification
 
-The Solidity compiler automatically generates a JSON file, the contract
-metadata, that contains information about the compiled contract. You can use
-this file to query the compiler version, the sources used, the ABI and NatSpec
-documentation to more safely interact with the contract and verify its source
-code.
+Le compilateur Solidity génère automatiquement un fichier JSON, le contrat
+qui contient des informations sur le contrat compilé. Vous pouvez utiliser
+ce fichier pour interroger la version du compilateur, les sources utilisées, l'ABI et la documentation NatSpec,
+pour interagir de manière plus sûre avec le contrat et vérifier son code source.
 
-The compiler appends by default the IPFS hash of the metadata file to the end
-of the bytecode (for details, see below) of each contract, so that you can
-retrieve the file in an authenticated way without having to resort to a
-centralized data provider. The other available options are the Swarm hash and
-not appending the metadata hash to the bytecode.  These can be configured via
-the :ref:`Standard JSON Interface<compiler-api>`.
+Le compilateur ajoute par défaut le hash IPFS du fichier de métadonnées à la fin
+du bytecode (pour plus de détails, voir ci-dessous) de chaque contrat, de sorte que vous pouvez
+le fichier de manière authentifiée sans avoir à recourir à un
+fournisseur de données centralisé. Les autres options disponibles sont le hachage Swarm et
+ne pas ajouter le hachage des métadonnées au bytecode. Elles peuvent être configurées via
+l'interface :ref:`Standard JSON Interface<compiler-api>`.
 
-You have to publish the metadata file to IPFS, Swarm, or another service so
-that others can access it. You create the file by using the ``solc --metadata``
-command that generates a file called ``ContractName_meta.json``. It contains
-IPFS and Swarm references to the source code, so you have to upload all source
-files and the metadata file.
+Vous devez publier le fichier de métadonnées sur IPFS, Swarm, ou un autre service pour que
+que d'autres puissent y accéder. Vous créez le fichier en utilisant la commande ``solc --metadata``.
+qui génère un fichier appelé ``ContractName_meta.json``. Ce fichier contient
+les références IPFS et Swarm au code source et le fichier de métadonnées.
 
-The metadata file has the following format. The example below is presented in a
-human-readable way. Properly formatted metadata should use quotes correctly,
-reduce whitespace to a minimum and sort the keys of all objects to arrive at a
-unique formatting. Comments are not permitted and used here only for
-explanatory purposes.
+Le fichier de métadonnées a le format suivant. L'exemple ci-dessous est présenté de
+manière lisible par l'homme. Des métadonnées correctement formatées doivent utiliser correctement les guillemets,
+réduire les espaces blancs au minimum et trier les clés de tous les objets pour arriver à un
+formatage unique. Les commentaires ne sont pas autorisés et ne sont utilisés ici qu'à
+à des fins explicatives.
 
 .. code-block:: javascript
 
     {
-      // Required: The version of the metadata format
+      // Obligatoire : La version du format de métadonnées
       "version": "1",
-      // Required: Source code language, basically selects a "sub-version"
-      // of the specification
+      // Obligatoire : Langue du code source, sélectionne essentiellement une "sous-version"
+      // de la spécification
       "language": "Solidity",
-      // Required: Details about the compiler, contents are specific
-      // to the language.
+      // Obligatoire : Détails sur le compilateur, le contenu est spécifique
+      // au langage.
       "compiler": {
-        // Required for Solidity: Version of the compiler
+        // Requis pour Solidity : Version du compilateur
         "version": "0.4.6+commit.2dabbdf0.Emscripten.clang",
-        // Optional: Hash of the compiler binary which produced this output
+        // Facultatif : hachage du binaire du compilateur qui a produit cette sortie.
         "keccak256": "0x123..."
       },
-      // Required: Compilation source files/source units, keys are file names
+      // Requis : Fichiers source de compilation/unités de source, les clés sont des noms de fichiers.
       "sources":
       {
         "myFile.sol": {
-          // Required: keccak256 hash of the source file
+          // Requis : keccak256 hash du fichier source
           "keccak256": "0x123...",
-          // Required (unless "content" is used, see below): Sorted URL(s)
-          // to the source file, protocol is more or less arbitrary, but a
-          // Swarm URL is recommended
+          // Obligatoire (sauf si "content" est utilisé, voir ci-dessous) : URL(s) triée(s)
+          // vers le fichier source, le protocole est plus ou moins arbitraire, mais une
+          // une URL Swarm est recommandée
           "urls": [ "bzzr://56ab..." ],
-          // Optional: SPDX license identifier as given in the source file
+          // Facultatif : Identifiant de la licence SPDX tel qu'indiqué dans le fichier source.
           "license": "MIT"
         },
         "destructible": {
-          // Required: keccak256 hash of the source file
+          // Requis : keccak256 hash du fichier source
           "keccak256": "0x234...",
-          // Required (unless "url" is used): literal contents of the source file
+          // Obligatoire (sauf si "url" est utilisé) : contenu littéral du fichier source.
           "content": "contract destructible is owned { function destroy() { if (msg.sender == owner) selfdestruct(owner); } }"
         }
       },
-      // Required: Compiler settings
+      // Requis : Paramètres du compilateur
       "settings":
       {
-        // Required for Solidity: Sorted list of remappings
+        // Requis pour Solidity : Liste triée de réaffectations
         "remappings": [ ":g=/dir" ],
-        // Optional: Optimizer settings. The fields "enabled" and "runs" are deprecated
-        // and are only given for backwards-compatibility.
+        // Facultatif : Paramètres de l'optimiseur. Les champs "enabled" et "runs" sont obsolètes
+        // et ne sont fournis que pour des raisons de compatibilité ascendante.
         "optimizer": {
           "enabled": true,
           "runs": 500,
           "details": {
-            // peephole defaults to "true"
+            // peephole a la valeur par défaut "true".
             "peephole": true,
-            // inliner defaults to "true"
+            // la valeur par défaut de l'inliner est "true".
             "inliner": true,
-            // jumpdestRemover defaults to "true"
+            // jumpdestRemover a la valeur par défaut "true".
             "jumpdestRemover": true,
             "orderLiterals": false,
             "deduplicate": false,
             "cse": false,
             "constantOptimizer": false,
             "yul": true,
-            // Optional: Only present if "yul" is "true"
+            // Facultatif : Présent uniquement si "yul" est "true".
             "yulDetails": {
               "stackAllocation": false,
               "optimizerSteps": "dhfoDgvulfnTUtnIf..."
@@ -97,115 +95,114 @@ explanatory purposes.
           }
         },
         "metadata": {
-          // Reflects the setting used in the input json, defaults to false
+          // Reflète le paramètre utilisé dans le json d'entrée, la valeur par défaut est false.
           "useLiteralContent": true,
-          // Reflects the setting used in the input json, defaults to "ipfs"
+          // Reflète le paramètre utilisé dans le json d'entrée, la valeur par défaut est "ipfs".
           "bytecodeHash": "ipfs"
         },
-        // Required for Solidity: File and name of the contract or library this
-        // metadata is created for.
+        // Requis pour Solidity : Fichier et nom du contrat ou de la bibliothèque pour lesquels ces
+        // métadonnées est créée pour.
         "compilationTarget": {
           "myFile.sol": "MyContract"
         },
-        // Required for Solidity: Addresses for libraries used
+        // Requis pour Solidity : Adresses des bibliothèques utilisées
         "libraries": {
           "MyLib": "0x123123..."
         }
       },
-      // Required: Generated information about the contract.
+      // Requis : Informations générées sur le contrat.
       "output":
       {
-        // Required: ABI definition of the contract
+        // Requis : Définition ABI du contrat
         "abi": [/* ... */],
-        // Required: NatSpec user documentation of the contract
+        // Requis : Documentation du contrat par l'utilisateur de NatSpec
         "userdoc": [/* ... */],
-        // Required: NatSpec developer documentation of the contract
+        // Requis : Documentation du contrat par le développeur NatSpec
         "devdoc": [/* ... */]
       }
     }
 
 .. warning::
-  Since the bytecode of the resulting contract contains the metadata hash by default, any
-  change to the metadata might result in a change of the bytecode. This includes
-  changes to a filename or path, and since the metadata includes a hash of all the
-  sources used, a single whitespace change results in different metadata, and
-  different bytecode.
+  Comme le bytecode du contrat résultant contient le hachage des métadonnées par défaut, toute
+  modification des métadonnées peut entraîner une modification du bytecode. Cela inclut
+  changement de nom de fichier ou de chemin, et puisque les métadonnées comprennent un hachage de toutes les
+  sources utilisées, un simple changement d'espace résulte en des métadonnées différentes, et
+  un bytecode différent.
 
 .. note::
-    The ABI definition above has no fixed order. It can change with compiler versions.
-    Starting from Solidity version 0.5.12, though, the array maintains a certain
-    order.
+    La définition ABI ci-dessus n'a pas d'ordre fixe. Il peut changer avec les versions du compilateur.
+    Cependant, à partir de la version 0.5.12 de Solidity, le tableau maintient un certain ordre.
+    ordre.
 
 .. _encoding-of-the-metadata-hash-in-the-bytecode:
 
-Encoding of the Metadata Hash in the Bytecode
+Encodage du hachage des métadonnées dans le bytecode
 =============================================
 
-Because we might support other ways to retrieve the metadata file in the future,
-the mapping ``{"ipfs": <IPFS hash>, "solc": <compiler version>}`` is stored
-`CBOR <https://tools.ietf.org/html/rfc7049>`_-encoded. Since the mapping might
-contain more keys (see below) and the beginning of that
-encoding is not easy to find, its length is added in a two-byte big-endian
-encoding. The current version of the Solidity compiler usually adds the following
-to the end of the deployed bytecode
+Parce que nous pourrions supporter d'autres façons de récupérer le fichier de métadonnées à l'avenir,
+le mappage ``{"ipfs" : <Hachage IPFS>, "solc" : <version du compilateur>}`` est stockée
+`CBOR <https://tools.ietf.org/html/rfc7049>`_-encodé. Puisque la cartographie peut
+contenir plus de clés (voir ci-dessous) et que le début de cet
+encodage n'est pas facile à trouver, sa longueur est ajoutée
+dans un encodage big-endian de deux octets. La version actuelle du compilateur Solidity ajoute généralement l'élément suivant
+à la fin du bytecode déployé.
 
 .. code-block:: text
 
     0xa2
-    0x64 'i' 'p' 'f' 's' 0x58 0x22 <34 bytes IPFS hash>
-    0x64 's' 'o' 'l' 'c' 0x43 <3 byte version encoding>
+    0x64 'i' 'p' 'f' 's' 0x58 0x22 <34 octets hachage IPFS>
+    0x64 's' 'o' 'l' 'c' 0x43 <Codage de la version sur 3 octets>
     0x00 0x33
 
-So in order to retrieve the data, the end of the deployed bytecode can be checked
-to match that pattern and use the IPFS hash to retrieve the file.
+Ainsi, afin de récupérer les données, la fin du bytecode déployé peut être vérifiée,
+pour correspondre à ce modèle et utiliser le hachage IPFS pour récupérer le fichier.
 
-Whereas release builds of solc use a 3 byte encoding of the version as shown
-above (one byte each for major, minor and patch version number), prerelease builds
-will instead use a complete version string including commit hash and build date.
-
-.. note::
-  The CBOR mapping can also contain other keys, so it is better to fully
-  decode the data instead of relying on it starting with ``0xa264``.
-  For example, if any experimental features that affect code generation
-  are used, the mapping will also contain ``"experimental": true``.
+Alors que les versions de solc utilisent un encodage de 3 octets de la version comme indiqué
+ci-dessus (un octet pour chaque numéro de version majeure, mineure et de patch), les versions préversées
+utiliseront à la place une chaîne de version complète incluant le hachage du commit et la date de construction.
 
 .. note::
-  The compiler currently uses the IPFS hash of the metadata by default, but
-  it may also use the bzzr1 hash or some other hash in the future, so do
-  not rely on this sequence to start with ``0xa2 0x64 'i' 'p' 'f' 's'``.  We
-  might also add additional data to this CBOR structure, so the best option
-  is to use a proper CBOR parser.
+  Le mappage CBOR peut également contenir d'autres clés, il est donc préférable de
+  décoder complètement les données plutôt que de se fier à ce qu'elles commencent par ``0xa264``.
+  Par exemple, si des fonctionnalités expérimentales qui affectent la génération de code
+  sont utilisées, le mappage contiendra également ``"experimental" : true``.
+
+.. note::
+  Le compilateur utilise actuellement le hachage IPFS des métadonnées par défaut,
+  mais il peut aussi utiliser le hachage bzzr1 ou un autre hachage à l'avenir, donc ne vous
+  ne comptez pas sur cette séquence pour commencer avec ``0xa2 0x64 'i' 'p' 'f' 's'``.  Nous
+  ajouterons peut-être des données supplémentaires à cette structure CBOR.
 
 
-Usage for Automatic Interface Generation and NatSpec
+Utilisation pour la génération automatique d'interface et NatSpec
 ====================================================
 
-The metadata is used in the following way: A component that wants to interact
-with a contract (e.g. Mist or any wallet) retrieves the code of the contract,
-from that the IPFS/Swarm hash of a file which is then retrieved.  That file
-is JSON-decoded into a structure like above.
+Les métadonnées sont utilisées de la manière suivante : Un composant qui veut interagir
+avec un contrat (par exemple Mist ou tout autre porte-monnaie) récupère le code du contrat,
+à partir de là, le hachage IPFS/Swarm d'un fichier qui est ensuite récupéré. Ce fichier
+est décodé en JSON dans une structure comme ci-dessus.
 
-The component can then use the ABI to automatically generate a rudimentary
-user interface for the contract.
+Le composant peut alors utiliser l'ABI pour générer automatiquement une
+interface utilisateur rudimentaire pour le contrat.
 
-Furthermore, the wallet can use the NatSpec user documentation to display a confirmation message to the user
-whenever they interact with the contract, together with requesting
-authorization for the transaction signature.
+En outre, le portefeuille peut utiliser la documentation utilisateur NatSpec pour afficher un message de confirmation à l'utilisateur
+chaque fois qu'il interagit avec le contrat, ainsi qu'une demande d'autorisation
+pour la signature de la transaction.
 
-For additional information, read :doc:`Ethereum Natural Language Specification (NatSpec) format <natspec-format>`.
+Pour plus d'informations, lisez :doc:`Format de la spécification en langage naturel d'Ethereum (NatSpec) <natspec-format>`.
 
-Usage for Source Code Verification
+Utilisation pour la vérification du code source
 ==================================
 
-In order to verify the compilation, sources can be retrieved from IPFS/Swarm
-via the link in the metadata file.
-The compiler of the correct version (which is checked to be part of the "official" compilers)
-is invoked on that input with the specified settings. The resulting
-bytecode is compared to the data of the creation transaction or ``CREATE`` opcode data.
-This automatically verifies the metadata since its hash is part of the bytecode.
-Excess data corresponds to the constructor input data, which should be decoded
-according to the interface and presented to the user.
+Afin de vérifier la compilation, les sources peuvent être récupérées sur IPFS/Swarm
+via le lien dans le fichier de métadonnées.
+Le compilateur de la version correcte (qui est vérifié pour faire partie des compilateurs "officiels")
+est invoqué sur cette entrée avec les paramètres spécifiés. Le
+bytecode résultant est comparé aux données de la transaction de création ou aux données de l'opcode ``CREATE``.
+Cela vérifie automatiquement les métadonnées puisque leur hachage fait partie du bytecode.
+Les données en excès correspondent aux données d'entrée du constructeur, qui doivent être décodées
+selon l'interface et présentées à l'utilisateur.
 
-In the repository `sourcify <https://github.com/ethereum/sourcify>`_
-(`npm package <https://www.npmjs.com/package/source-verify>`_) you can see
-example code that shows how to use this feature.
+Dans le référentiel `sourcify <https://github.com/ethereum/sourcify>`_
+(`npm package <https://www.npmjs.com/package/source-verify>`_) vous pouvez voir
+un exemple de code qui montre comment utiliser cette fonctionnalité.

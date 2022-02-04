@@ -1,297 +1,299 @@
 ********************************
-Solidity v0.5.0 Breaking Changes
+Solidity v0.5.0 Changements de rupture
 ********************************
 
-This section highlights the main breaking changes introduced in Solidity
-version 0.5.0, along with the reasoning behind the changes and how to update
-affected code.
-For the full list check
-`the release changelog <https://github.com/ethereum/solidity/releases/tag/v0.5.0>`_.
+Cette section met en évidence les principaux changements
+introduits dans la version 0.5.0 de Solidity, ainsi que
+les raisons de ces changements et la façon de mettre à jour le code concerné.
+Pour la liste complète, consultez
+`le journal des modifications de la version <https://github.com/ethereum/solidity/releases/tag/v0.5.0>`_.
 
 .. note::
-   Contracts compiled with Solidity v0.5.0 can still interface with contracts
-   and even libraries compiled with older versions without recompiling or
-   redeploying them.  Changing the interfaces to include data locations and
-   visibility and mutability specifiers suffices. See the
-   :ref:`Interoperability With Older Contracts <interoperability>` section below.
+   Les contrats compilés avec Solidity v0.5.0 peuvent toujours s'interfacer
+   avec des contrats et même des bibliothèques compilés avec des versions plus
+   anciennes sans avoir à les recompiler ou à les redéployer. Il suffit de modifier
+   les interfaces pour inclure les emplacements des données et les spécificateurs
+   de visibilité et de mutabilité. Voir la section
+   :ref:`Interopérabilité avec les contrats plus anciens <interoperability>` en dessous.
 
-Semantic Only Changes
+Changements uniquement sémantiques
 =====================
 
-This section lists the changes that are semantic-only, thus potentially
-hiding new and different behavior in existing code.
+Cette section énumère les changements qui sont uniquement sémantiques, donc potentiellement
+cacher un comportement nouveau et différent dans le code existant.
 
-* Signed right shift now uses proper arithmetic shift, i.e. rounding towards
-  negative infinity, instead of rounding towards zero.  Signed and unsigned
-  shift will have dedicated opcodes in Constantinople, and are emulated by
-  Solidity for the moment.
+* Le décalage signé vers la droite utilise maintenant le décalage arithmétique
+approprié, c'est-à-dire qu'il arrondit vers l'infini négatif au lieu d'arrondir
+vers zéro. l'infini négatif, au lieu d'arrondir vers zéro. Les décalages signés
+et non signés auront des opcodes dédiés dans Constantinople, et sont émulés par
+Solidity pour le moment. Solidity pour le moment.
 
-* The ``continue`` statement in a ``do...while`` loop now jumps to the
-  condition, which is the common behavior in such cases. It used to jump to the
-  loop body. Thus, if the condition is false, the loop terminates.
+* La déclaration ``continue`` dans une boucle ``do...while`` saute maintenant au
+  comportement commun dans de tels cas. Auparavant, il sautait vers le corps de
+  la boucle. Ainsi, si la condition est fausse, la boucle se termine.
 
-* The functions ``.call()``, ``.delegatecall()`` and ``.staticcall()`` do not
-  pad anymore when given a single ``bytes`` parameter.
+* Les fonctions ``.call()``, ``.delegatecall()`` et ``.staticcall()`` ne
+  tamponnent plus lorsqu'on leur donne un seul paramètre ``bytes``.
 
-* Pure and view functions are now called using the opcode ``STATICCALL``
-  instead of ``CALL`` if the EVM version is Byzantium or later. This
-  disallows state changes on the EVM level.
+* Les fonctions Pure et View sont désormais appelées en utilisant l'opcode ``STATICCALL``
+  au lieu de ``CALL`` si la version de l'EVM est Byzantium ou ultérieure. Cela
+  interdit les changements d'état au niveau de l'EVM.
 
-* The ABI encoder now properly pads byte arrays and strings from calldata
-  (``msg.data`` and external function parameters) when used in external
-  function calls and in ``abi.encode``. For unpadded encoding, use
-  ``abi.encodePacked``.
+* L'encodeur ABI pallie désormais correctement les tableaux d'octets et
+  les chaînes de caractères des données d'appel (``msg.data`` et paramètres de fonctions externes)
+  lorsqu'ils sont utilisés dans des appels externes et dans ``abi.encode``.
+  Pour un encodage non codé, utilisez ``abi.encodePacked``.
 
-* The ABI decoder reverts in the beginning of functions and in
-  ``abi.decode()`` if passed calldata is too short or points out of bounds.
-  Note that dirty higher order bits are still simply ignored.
+* Le décodeur ABI revient en arrière au début des fonctions et dans
+  ``abi.decode()`` si les données d'appel passées sont trop courtes ou pointent hors des limites.
+  Notez que les bits d'ordre supérieur sales sont toujours simplement ignorés.
 
-* Forward all available gas with external function calls starting from
+* Transférer tout le gaz disponible avec des appels de fonctions externes à partir de
   Tangerine Whistle.
 
-Semantic and Syntactic Changes
+Changements sémantiques et syntaxiques
 ==============================
 
-This section highlights changes that affect syntax and semantics.
+Cette section met en évidence les changements qui affectent la syntaxe et la sémantique.
 
-* The functions ``.call()``, ``.delegatecall()``, ``staticcall()``,
-  ``keccak256()``, ``sha256()`` and ``ripemd160()`` now accept only a single
-  ``bytes`` argument. Moreover, the argument is not padded. This was changed to
-  make more explicit and clear how the arguments are concatenated. Change every
-  ``.call()`` (and family) to a ``.call("")`` and every ``.call(signature, a,
-  b, c)`` to use ``.call(abi.encodeWithSignature(signature, a, b, c))`` (the
-  last one only works for value types).  Change every ``keccak256(a, b, c)`` to
-  ``keccak256(abi.encodePacked(a, b, c))``. Even though it is not a breaking
-  change, it is suggested that developers change
-  ``x.call(bytes4(keccak256("f(uint256)")), a, b)`` to
+* Les fonctions ``.call()``, ``.delegatecall()``, ``staticcall()``,
+  ``keccak256()``, ``sha256()`` et ``ripemd160()`` n'acceptent plus qu'un seul argument ``bytes``.
+  unique, ``bytes``. De plus, l'argument n'est pas paddé. Ceci a été changé pour
+  rendre plus explicite et clair la façon dont les arguments sont concaténés. Changez chaque
+  ``.call()`` (et famille) en un ``.call("")`` et chaque ``.call(signature, a,
+  b, c)`` en utilisant ``.call(abi.encodeWithSignature(signature, a, b, c))`` (le dernier ne fonctionne que pour les types
+  dernière ne fonctionne que pour les types de valeurs).  Changez chaque ``keccak256(a, b, c)`` en
+  ``keccak256(abi.encodePacked(a, b, c))``. Même s'il ne s'agit pas d'une
+  il est suggéré que les développeurs changent
+  ``x.call(bytes4(keccak256("f(uint256)")), a, b)`` en
   ``x.call(abi.encodeWithSignature("f(uint256)", a, b))``.
 
-* Functions ``.call()``, ``.delegatecall()`` and ``.staticcall()`` now return
-  ``(bool, bytes memory)`` to provide access to the return data.  Change
-  ``bool success = otherContract.call("f")`` to ``(bool success, bytes memory
-  data) = otherContract.call("f")``.
+* Les fonctions ``.call()``, ``.delegatecall()`` et ``.staticcall()`` retournent maintenant
+  ``(bool, bytes memory)`` pour donner accès aux données de retour.  Modifier
+  ``bool success = otherContract.call("f")`` en ``(bool success, bytes memory
+  données) = otherContract.call("f")``.
 
-* Solidity now implements C99-style scoping rules for function local
-  variables, that is, variables can only be used after they have been
-  declared and only in the same or nested scopes. Variables declared in the
-  initialization block of a ``for`` loop are valid at any point inside the
-  loop.
+* Solidity met désormais en œuvre les règles de délimitation du style C99 pour les
+  locales de fonctions, c'est-à-dire que les variables ne peuvent être utilisées que
+  déclarées et seulement dans le même périmètre ou dans des périmètres imbriqués. Les variables déclarées dans le
+  bloc d'initialisation d'une boucle ``for`'' sont valides en tout point de la boucle.
+  boucle.
 
-Explicitness Requirements
+Exigences d'explicitation
 =========================
 
-This section lists changes where the code now needs to be more explicit.
-For most of the topics the compiler will provide suggestions.
+Cette section liste les modifications pour lesquelles le code doit être plus explicite.
+Pour la plupart des sujets, le compilateur fournira des suggestions.
 
-* Explicit function visibility is now mandatory.  Add ``public`` to every
-  function and constructor, and ``external`` to every fallback or interface
-  function that does not specify its visibility already.
+* La visibilité explicite des fonctions est maintenant obligatoire.  Ajouter ``public`` à chaque fonction et constructeur
+  fonction et constructeur, et ``external`` à chaque fonction de fallback ou d'interface
+  d'interface qui ne spécifie pas déjà sa visibilité.
 
-* Explicit data location for all variables of struct, array or mapping types is
-  now mandatory. This is also applied to function parameters and return
-  variables.  For example, change ``uint[] x = m_x`` to ``uint[] storage x =
-  m_x``, and ``function f(uint[][] x)`` to ``function f(uint[][] memory x)``
-  where ``memory`` is the data location and might be replaced by ``storage`` or
-  ``calldata`` accordingly.  Note that ``external`` functions require
-  parameters with a data location of ``calldata``.
+* La localisation explicite des données pour toutes les variables de type struct, array ou mapping est
+  maintenant obligatoire. Ceci s'applique également aux paramètres des fonctions et aux
+  de retour.  Par exemple, changez ``uint[] x = m_x`` en ``uint[] storage x =
+  m_x``, et ``fonction f(uint[][] x)`` en ``fonction f(uint[][] mémoire x)``
+  où "memory" est l'emplacement des données et peut être remplacé par "storage" ou "calldata".
+  ``calldata`` en conséquence.  Notez que les fonctions ``externes`` requièrent des
+  paramètres dont l'emplacement des données est ``calldata``.
 
-* Contract types do not include ``address`` members anymore in
-  order to separate the namespaces.  Therefore, it is now necessary to
-  explicitly convert values of contract type to addresses before using an
-  ``address`` member.  Example: if ``c`` is a contract, change
-  ``c.transfer(...)`` to ``address(c).transfer(...)``,
-  and ``c.balance`` to ``address(c).balance``.
+* Les types de contrats n'incluent plus les membres ``addresses`` afin de
+  afin de séparer les espaces de noms.  Par conséquent, il est maintenant nécessaire de
+  convertir explicitement les valeurs du type de contrat en adresses avant d'utiliser une
+  membre ``address``.  Exemple : si ``c`` est un contrat, changez
+  ``c.transfert(...)`` en ``adresse(c).transfert(...)``,
+  et ``c.balance`` en ``address(c).balance``.
 
-* Explicit conversions between unrelated contract types are now disallowed. You can only
-  convert from a contract type to one of its base or ancestor types. If you are sure that
-  a contract is compatible with the contract type you want to convert to, although it does not
-  inherit from it, you can work around this by converting to ``address`` first.
-  Example: if ``A`` and ``B`` are contract types, ``B`` does not inherit from ``A`` and
-  ``b`` is a contract of type ``B``, you can still convert ``b`` to type ``A`` using ``A(address(b))``.
-  Note that you still need to watch out for matching payable fallback functions, as explained below.
+* Les conversions explicites entre des types de contrats non liés sont désormais interdites. Vous pouvez seulement
+  convertir un type de contrat en l'un de ses types de base ou ancêtres. Si vous êtes sûr que
+  un contrat est compatible avec le type de contrat vers lequel vous voulez le convertir, bien qu'il n'en hérite pas.
+  bien qu'il n'en hérite pas, vous pouvez contourner ce problème en convertissant d'abord en ``adresse``.
+  Exemple : si ``A`` et ``B`` sont des types de contrat, ``B`` n'hérite pas de ``A`` et
+  ``b`` est un contrat de type ``B``, vous pouvez toujours convertir ``b`` en type ``A`` en utilisant ``A(adresse(b))``.
+  Notez que vous devez toujours faire attention aux fonctions de repli payantes correspondantes, comme expliqué ci-dessous.
 
-* The ``address`` type  was split into ``address`` and ``address payable``,
-  where only ``address payable`` provides the ``transfer`` function.  An
-  ``address payable`` can be directly converted to an ``address``, but the
-  other way around is not allowed. Converting ``address`` to ``address
-  payable`` is possible via conversion through ``uint160``. If ``c`` is a
-  contract, ``address(c)`` results in ``address payable`` only if ``c`` has a
-  payable fallback function. If you use the :ref:`withdraw pattern<withdrawal_pattern>`,
-  you most likely do not have to change your code because ``transfer``
-  is only used on ``msg.sender`` instead of stored addresses and ``msg.sender``
-  is an ``address payable``.
+* Le type "adresse" a été divisé en "adresse" et "adresse payable",
+  où seule "l'adresse payable" fournit la fonction "transfert".  Un site
+  Une "adresse payable" peut être directement convertie en une "adresse", mais l'inverse n'est pas autorisé.
+  l'inverse n'est pas autorisé. La conversion de ``adresse`` en ``adresse
+  payable" est possible par conversion via ``uint160``. Si ``c`` est un
+  contrat, ``address(c)`` résulte en ``address payable`` seulement si ``c`` possède une
+  fonction de repli payable. Si vous utilisez le modèle :ref:`withdraw pattern<withdrawal_pattern>`,
+  vous n'avez probablement pas à modifier votre code car ``transfer``
+  est uniquement utilisé sur ``msg.sender`` au lieu des adresses stockées et ``msg.sender`` est une ``adresse``.
+  est une ``adresse payable``.
 
-* Conversions between ``bytesX`` and ``uintY`` of different size are now
-  disallowed due to ``bytesX`` padding on the right and ``uintY`` padding on
-  the left which may cause unexpected conversion results.  The size must now be
-  adjusted within the type before the conversion.  For example, you can convert
-  a ``bytes4`` (4 bytes) to a ``uint64`` (8 bytes) by first converting the
-  ``bytes4`` variable to ``bytes8`` and then to ``uint64``. You get the
-  opposite padding when converting through ``uint32``. Before v0.5.0 any
-  conversion between ``bytesX`` and ``uintY`` would go through ``uint8X``. For
-  example ``uint8(bytes3(0x291807))`` would be converted to ``uint8(uint24(bytes3(0x291807)))``
-  (the result is ``0x07``).
+* Les conversions entre ``bytesX`` et ``uintY`` de taille différente sont maintenant
+  sont désormais interdites en raison du remplissage de ``bytesX`` à droite et du remplissage de ``uintY`` à gauche.
+  gauche, ce qui peut entraîner des résultats de conversion inattendus.  La taille doit maintenant être
+  ajustée dans le type avant la conversion.  Par exemple, vous pouvez convertir
+  un ``bytes4`` (4 octets) en un ``uint64`` (8 octets) en convertissant d'abord le ``bytes4`` en un ``uint64`'.
+  en convertissant d'abord la variable ``bytes4`` en ``bytes8``, puis en ``uint64`'. Vous obtenez le
+  inverse en convertissant en ``uint32``. Avant la version 0.5.0, toute
+  conversion entre ``bytesX`` et ``uintY`` passait par ``uint8X``. Pour
+  Par exemple, ``uint8(bytes3(0x291807))`` sera converti en ``uint8(uint24(bytes3(0x291807))`` (le résultat est
+  (le résultat est ``0x07``).
 
-* Using ``msg.value`` in non-payable functions (or introducing it via a
-  modifier) is disallowed as a security feature. Turn the function into
-  ``payable`` or create a new internal function for the program logic that
-  uses ``msg.value``.
+* L'utilisation de ``msg.value`` dans des fonctions non payantes (ou son introduction par le biais d'un
+  modificateur) est interdit par mesure de sécurité. Transformez la fonction en
+  payante " ou créez une nouvelle fonction interne pour la logique du programme qui
+  utilise ``msg.value``.
 
-* For clarity reasons, the command line interface now requires ``-`` if the
-  standard input is used as source.
+* Pour des raisons de clarté, l'interface de la ligne de commande exige maintenant ``-`` si l'
+  l'entrée standard est utilisée comme source.
 
-Deprecated Elements
+Éléments dépréciés
 ===================
 
-This section lists changes that deprecate prior features or syntax.  Note that
-many of these changes were already enabled in the experimental mode
+Cette section liste les changements qui déprécient des fonctionnalités ou des syntaxes antérieures.  Notez que
+plusieurs de ces changements étaient déjà activés dans le mode expérimental
 ``v0.5.0``.
 
-Command Line and JSON Interfaces
+Interfaces en ligne de commande et JSON
 --------------------------------
 
-* The command line option ``--formal`` (used to generate Why3 output for
-  further formal verification) was deprecated and is now removed.  A new
-  formal verification module, the SMTChecker, is enabled via ``pragma
+* L'option de ligne de commande ``--formal`` (utilisée pour générer la sortie de Why3 pour une
+  pour une vérification formelle plus poussée) était dépréciée et est maintenant supprimée.  Un nouveau
+  module de vérification formelle, le SMTChecker, est activé via ``pragma
   experimental SMTChecker;``.
 
-* The command line option ``--julia`` was renamed to ``--yul`` due to the
-  renaming of the intermediate language ``Julia`` to ``Yul``.
+* L'option de ligne de commande ``--julia`` a été renommée en ``--yul`` en raison du changement de nom du langage intermédiaire ``.
+  en raison du changement de nom du langage intermédiaire "Julia" en "Yul".
 
-* The ``--clone-bin`` and ``--combined-json clone-bin`` command line options
-  were removed.
+* Les options de ligne de commande ``--clone-bin`` et ``--combined-json clone-bin`` ont été supprimées.
+  ont été supprimées.
 
-* Remappings with empty prefix are disallowed.
+* Les remappages avec un préfixe vide ne sont pas autorisés.
 
-* The JSON AST fields ``constant`` and ``payable`` were removed. The
-  information is now present in the ``stateMutability`` field.
+* Les champs AST JSON ``constant`` et ``payable`' ont été supprimés. L'adresse
+  informations sont maintenant présentes dans le champ ``stateMutability`'.
 
-* The JSON AST field ``isConstructor`` of the ``FunctionDefinition``
-  node was replaced by a field called ``kind`` which can have the
-  value ``"constructor"``, ``"fallback"`` or ``"function"``.
+* Le champ JSON AST ``isConstructor`` du noeud ``FunctionDefinition`` a été remplacé par un champ appelé ``Fonctions''.
+  a été remplacé par un champ appelé ``kind`` qui peut avoir la valeur
+  valeur ``"constructor"``, ``"fallback"`` ou ``"function"``.
 
-* In unlinked binary hex files, library address placeholders are now
-  the first 36 hex characters of the keccak256 hash of the fully qualified
-  library name, surrounded by ``$...$``. Previously,
-  just the fully qualified library name was used.
-  This reduces the chances of collisions, especially when long paths are used.
-  Binary files now also contain a list of mappings from these placeholders
-  to the fully qualified names.
+* Dans les fichiers hexadécimaux binaires non liés, les adresses des bibliothèques sont maintenant les 36 premiers caractères hexadécimaux de la clé.
+  sont désormais les 36 premiers caractères hexadécimaux du hachage keccak256 du nom de bibliothèque
+  nom de bibliothèque entièrement qualifié, entouré de "$...$". Auparavant,
+  seul le nom complet de la bibliothèque était utilisé.
+  Cela réduit les risques de collisions, en particulier lorsque de longs chemins sont utilisés.
+  Les fichiers binaires contiennent maintenant aussi une liste de correspondances entre ces caractères de remplacement
+  vers les noms pleinement qualifiés.
 
-Constructors
+Constructeurs
 ------------
 
-* Constructors must now be defined using the ``constructor`` keyword.
+* Les constructeurs doivent désormais être définis à l'aide du mot clé "constructeur".
 
-* Calling base constructors without parentheses is now disallowed.
+* L'appel de constructeurs de base sans parenthèses est désormais interdit.
 
-* Specifying base constructor arguments multiple times in the same inheritance
-  hierarchy is now disallowed.
+* La spécification des arguments des constructeurs de base plusieurs fois dans la même
+  même hiérarchie d'héritage est maintenant interdit.
 
-* Calling a constructor with arguments but with wrong argument count is now
-  disallowed.  If you only want to specify an inheritance relation without
-  giving arguments, do not provide parentheses at all.
+* L'appel d'un constructeur avec des arguments mais avec un nombre d'arguments incorrect est maintenant
+  désapprouvé.  Si vous souhaitez seulement spécifier une relation d'héritage sans
+  sans donner d'arguments, ne fournissez pas de parenthèses du tout.
 
-Functions
+Fonctions
 ---------
 
-* Function ``callcode`` is now disallowed (in favor of ``delegatecall``). It
-  is still possible to use it via inline assembly.
+* La fonction ``callcode`` est maintenant désapprouvée (en faveur de ``delegatecall``). Il est
+  Il est toujours possible de l'utiliser via l'assemblage en ligne.
 
-* ``suicide`` is now disallowed (in favor of ``selfdestruct``).
+* La fonction ``suicide`` n'est plus autorisée (au profit de ``selfdestruct``).
 
-* ``sha3`` is now disallowed (in favor of ``keccak256``).
+* ``sha3`` n'est plus autorisé (au profit de ``keccak256``).
 
-* ``throw`` is now disallowed (in favor of ``revert``, ``require`` and
+* ``throw`` est maintenant désapprouvé (en faveur de ``revert``, ``require`` et de
   ``assert``).
 
 Conversions
 -----------
 
-* Explicit and implicit conversions from decimal literals to ``bytesXX`` types
-  is now disallowed.
+* Les conversions explicites et implicites des littéraux décimaux en types ``bytesXX`'' sont maintenant désactivées.
+  est désormais interdit.
 
-* Explicit and implicit conversions from hex literals to ``bytesXX`` types
-  of different size is now disallowed.
+* Les conversions explicites et implicites de littéraux hexadécimaux en types ``bytesXX`'' de taille différente sont désormais interdites.
+  de taille différente sont désormais interdites.
 
-Literals and Suffixes
+Littéraux et suffixes
 ---------------------
 
-* The unit denomination ``years`` is now disallowed due to complications and
-  confusions about leap years.
+* L'unité de dénomination "années" n'est plus autorisée en raison de complications et de confusions concernant les années bissextiles.
+  complications et de confusions concernant les années bissextiles.
 
-* Trailing dots that are not followed by a number are now disallowed.
+* Les points de fin de ligne qui ne sont pas suivis d'un nombre ne sont plus autorisés.
 
-* Combining hex numbers with unit denominations (e.g. ``0x1e wei``) is now
-  disallowed.
+* La combinaison de nombres hexadécimaux avec des unités (par exemple, "0x1e wei") n'est plus autorisée.
+  interdites.
 
-* The prefix ``0X`` for hex numbers is disallowed, only ``0x`` is possible.
+* Le préfixe ``0X`` pour les nombres hexadécimaux n'est plus autorisé, seul ``0x`` est possible.
 
 Variables
 ---------
 
-* Declaring empty structs is now disallowed for clarity.
+* La déclaration de structures vides n'est plus autorisée pour des raisons de clarté.
 
-* The ``var`` keyword is now disallowed to favor explicitness.
+* Le mot clé "var" n'est plus autorisé pour favoriser l'explicitation.
 
-* Assignments between tuples with different number of components is now
-  disallowed.
+* Les affectations entre les tuples avec un nombre différent de composants sont maintenant interdites.
+  désapprouvé.
 
-* Values for constants that are not compile-time constants are disallowed.
+* Les valeurs des constantes qui ne sont pas des constantes de compilation ne sont pas autorisées.
 
-* Multi-variable declarations with mismatching number of values are now
-  disallowed.
+* Les déclarations multi-variables avec un nombre de valeurs non concordant sont maintenant
+  désapprouvées.
 
-* Uninitialized storage variables are now disallowed.
+* Les variables de stockage non initialisées ne sont plus autorisées.
 
-* Empty tuple components are now disallowed.
+* Les composants de tuple vides ne sont plus admis.
 
-* Detecting cyclic dependencies in variables and structs is limited in
-  recursion to 256.
+* La détection des dépendances cycliques dans les variables et les structures est limitée en récursion à 256.
+  récursion à 256.
 
-* Fixed-size arrays with a length of zero are now disallowed.
+* Les tableaux de taille fixe avec une longueur de zéro ne sont plus autorisés.
 
-Syntax
+Syntaxe
 ------
 
-* Using ``constant`` as function state mutability modifier is now disallowed.
+* L'utilisation de ``constant`` comme modificateur de mutabilité de l'état de la fonction est désormais interdite.
 
-* Boolean expressions cannot use arithmetic operations.
+* Les expressions booléennes ne peuvent pas utiliser d'opérations arithmétiques.
 
-* The unary ``+`` operator is now disallowed.
+* L'opérateur unaire "+" n'est plus autorisé.
 
-* Literals cannot anymore be used with ``abi.encodePacked`` without prior
-  conversion to an explicit type.
+* Les littéraux ne peuvent plus être utilisés avec ``abi.encodePacked`` sans conversion
+  conversion préalable vers un type explicite.
 
-* Empty return statements for functions with one or more return values are now
-  disallowed.
+* Les déclarations de retour vides pour les fonctions avec une ou plusieurs valeurs de retour ne sont plus
+  sont désormais interdites.
 
-* The "loose assembly" syntax is now disallowed entirely, that is, jump labels,
-  jumps and non-functional instructions cannot be used anymore. Use the new
-  ``while``, ``switch`` and ``if`` constructs instead.
+* La syntaxe "loose assembly", c'est-à-dire les étiquettes de saut, est maintenant totalement interdite,
+  les sauts et les instructions non fonctionnelles ne peuvent plus être utilisés. Utilisez les nouvelles fonctions
+  ``while``, ``switch`` et ``if`` à la place.
 
-* Functions without implementation cannot use modifiers anymore.
+* Les fonctions sans implémentation ne peuvent plus utiliser de modificateurs.
 
-* Function types with named return values are now disallowed.
+* Les types de fonctions avec des valeurs de retour nommées ne sont plus autorisés.
 
-* Single statement variable declarations inside if/while/for bodies that are
-  not blocks are now disallowed.
+* Les déclarations de variables d'une seule déclaration à l'intérieur de corps if/while/for qui ne sont pas
+  qui ne sont pas des blocs ne sont plus autorisées.
 
-* New keywords: ``calldata`` and ``constructor``.
+* Nouveaux mots-clés : ``calldata`` et ``constructor``.
 
-* New reserved keywords: ``alias``, ``apply``, ``auto``, ``copyof``,
-  ``define``, ``immutable``, ``implements``, ``macro``, ``mutable``,
-  ``override``, ``partial``, ``promise``, ``reference``, ``sealed``,
-  ``sizeof``, ``supports``, ``typedef`` and ``unchecked``.
+* Nouveaux mots-clés réservés : ``alias``, ``apply``, ``auto``, ``copyof``,
+  ``définir'', ``immutable'', ``implements'', ``macro'', ``mutable'',
+  ``override``, ``partiel``, ``promise``, ``reference``, ``sealed``,
+  ``sizeof'', ``supports'', ``typedef'' et ``unchecked''.
 
 .. _interoperability:
 
-Interoperability With Older Contracts
+Interopérabilité avec les anciens contrats
 =====================================
 
-It is still possible to interface with contracts written for Solidity versions prior to
-v0.5.0 (or the other way around) by defining interfaces for them.
-Consider you have the following pre-0.5.0 contract already deployed:
+Il est toujours possible de s'interfacer avec des contrats écrits pour des versions de Solidity antérieures à la
+v0.5.0 (ou l'inverse) en définissant des interfaces pour eux.
+Considérons que vous avez le contrat suivant, antérieur à la version 0.5.0, déjà déployé :
 
 .. code-block:: solidity
 
@@ -309,7 +311,7 @@ Consider you have the following pre-0.5.0 contract already deployed:
         // ...
     }
 
-This will no longer compile with Solidity v0.5.0. However, you can define a compatible interface for it:
+Il ne compilera plus avec Solidity v0.5.0. Cependant, vous pouvez lui définir une interface compatible :
 
 .. code-block:: solidity
 
@@ -320,14 +322,14 @@ This will no longer compile with Solidity v0.5.0. However, you can define a comp
         function anotherOldFunction() external returns (bool);
     }
 
-Note that we did not declare ``anotherOldFunction`` to be ``view``, despite it being declared ``constant`` in the original
-contract. This is due to the fact that starting with Solidity v0.5.0 ``staticcall`` is used to call ``view`` functions.
-Prior to v0.5.0 the ``constant`` keyword was not enforced, so calling a function declared ``constant`` with ``staticcall``
-may still revert, since the ``constant`` function may still attempt to modify storage. Consequently, when defining an
-interface for older contracts, you should only use ``view`` in place of ``constant`` in case you are absolutely sure that
-the function will work with ``staticcall``.
+Notez que nous n'avons pas déclaré "anotherOldFunction" comme étant "view", bien qu'elle soit déclarée "constante" dans le contrat original.
+contrat original. Cela est dû au fait qu'à partir de la version 0.5.0 de Solidity, l'option ``staticcall`` est utilisée pour appeler les fonctions ``view``.
+Avant la v0.5.0, le mot-clé ``constant`` n'était pas appliqué, donc appeler une fonction déclarée ``constante`` avec ``staticcall``
+peut encore se retourner, puisque la fonction ``constant`` peut encore tenter de modifier le stockage. Par conséquent, lorsque vous définissez une
+pour des contrats plus anciens, vous ne devriez utiliser ``view`` à la place de ``constant`` que si vous êtes absolument sûr que
+la fonction fonctionnera avec ``staticcall``.
 
-Given the interface defined above, you can now easily use the already deployed pre-0.5.0 contract:
+Avec l'interface définie ci-dessus, vous pouvez maintenant facilement utiliser le contrat pré-0.5.0 déjà déployé :
 
 .. code-block:: solidity
 
@@ -346,9 +348,9 @@ Given the interface defined above, you can now easily use the already deployed p
         }
     }
 
-Similarly, pre-0.5.0 libraries can be used by defining the functions of the library without implementation and
-supplying the address of the pre-0.5.0 library during linking (see :ref:`commandline-compiler` for how to use the
-commandline compiler for linking):
+De même, les bibliothèques pré-0.5.0 peuvent être utilisées en définissant les fonctions de la bibliothèque sans implémentation et en
+en fournissant l'adresse de la bibliothèque pré-0.5.0 lors de l'édition de liens (voir :ref:``commandline-compiler` pour savoir comment utiliser le
+pour savoir comment utiliser le compilateur en ligne de commande pour l'édition de liens) :
 
 .. code-block:: solidity
 
@@ -367,13 +369,13 @@ commandline compiler for linking):
     }
 
 
-Example
+Exemple
 =======
 
-The following example shows a contract and its updated version for Solidity
-v0.5.0 with some of the changes listed in this section.
+L'exemple suivant montre un contrat et sa version mise à jour pour Solidity
+v0.5.0 avec certaines des modifications énumérées dans cette section.
 
-Old version:
+Ancienne version :
 
 .. code-block:: solidity
 
@@ -436,7 +438,7 @@ Old version:
         }
     }
 
-New version:
+Nouvelle version :
 
 .. code-block:: solidity
 

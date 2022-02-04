@@ -1,5 +1,5 @@
 ###################
-Solidity by Example
+Solidity par l'exemple
 ###################
 
 .. include:: examples/voting.rst

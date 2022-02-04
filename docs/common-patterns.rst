@@ -1,5 +1,5 @@
 ###############
-Common Patterns
+Modèles communs
 ###############
 
 .. index:: withdrawal
@@ -7,23 +7,23 @@ Common Patterns
 .. _withdrawal_pattern:
 
 *************************
-Withdrawal from Contracts
+Retrait des contrats
 *************************
 
-The recommended method of sending funds after an effect
-is using the withdrawal pattern. Although the most intuitive
-method of sending Ether, as a result of an effect, is a
-direct ``transfer`` call, this is not recommended as it
-introduces a potential security risk. You may read
-more about this on the :ref:`security_considerations` page.
+La méthode recommandée pour envoyer des fonds après un effet
+est d'utiliser le modèle de retrait. Bien que la méthode la plus intuitive
+la méthode la plus intuitive pour envoyer de l'Ether, suite à un effet,
+est un appel direct de "transfert", ce n'est pas recommandé car il introduit un
+car elle introduit un risque potentiel de sécurité. Vous pouvez lire
+plus d'informations à ce sujet sur la page :ref:`security_considerations`.
 
-The following is an example of the withdrawal pattern in practice in
-a contract where the goal is to send the most money to the
-contract in order to become the "richest", inspired by
+Voici un exemple du schéma de retrait en pratique dans
+un contrat où l'objectif est d'envoyer le plus d'argent vers le
+contrat afin de devenir le plus "riche", inspiré de
 `King of the Ether <https://www.kingoftheether.com/>`_.
 
-In the following contract, if you are no longer the richest,
-you receive the funds of the person who is now the richest.
+Dans le contrat suivant, si vous n'êtes plus le plus riche,
+vous recevez les fonds de la personne qui est maintenant la plus riche.
 
 .. code-block:: solidity
 
@@ -36,8 +36,8 @@ you receive the funds of the person who is now the richest.
 
         mapping (address => uint) pendingWithdrawals;
 
-        /// The amount of Ether sent was not higher than
-        /// the currently highest amount.
+        /// La quantité d'Ether envoyé n'était pas supérieur au
+        /// montant le plus élevé actuellement.
         error NotEnoughEther();
 
         constructor() payable {
@@ -54,14 +54,14 @@ you receive the funds of the person who is now the richest.
 
         function withdraw() public {
             uint amount = pendingWithdrawals[msg.sender];
-            // Remember to zero the pending refund before
-            // sending to prevent re-entrancy attacks
+            // N'oubliez pas de mettre à zéro le remboursement en attente avant
+            // l'envoi pour éviter les attaques de ré-entrance
             pendingWithdrawals[msg.sender] = 0;
             payable(msg.sender).transfer(amount);
         }
     }
 
-This is as opposed to the more intuitive sending pattern:
+Cela s'oppose au modèle d'envoi plus intuitif :
 
 .. code-block:: solidity
 
@@ -72,8 +72,8 @@ This is as opposed to the more intuitive sending pattern:
         address payable public richest;
         uint public mostSent;
 
-        /// The amount of Ether sent was not higher than
-        /// the currently highest amount.
+        /// La quantité d'Ether envoyée n'était pas plus élevée que
+        /// le montant le plus élevé actuellement.
         error NotEnoughEther();
 
         constructor() payable {
@@ -83,51 +83,51 @@ This is as opposed to the more intuitive sending pattern:
 
         function becomeRichest() public payable {
             if (msg.value <= mostSent) revert NotEnoughEther();
-            // This line can cause problems (explained below).
+            // Cette ligne peut causer des problèmes (expliqués ci-dessous).
             richest.transfer(msg.value);
             richest = payable(msg.sender);
             mostSent = msg.value;
         }
     }
 
-Notice that, in this example, an attacker could trap the
-contract into an unusable state by causing ``richest`` to be
-the address of a contract that has a receive or fallback function
-which fails (e.g. by using ``revert()`` or by just
-consuming more than the 2300 gas stipend transferred to them). That way,
-whenever ``transfer`` is called to deliver funds to the
-"poisoned" contract, it will fail and thus also ``becomeRichest``
-will fail, with the contract being stuck forever.
+Remarquez que, dans cet exemple, un attaquant pourrait piéger le contrat
+dans un état inutilisable en faisant en sorte que ``richest`` soit
+l'adresse d'un contrat qui possède une fonction de réception ou de repli
+qui échoue (par exemple en utilisant ``revert()`` ou simplement en
+consommant plus que l'allocation de 2300 gaz qui leur a été transférée). De cette façon,
+chaque fois que ``transfer`` est appelé pour livrer des fonds au
+contrat "empoisonné", il échouera et donc aussi ``becomeRichest``
+échouera aussi, et le contrat sera bloqué pour toujours.
 
-In contrast, if you use the "withdraw" pattern from the first example,
-the attacker can only cause his or her own withdraw to fail and not the
-rest of the contract's workings.
+En revanche, si vous utilisez le motif "withdraw" du premier exemple,
+l'attaquant ne peut faire échouer que son propre retrait, et pas le reste
+le reste du fonctionnement du contrat.
 
 .. index:: access;restricting
 
 ******************
-Restricting Access
+Restriction de l'accès
 ******************
 
-Restricting access is a common pattern for contracts.
-Note that you can never restrict any human or computer
-from reading the content of your transactions or
-your contract's state. You can make it a bit harder
-by using encryption, but if your contract is supposed
-to read the data, so will everyone else.
+La restriction de l'accès est un modèle courant pour les contrats.
+Notez que vous ne pouvez jamais empêcher un humain ou un ordinateur
+de lire le contenu de vos transactions ou
+l'état de votre contrat. Vous pouvez rendre les choses un peu plus difficiles
+en utilisant le cryptage, mais si votre contrat est supposé
+lire les données, tout le monde le fera aussi.
 
-You can restrict read access to your contract's state
-by **other contracts**. That is actually the default
-unless you declare your state variables ``public``.
+Vous pouvez restreindre l'accès en lecture à l'état de votre contrat
+par **d'autres contrats**. C'est en fait le cas par défaut
+sauf si vous déclarez vos variables d'état ``public``.
 
-Furthermore, you can restrict who can make modifications
-to your contract's state or call your contract's
-functions and this is what this section is about.
+De plus, vous pouvez restreindre les personnes qui peuvent apporter des modifications
+l'état de votre contrat ou appeler les fonctions de votre contrat.
+fonctions de votre contrat et c'est ce dont il est question dans cette section.
 
 .. index:: function;modifier
 
-The use of **function modifiers** makes these
-restrictions highly readable.
+L'utilisation de **modificateurs de fonction** permet de rendre ces
+restrictions très lisibles.
 
 .. code-block:: solidity
     :force:
@@ -136,45 +136,45 @@ restrictions highly readable.
     pragma solidity ^0.8.4;
 
     contract AccessRestriction {
-        // These will be assigned at the construction
-        // phase, where `msg.sender` is the account
-        // creating this contract.
+        // Ils seront attribués lors de la construction
+        // phase de construction, où `msg.sender` est le compte
+        // qui crée ce contrat.
         address public owner = msg.sender;
         uint public creationTime = block.timestamp;
 
-        // Now follows a list of errors that
-        // this contract can generate together
-        // with a textual explanation in special
-        // comments.
+        // Suit maintenant une liste d'erreurs que
+        // ce contrat peut générer ainsi que
+        // avec une explication textuelle dans des
+        // commentaires spéciaux.
 
-        /// Sender not authorized for this
-        /// operation.
+        /// L'expéditeur n'est pas autorisé pour cette
+        /// opération.
         error Unauthorized();
 
-        /// Function called too early.
+        /// La fonction est appelée trop tôt.
         error TooEarly();
 
-        /// Not enough Ether sent with function call.
+        /// Pas assez d'Ether envoyé avec l'appel de fonction.
         error NotEnoughEther();
 
-        // Modifiers can be used to change
-        // the body of a function.
-        // If this modifier is used, it will
-        // prepend a check that only passes
-        // if the function is called from
-        // a certain address.
+        // Les modificateurs peuvent être utilisés pour changer
+        // le corps d'une fonction.
+        // Si ce modificateur est utilisé, il
+        // ajoutera une vérification qui ne se passe
+        // que si la fonction est appelée depuis
+        // une certaine adresse.
         modifier onlyBy(address _account)
         {
             if (msg.sender != _account)
                 revert Unauthorized();
-            // Do not forget the "_;"! It will
-            // be replaced by the actual function
-            // body when the modifier is used.
+            // N'oubliez pas le "_;"! Il sera
+            // remplacé par le corps de la fonction
+            // réelle lorsque le modificateur est utilisé.
             _;
         }
 
-        /// Make `_newOwner` the new owner of this
-        /// contract.
+        /// Faire de `_newOwner` le nouveau propriétaire de ce
+        /// contrat.
         function changeOwner(address _newOwner)
             public
             onlyBy(owner)
@@ -188,9 +188,9 @@ restrictions highly readable.
             _;
         }
 
-        /// Erase ownership information.
-        /// May only be called 6 weeks after
-        /// the contract has been created.
+        /// Effacer les informations sur la propriété.
+        /// Ne peut être appelé que 6 semaines après
+        /// que le contrat ait été créé.
         function disown()
             public
             onlyBy(owner)
@@ -199,12 +199,12 @@ restrictions highly readable.
             delete owner;
         }
 
-        // This modifier requires a certain
-        // fee being associated with a function call.
-        // If the caller sent too much, he or she is
-        // refunded, but only after the function body.
-        // This was dangerous before Solidity version 0.4.0,
-        // where it was possible to skip the part after `_;`.
+        // Ce modificateur exige qu'un certain
+        // frais étant associé à un appel de fonction.
+        // Si l'appelant a envoyé trop de frais, il ou elle est
+        // remboursé, mais seulement après le corps de la fonction.
+        // Ceci était dangereux avant la version 0.4.0 de Solidity,
+        // où il était possible de sauter la partie après `_;`.
         modifier costs(uint _amount) {
             if (msg.value < _amount)
                 revert NotEnoughEther();
@@ -220,78 +220,78 @@ restrictions highly readable.
             costs(200 ether)
         {
             owner = _newOwner;
-            // just some example condition
+            // juste quelques exemples de conditions
             if (uint160(owner) & 0 == 1)
-                // This did not refund for Solidity
-                // before version 0.4.0.
+                // Cela n'a pas remboursé pour Solidity
+                // avant la version 0.4.0.
                 return;
-            // refund overpaid fees
+            // rembourser les frais payés en trop
         }
     }
 
-A more specialised way in which access to function
-calls can be restricted will be discussed
-in the next example.
+Une manière plus spécialisée de restreindre l'accès aux appels
+peut être restreint, sera abordée
+dans l'exemple suivant.
 
 .. index:: state machine
 
 *************
-State Machine
+Machine à états
 *************
 
-Contracts often act as a state machine, which means
-that they have certain **stages** in which they behave
-differently or in which different functions can
-be called. A function call often ends a stage
-and transitions the contract into the next stage
-(especially if the contract models **interaction**).
-It is also common that some stages are automatically
-reached at a certain point in **time**.
+Les contrats se comportent souvent comme une machine à états, ce qui signifie
+qu'ils ont certaines **étapes** dans lesquelles ils se comportent
+différemment ou dans lesquelles différentes fonctions peuvent
+être appelées. Un appel de fonction termine souvent une étape
+et fait passer le contrat à l'étape suivante
+(surtout si le contrat modélise une **interaction**).
+Il est également courant que certaines étapes soient
+automatiquement à un certain moment dans le **temps**.
 
-An example for this is a blind auction contract which
-starts in the stage "accepting blinded bids", then
-transitions to "revealing bids" which is ended by
-"determine auction outcome".
+Par exemple, un contrat d'enchères à l'aveugle qui
+commence à l'étape "accepter des offres à l'aveugle", puis
+qui passe ensuite à l'étape "révéler les offres" et qui se termine par
+"déterminer le résultat de l'enchère".
 
 .. index:: function;modifier
 
-Function modifiers can be used in this situation
-to model the states and guard against
-incorrect usage of the contract.
+Les modificateurs de fonction peuvent être utilisés dans cette situation
+pour modéliser les états et se prémunir contre
+l'utilisation incorrecte du contrat.
 
-Example
+Exemple
 =======
 
-In the following example,
-the modifier ``atStage`` ensures that the function can
-only be called at a certain stage.
+Dans l'exemple suivant,
+le modificateur ``atStage`` assure que la fonction
+ne peut être appelée qu'à un certain stade.
 
-Automatic timed transitions
-are handled by the modifier ``timedTransitions``, which
-should be used for all functions.
-
-.. note::
-    **Modifier Order Matters**.
-    If atStage is combined
-    with timedTransitions, make sure that you mention
-    it after the latter, so that the new stage is
-    taken into account.
-
-Finally, the modifier ``transitionNext`` can be used
-to automatically go to the next stage when the
-function finishes.
+Les transitions automatiques temporisées
+sont gérées par le modificateur ``timedTransitions``,
+devrait être utilisé pour toutes les fonctions.
 
 .. note::
-    **Modifier May be Skipped**.
-    This only applies to Solidity before version 0.4.0:
-    Since modifiers are applied by simply replacing
-    code and not by using a function call,
-    the code in the transitionNext modifier
-    can be skipped if the function itself uses
-    return. If you want to do that, make sure
-    to call nextStage manually from those functions.
-    Starting with version 0.4.0, modifier code
-    will run even if the function explicitly returns.
+    **L'ordre des modificateurs est important**.
+    Si atStage est combiné
+    avec timedTransitions, assurez-vous que vous le mentionnez
+    après cette dernière, afin que la nouvelle étape soit
+    prise en compte.
+
+Enfin, le modificateur ``transitionNext`` peut être utilisé
+pour passer automatiquement à l'étape suivante lorsque la
+fonction se termine.
+
+.. note::
+    **Le Modificateur Peut Être Ignoré**.
+    Ceci s'applique uniquement à Solidity avant la version 0.4.0 :
+    Puisque les modificateurs sont appliqués en remplaçant simplement
+    code et non en utilisant un appel de fonction,
+    le code dans le modificateur transitionNext
+    peut être ignoré si la fonction elle-même utilise
+    return. Si vous voulez faire cela, assurez-vous
+    d'appeler nextStage manuellement à partir de ces fonctions.
+    À partir de la version 0.4.0, le code du modificateur
+    sera exécuté même si la fonction retourne explicitement.
 
 .. code-block:: solidity
     :force:
@@ -307,10 +307,10 @@ function finishes.
             AreWeDoneYet,
             Finished
         }
-        /// Function cannot be called at this time.
+        /// La fonction ne peut pas être appelée pour le moment.
         error FunctionInvalidAtThisStage();
 
-        // This is the current stage.
+        // Il s'agit de l'étape actuelle.
         Stages public stage = Stages.AcceptingBlindedBids;
 
         uint public creationTime = block.timestamp;
@@ -325,9 +325,9 @@ function finishes.
             stage = Stages(uint(stage) + 1);
         }
 
-        // Perform timed transitions. Be sure to mention
-        // this modifier first, otherwise the guards
-        // will not take the new stage into account.
+        // Effectuez des transitions chronométrées. Veillez à mentionner
+        // ce modificateur en premier, sinon les gardes
+        // ne tiendront pas compte de la nouvelle étape.
         modifier timedTransitions() {
             if (stage == Stages.AcceptingBlindedBids &&
                         block.timestamp >= creationTime + 10 days)
@@ -335,18 +335,18 @@ function finishes.
             if (stage == Stages.RevealBids &&
                     block.timestamp >= creationTime + 12 days)
                 nextStage();
-            // The other stages transition by transaction
+            // Les autres étapes se déroulent par transaction
             _;
         }
 
-        // Order of the modifiers matters here!
+        // L'ordre des modificateurs est important ici !
         function bid()
             public
             payable
             timedTransitions
             atStage(Stages.AcceptingBlindedBids)
         {
-            // We will not implement that here
+            // Nous n'implémenterons pas cela ici
         }
 
         function reveal()
@@ -356,8 +356,8 @@ function finishes.
         {
         }
 
-        // This modifier goes to the next stage
-        // after the function is done.
+        // Ce modificateur passe à l'étape suivante
+        // après que la fonction soit terminée.
         modifier transitionNext()
         {
             _;

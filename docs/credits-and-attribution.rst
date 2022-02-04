@@ -3,10 +3,10 @@
 :orphan:
 
 #######################
-Credits and Attribution
+Crédits et attribution
 #######################
 
-Website icons
+Icônes du site web
 =============
 
 .. |icon-share-solid| image:: _static/img/solid-share-arrow.svg
@@ -14,8 +14,8 @@ Website icons
 .. _Font Awesome Free License: https://fontawesome.com/license/free
 
 +-------------------------+-----------------------------------------------------------------------+
-| Icon                    | Attribution                                                           |
+| Icône                   | Attribution                                                           |
 +=========================+=======================================================================+
-| |icon-share-solid|      | - Source: `share icon`_ from Font Awesome 5.15.0.                     |
-|                         | - License: `Font Awesome Free License`_ (CC BY 4.0).                  |
+| |icon-share-solid|      | - Source: `share icon`_ depuis Font Awesome 5.15.0.                   |
+|                         | - Licence: `Font Awesome Free License`_ (CC BY 4.0).                  |
 +-------------------------+-----------------------------------------------------------------------+

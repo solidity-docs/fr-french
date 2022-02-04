@@ -1,76 +1,76 @@
 .. _formal_verification:
 
 ##################################
-SMTChecker and Formal Verification
+SMTChecker et vérification formelle
 ##################################
 
-Using formal verification it is possible to perform an automated mathematical
-proof that your source code fulfills a certain formal specification.
-The specification is still formal (just as the source code), but usually much
-simpler.
+En utilisant la vérification formelle, il est possible d'effectuer une preuve mathématique
+automatisée que votre code source répond à une certaine spécification formelle.
+La spécification est toujours formelle (tout comme le code source), mais généralement beaucoup
+plus simple.
 
-Note that formal verification itself can only help you understand the
-difference between what you did (the specification) and how you did it
-(the actual implementation). You still need to check whether the specification
-is what you wanted and that you did not miss any unintended effects of it.
+Notez que la vérification formelle elle-même ne peut vous aider qu'à comprendre la
+différence entre ce que vous avez fait (la spécification) et la manière dont vous l'avez fait
+(l'implémentation réelle). Vous devez toujours vérifier si la spécification
+correspond à ce que vous vouliez et que vous n'avez pas manqué d'effets involontaires.
 
-Solidity implements a formal verification approach based on
-`SMT (Satisfiability Modulo Theories) <https://en.wikipedia.org/wiki/Satisfiability_modulo_theories>`_ and
-`Horn <https://en.wikipedia.org/wiki/Horn-satisfiability>`_ solving.
-The SMTChecker module automatically tries to prove that the code satisfies the
-specification given by ``require`` and ``assert`` statements. That is, it considers
-``require`` statements as assumptions and tries to prove that the conditions
-inside ``assert`` statements are always true.  If an assertion failure is
-found, a counterexample may be given to the user showing how the assertion can
-be violated. If no warning is given by the SMTChecker for a property,
-it means that the property is safe.
+Solidity met en œuvre une approche de vérification formelle basée sur
+`SMT (Satisfiability Modulo Theories) <https://en.wikipedia.org/wiki/Satisfiability_modulo_theories>`_ et la
+`Horn <https://en.wikipedia.org/wiki/Horn-satisfiability>`_ de résolution.
+Le module SMTChecker essaie automatiquement de prouver que le code satisfait à la
+spécification donnée par les déclarations ``require`` et ``assert``. C'est-à-dire qu'il considère
+les déclarations ``require`` comme des hypothèses et essaie de prouver que les
+conditions contenues dans les déclarations ``assert`` sont toujours vraies.  Si un échec d'assertion est
+trouvé, un contre-exemple peut être donné à l'utilisateur montrant comment l'assertion peut
+être violée. Si aucun avertissement n'est donné par le SMTChecker pour une propriété,
+cela signifie que la propriété est sûre.
 
-The other verification targets that the SMTChecker checks at compile time are:
+Les autres cibles de vérification que le SMTChecker vérifie au moment de la compilation sont :
 
-- Arithmetic underflow and overflow.
-- Division by zero.
-- Trivial conditions and unreachable code.
-- Popping an empty array.
-- Out of bounds index access.
-- Insufficient funds for a transfer.
+- Les débordements et les sous-écoulements arithmétiques.
+- La division par zéro.
+- Conditions triviales et code inaccessible.
+- Extraction d'un tableau vide.
+- Accès à un index hors limites.
+- Fonds insuffisants pour un transfert.
 
-All the targets above are automatically checked by default if all engines are
-enabled, except underflow and overflow for Solidity >=0.8.7.
+Toutes les cibles ci-dessus sont automatiquement vérifiées par défaut si tous les moteurs sont
+activés, sauf underflow et overflow pour Solidity >=0.8.7.
 
-The potential warnings that the SMTChecker reports are:
+Les avertissements potentiels que le SMTChecker rapporte sont :
 
-- ``<failing  property> happens here.``. This means that the SMTChecker proved that a certain property fails. A counterexample may be given, however in complex situations it may also not show a counterexample. This result may also be a false positive in certain cases, when the SMT encoding adds abstractions for Solidity code that is either hard or impossible to express.
-- ``<failing property> might happen here``. This means that the solver could not prove either case within the given timeout. Since the result is unknown, the SMTChecker reports the potential failure for soundness. This may be solved by increasing the query timeout, but the problem might also simply be too hard for the engine to solve.
+- ``<failing  property> happens here.``. Cela signifie que le SMTChecker a prouvé qu'une certaine propriété est défaillante. Un contre-exemple peut être donné, cependant dans des situations complexes, il peut aussi ne pas montrer de contre-exemple. Ce résultat peut aussi être un faux positif dans certains cas, lorsque l'encodage SMT ajoute des abstractions pour le code Solidity qui est difficile ou impossible à exprimer.
+- ``<failing  property> might happen here``. Cela signifie que le solveur n'a pas pu prouver l'un ou l'autre cas dans le délai imparti. Comme le résultat est inconnu, le SMTChecker rapporte l'échec potentiel pour la solidité. Cela peut être résolu en augmentant le délai d'interrogation, mais le problème peut aussi être simplement trop difficile à résoudre pour le moteur.
 
-To enable the SMTChecker, you must select :ref:`which engine should run<smtchecker_engines>`,
-where the default is no engine. Selecting the engine enables the SMTChecker on all files.
-
-.. note::
-
-    Prior to Solidity 0.8.4, the default way to enable the SMTChecker was via
-    ``pragma experimental SMTChecker;`` and only the contracts containing the
-    pragma would be analyzed. That pragma has been deprecated, and although it
-    still enables the SMTChecker for backwards compatibility, it will be removed
-    in Solidity 0.9.0. Note also that now using the pragma even in a single file
-    enables the SMTChecker for all files.
+Pour activer le SMTChecker, vous devez sélectionner :ref:`quel moteur doit fonctionner<smtchecker_engines>`,
+où la valeur par défaut est aucun moteur. La sélection du moteur active le SMTChecker sur tous les fichiers.
 
 .. note::
 
-    The lack of warnings for a verification target represents an undisputed
-    mathematical proof of correctness, assuming no bugs in the SMTChecker and
-    the underlying solver. Keep in mind that these problems are
-    *very hard* and sometimes *impossible* to solve automatically in the
-    general case.  Therefore, several properties might not be solved or might
-    lead to false positives for large contracts. Every proven property should
-    be seen as an important achievement. For advanced users, see :ref:`SMTChecker Tuning <smtchecker_options>`
-    to learn a few options that might help proving more complex
-    properties.
+    Avant Solidity 0.8.4, la manière par défaut d'activer le SMTChecker était via
+    ``pragma experimental SMTChecker;`` et seuls les contrats contenant le pragma
+    seraient analysés. Ce pragme a été déprécié, et bien qu'il active toujours le
+    qu'il active toujours le SMTChecker pour une compatibilité ascendante, il sera supprimé
+    dans Solidity 0.9.0. Notez également que maintenant l'utilisation du pragma même dans un seul fichier
+    active le SMTChecker pour tous les fichiers.
+
+.. note::
+
+    L'absence d'avertissement pour une cible de vérification représente une
+    preuve mathématique incontestable de l'exactitude, en supposant l'absence de bogues dans le SMTChecker et
+    le solveur sous-jacent. Gardez à l'esprit que ces problèmes sont
+    *très difficiles* et parfois *impossibles* à résoudre automatiquement dans le
+    cas général. Par conséquent, plusieurs propriétés pourraient ne pas être résolues ou pourraient
+    conduire à des faux positifs pour les grands contrats. Chaque propriété prouvée doit être
+    être considérée comme une réalisation importante. Pour les utilisateurs avancés, voir :ref:`SMTChecker Tuning <smtchecker_options>`
+    pour apprendre quelques options qui pourraient aider à prouver des propriétés
+    complexes.
 
 ********
-Tutorial
+Tutoriel
 ********
 
-Overflow
+Débordement
 ========
 
 .. code-block:: Solidity
@@ -95,12 +95,12 @@ Overflow
         }
     }
 
-The contract above shows an overflow check example.
-The SMTChecker does not check underflow and overflow by default for Solidity >=0.8.7,
-so we need to use the command line option ``--model-checker-targets "underflow,overflow"``
-or the JSON option ``settings.modelChecker.targets = ["underflow", "overflow"]``.
-See :ref:`this section for targets configuration<smtchecker_targets>`.
-Here, it reports the following:
+Le contrat ci-dessus montre un exemple de vérification de débordement (overflow).
+Le SMTChecker ne vérifie pas l'underflow et l'overflow par défaut pour Solidity >=0.8.7,
+donc nous devons utiliser l'option de ligne de commande ``--model-checker-targets "underflow,overflow"``
+ou l'option JSON ``settings.modelChecker.targets = ["underflow", "overflow"]``.
+Voir :ref:`cette section pour la configuration des cibles<smtchecker_targets>`.
+Ici, il signale ce qui suit :
 
 .. code-block:: text
 
@@ -119,8 +119,8 @@ Here, it reports the following:
     9 |             return _x + _y;
       |                    ^^^^^^^
 
-If we add ``require`` statements that filter out overflow cases,
-the SMTChecker proves that no overflow is reachable (by not reporting warnings):
+Si nous ajoutons des déclarations ``require`` qui filtrent les cas de débordement,
+le SMTChecker prouve qu'aucun débordement n'est atteignable (en ne signalant pas d'avertissement) :
 
 .. code-block:: Solidity
 
@@ -147,18 +147,18 @@ the SMTChecker proves that no overflow is reachable (by not reporting warnings):
     }
 
 
-Assert
+Affirmer
 ======
 
-An assertion represents an invariant in your code: a property that must be true
-*for all transactions, including all input and storage values*, otherwise there is a bug.
+Une assertion représente un invariant dans votre code : une propriété qui doit être vraie
+*pour toutes les opérations, y compris toutes les valeurs d'entrée et de stockage*, sinon il y a un bug.
 
-The code below defines a function ``f`` that guarantees no overflow.
-Function ``inv`` defines the specification that ``f`` is monotonically increasing:
-for every possible pair ``(_a, _b)``, if ``_b > _a`` then ``f(_b) > f(_a)``.
-Since ``f`` is indeed monotonically increasing, the SMTChecker proves that our
-property is correct. You are encouraged to play with the property and the function
-definition to see what results come out!
+Le code ci-dessous définit une fonction ``f`` qui garantit l'absence de débordement.
+La fonction ``inv`` définit la spécification que ``f`` est monotone et croissante :
+pour chaque paire possible ``(_a, _b)``, si ``_b > _a`` alors ``f(_b) > f(_a)``.
+Puisque ``f`` est effectivement monotone et croissante, le SMTChecker prouve que notre
+propriété est correcte. Nous vous encourageons à jouer avec la propriété et la définition de la fonction
+pour voir les résultats qui en découlent !
 
 .. code-block:: Solidity
 
@@ -177,10 +177,10 @@ definition to see what results come out!
         }
     }
 
-We can also add assertions inside loops to verify more complicated properties.
-The following code searches for the maximum element of an unrestricted array of
-numbers, and asserts the property that the found element must be greater or
-equal every element in the array.
+Nous pouvons également ajouter des assertions à l'intérieur des boucles pour vérifier des propriétés plus complexes.
+Le code suivant recherche l'élément maximum d'un tableau non restreint de
+nombres, et affirme la propriété selon laquelle l'élément trouvé doit être supérieur ou
+égal à chaque élément du tableau.
 
 .. code-block:: Solidity
 
@@ -201,20 +201,20 @@ equal every element in the array.
         }
     }
 
-Note that in this example the SMTChecker will automatically try to prove three properties:
+Notez que dans cet exemple, le SMTChecker va automatiquement essayer de prouver trois propriétés :
 
-1. ``++i`` in the first loop does not overflow.
-2. ``++i`` in the second loop does not overflow.
-3. The assertion is always true.
+1. ``++i`` dans la première boucle ne déborde pas.
+2. ``++i`` dans la deuxième boucle ne déborde pas.
+3. L'assertion est toujours vraie.
 
 .. note::
 
-    The properties involve loops, which makes it *much much* harder than the previous
-    examples, so beware of loops!
+    Les propriétés impliquent des boucles, ce qui rend l'exercice *beaucoup plus difficile* que les
+    exemples précédents, alors faites attention aux boucles !
 
-All the properties are correctly proven safe. Feel free to change the
-properties and/or add restrictions on the array to see different results.
-For example, changing the code to
+Toutes les propriétés sont correctement prouvées sûres. N'hésitez pas à modifier
+et/ou d'ajouter des restrictions sur le tableau pour obtenir des résultats différents.
+Par exemple, en changeant le code en
 
 .. code-block:: Solidity
 
@@ -236,7 +236,7 @@ For example, changing the code to
         }
     }
 
-gives us:
+nous donne :
 
 .. code-block:: text
 
@@ -254,19 +254,19 @@ gives us:
     14 |            assert(m > _a[i]);
 
 
-State Properties
+Propriétés de l'État
 ================
 
-So far the examples only demonstrated the use of the SMTChecker over pure code,
-proving properties about specific operations or algorithms.
-A common type of properties in smart contracts are properties that involve the
-state of the contract. Multiple transactions might be needed to make an assertion
-fail for such a property.
+Jusqu'à présent, les exemples ont seulement démontré l'utilisation du SMTChecker sur du code pur,
+prouvant des propriétés sur des opérations ou des algorithmes spécifiques.
+Un type commun de propriétés dans les contrats intelligents sont les propriétés qui impliquent
+l'état du contrat. Plusieurs transactions peuvent être nécessaires pour faire
+échouer pour une telle propriété.
 
-As an example, consider a 2D grid where both axis have coordinates in the range (-2^128, 2^128 - 1).
-Let us place a robot at position (0, 0). The robot can only move diagonally, one step at a time,
-and cannot move outside the grid. The robot's state machine can be represented by the smart contract
-below.
+À titre d'exemple, considérons une grille 2D où les deux axes ont des coordonnées dans la plage (-2^128, 2^128 - 1).
+Plaçons un robot à la position (0, 0). Le robot ne peut se déplacer qu'en diagonale, un pas à la fois,
+et ne peut pas se déplacer en dehors de la grille. La machine à états du robot peut être représentée par le contrat intelligent
+ci-dessous.
 
 .. code-block:: Solidity
 
@@ -308,16 +308,15 @@ below.
         }
     }
 
-Function ``inv`` represents an invariant of the state machine that ``x + y``
-must be even.
-The SMTChecker manages to prove that regardless how many commands we give the
-robot, even if infinitely many, the invariant can *never* fail. The interested
-reader may want to prove that fact manually as well.  Hint: this invariant is
-inductive.
+La fonction ``inv`` représente un invariant de la machine à états selon lequel ``x + y`` doit être pair.
+Le SMTChecker parvient à prouver que quelque soit le nombre de commandes que l'on donne au
+robot, même s'ils sont infinis, l'invariant ne peut *jamais* échouer.
+Le lecteur intéressé peut vouloir prouver ce fait manuellement aussi.
+Indice : cet invariant est inductif.
 
-We can also trick the SMTChecker into giving us a path to a certain position we
-think might be reachable.  We can add the property that (2, 4) is *not*
-reachable, by adding the following function.
+Nous pouvons aussi tromper le SMTChecker pour qu'il nous donne un chemin vers une
+position que nous pensons être atteignable. Nous pouvons ajouter la propriété que (2, 4) est *non*
+accessible, en ajoutant la fonction suivante.
 
 .. code-block:: Solidity
 
@@ -325,8 +324,8 @@ reachable, by adding the following function.
         assert(!(x == 2 && y == 4));
     }
 
-This property is false, and while proving that the property is false,
-the SMTChecker tells us exactly *how* to reach (2, 4):
+Cette propriété est fausse, et tout en prouvant que la propriété est fausse,
+le SMTChecker nous dit exactement *comment* atteindre (2, 4) :
 
 .. code-block:: text
 
@@ -351,22 +350,21 @@ the SMTChecker tells us exactly *how* to reach (2, 4):
     35 |            assert(!(x == 2 && y == 4));
        |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Note that the path above is not necessarily deterministic, as there are
-other paths that could reach (2, 4). The choice of which path is shown
-might change depending on the used solver, its version, or just randomly.
+Notez que le chemin ci-dessus n'est pas nécessairement déterministe, car il y a
+d'autres chemins qui pourraient atteindre (2, 4). Le choix du chemin affiché
+peut changer en fonction du solveur utilisé, de sa version, ou simplement au hasard.
 
-External Calls and Reentrancy
+Appels externes et réentrance
 =============================
 
-Every external call is treated as a call to unknown code by the SMTChecker.
-The reasoning behind that is that even if the code of the called contract is
-available at compile time, there is no guarantee that the deployed contract
-will indeed be the same as the contract where the interface came from at
-compile time.
+Chaque appel externe est traité comme un appel à un code inconnu par le SMTChecker.
+Le raisonnement derrière cela est que même si le code du contrat appelé
+est disponible au moment de la compilation, il n'y a aucune garantie que le contrat déployé
+sera bien le même que le contrat d'où provient l'interface au moment de la compilation.
 
-In some cases, it is possible to automatically infer properties over state
-variables that are still true even if the externally called code can do
-anything, including reenter the caller contract.
+Dans certains cas, il est possible de déduire automatiquement des propriétés sur les
+variables d'état qui restent vraies même si le code appelé de l'extérieur peut faire
+n'importe quoi, y compris réintroduire le contrat de l'appelant.
 
 .. code-block:: Solidity
 
@@ -406,14 +404,14 @@ anything, including reenter the caller contract.
         }
     }
 
-The example above shows a contract that uses a mutex flag to forbid reentrancy.
-The solver is able to infer that when ``unknown.run()`` is called, the contract
-is already "locked", so it would not be possible to change the value of ``x``,
-regardless of what the unknown called code does.
+L'exemple ci-dessus montre un contrat qui utilise un drapeau mutex pour interdire la réentrance.
+Le solveur est capable de déduire que lorsque ``unknown.run()`` est appelé, le contrat
+est déjà "verrouillé", donc il ne serait pas possible de changer la valeur de ``x``,
+indépendamment de ce que fait le code appelé inconnu.
 
-If we "forget" to use the ``mutex`` modifier on function ``set``, the
-SMTChecker is able to synthesize the behaviour of the externally called code so
-that the assertion fails:
+Si nous "oublions" d'utiliser le modificateur ``mutex`` sur la fonction ``set``, le
+SMTChecker est capable de synthétiser le comportement du code appelé de manière externe
+que l'assertion échoue :
 
 .. code-block:: text
 
@@ -436,80 +434,79 @@ that the assertion fails:
 .. _smtchecker_options:
 
 *****************************
-SMTChecker Options and Tuning
+Options et réglages de SMTChecker
 *****************************
 
-Timeout
+Délai d'attente
 =======
 
-The SMTChecker uses a hardcoded resource limit (``rlimit``) chosen per solver,
-which is not precisely related to time. We chose the ``rlimit`` option as the default
-because it gives more determinism guarantees than time inside the solver.
+Le SMTChecker utilise une limite de ressource codée en dur (``rlimit``) choisie par solveur,
+qui n'est pas précisément liée au temps. Nous avons choisi l'option ``rlimit`` comme défaut
+car elle donne plus de garanties de déterminisme que le temps à l'intérieur du solveur.
 
-This options translates roughly to "a few seconds timeout" per query. Of course many properties
-are very complex and need a lot of time to be solved, where determinism does not matter.
-If the SMTChecker does not manage to solve the contract properties with the default ``rlimit``,
-a timeout can be given in milliseconds via the CLI option ``--model-checker-timeout <time>`` or
-the JSON option ``settings.modelChecker.timeout=<time>``, where 0 means no timeout.
+Cette option se traduit approximativement par "un délai de quelques secondes" par requête. Bien sûr de nombreuses propriétés
+sont très complexes et nécessitent beaucoup de temps pour être résolus, où le déterminisme n'a pas d'importance.
+Si le SMTChecker ne parvient pas à résoudre les propriétés du contrat avec le ``rlimit`` par défaut,
+un timeout peut être donné en millisecondes via l'option CLI ``--model-checker-timeout <time>`` ou
+l'option JSON ``settings.modelChecker.timeout=<time>``, où 0 signifie pas de délai d'attente.
 
 .. _smtchecker_targets:
 
-Verification Targets
+Objectifs de vérification
 ====================
 
-The types of verification targets created by the SMTChecker can also be
-customized via the CLI option ``--model-checker-target <targets>`` or the JSON
-option ``settings.modelChecker.targets=<targets>``.
-In the CLI case, ``<targets>`` is a no-space-comma-separated list of one or
-more verification targets, and an array of one or more targets as strings in
-the JSON input.
-The keywords that represent the targets are:
+Les types de cibles de vérification créées par le SMTChecker peuvent aussi être
+personnalisés via l'option CLI ``--model-checker-target <targets>`` ou l'option JSON ``settings.modelChecker.targets=<targets>``.
+Dans le cas de l'interface CLI, ``<targets>`` est une liste non séparée par des virgules
+d'une ou plusieurs cibles de vérification, et un tableau d'une ou plusieurs cibles comme
+l'entrée JSON.
+Les mots-clés qui représentent les cibles sont :
 
-- Assertions: ``assert``.
-- Arithmetic underflow: ``underflow``.
-- Arithmetic overflow: ``overflow``.
-- Division by zero: ``divByZero``.
-- Trivial conditions and unreachable code: ``constantCondition``.
-- Popping an empty array: ``popEmptyArray``.
-- Out of bounds array/fixed bytes index access: ``outOfBounds``.
-- Insufficient funds for a transfer: ``balance``.
-- All of the above: ``default`` (CLI only).
+- Assertions : ``assert``.
+- Débordement arithmétique : ``underflow``.
+- Débordement arithmétique : ``overflow``.
+- La division par zéro : ``divByZero``.
+- Conditions triviales et code inaccessible : ``constantCondition``.
+- Extraire un tableau vide : ``popEmptyArray``.
+- Accès hors limites aux tableaux et aux index d'octets fixes : ``outOfBounds``.
+- Fonds insuffisants pour un transfert : ``balance``.
+- Tous ces éléments : ``défaut`` (CLI uniquement).
 
-A common subset of targets might be, for example:
+Un sous-ensemble commun de cibles pourrait être, par exemple :
 ``--model-checker-targets assert,overflow``.
 
-All targets are checked by default, except underflow and overflow for Solidity >=0.8.7.
+Toutes les cibles sont vérifiées par défaut, sauf underflow et overflow pour Solidity >=0.8.7.
 
-There is no precise heuristic on how and when to split verification targets,
-but it can be useful especially when dealing with large contracts.
+Il n'y a pas d'heuristique précise sur comment et quand diviser les cibles de vérification,
+mais cela peut être utile, surtout lorsqu'il s'agit de grands contrats.
 
-Unproved Targets
+Cibles non vérifiées
 ================
 
-If there are any unproved targets, the SMTChecker issues one warning stating
-how many unproved targets there are. If the user wishes to see all the specific
-unproved targets, the CLI option ``--model-checker-show-unproved`` and
-the JSON option ``settings.modelChecker.showUnproved = true`` can be used.
+S'il existe des cibles non vérifiées, le SMTChecker émet un avertissement indiquant
+combien de cibles non vérifiées il y a. Si l'utilisateur souhaite voir toutes les
+cibles non corrigées, l'option CLI ``--model-checker-show-unproved`` et
+l'option JSON ``settings.modelChecker.showUnproved = true`` peuvent être utilisées.
 
-Verified Contracts
+Contrats vérifiés
 ==================
 
-By default all the deployable contracts in the given sources are analyzed separately as
-the one that will be deployed. This means that if a contract has many direct
-and indirect inheritance parents, all of them will be analyzed on their own,
-even though only the most derived will be accessed directly on the blockchain.
-This causes an unnecessary burden on the SMTChecker and the solver.  To aid
-cases like this, users can specify which contracts should be analyzed as the
-deployed one. The parent contracts are of course still analyzed, but only in
-the context of the most derived contract, reducing the complexity of the
-encoding and generated queries. Note that abstract contracts are by default
-not analyzed as the most derived by the SMTChecker.
+Par défaut, tous les contrats déployables dans les sources données sont analysés séparément en tant que
+celui qui sera déployé. Cela signifie que si un contrat a de nombreux
+parents d'héritage direct et indirect, ils seront tous analysés séparément,
+même si seul le plus dérivé sera accessible directement sur la blockchain.
+Cela entraîne une charge inutile pour le SMTChecker et le solveur. Pour aider les
+cas comme celui-ci, les utilisateurs peuvent spécifier quels contrats doivent être analysés comme le
+déployé. Les contrats parents sont bien sûr toujours analysés, mais seulement
+dans le contexte du contrat le plus dérivé, ce qui réduit la complexité de
+l'encodage et des requêtes générées. Notez que les contrats abstraits ne sont par défaut
+pas analysés comme les plus dérivés par le SMTChecker.
 
-The chosen contracts can be given via a comma-separated list (whitespace is not
-allowed) of <source>:<contract> pairs in the CLI:
+Les contrats choisis peuvent être donnés via une liste séparée par des virgules (les espaces blancs ne sont pas
+autorisés) de paires <source>:<contrat> dans le CLI :
 ``--model-checker-contracts "<source1.sol:contract1>,<source2.sol:contract2>,<source2.sol:contract3>"``,
-and via the object ``settings.modelChecker.contracts`` in the :ref:`JSON input<compiler-api>`,
-which has the following form:
+et via l'objet ``settings.modelChecker.contracts`` dans le :ref:`JSON input<compiler-api>`,
+qui a la forme suivante :
 
 .. code-block:: json
 
@@ -518,151 +515,154 @@ which has the following form:
         "source2.sol": ["contract2", "contract3"]
     }
 
-Reported Inferred Inductive Invariants
+Invariants inductifs rapportés et inférés
 ======================================
 
-For properties that were proved safe with the CHC engine,
-the SMTChecker can retrieve inductive invariants that were inferred by the Horn
-solver as part of the proof.
-Currently two types of invariants can be reported to the user:
+Pour les propriétés qui ont été prouvées sûres avec le moteur CHC,
+le SMTChecker peut récupérer les invariants inductifs qui ont été inférés par le solveur de Horn
+dans le cadre de la preuve.
+Actuellement, deux types d'invariants peuvent être rapportés à l'utilisateur :
 
-- Contract Invariants: these are properties over the contract's state variables
-  that are true before and after every possible transaction that the contract may ever run. For example, ``x >= y``, where ``x`` and ``y`` are a contract's state variables.
-- Reentrancy Properties: they represent the behavior of the contract
-  in the presence of external calls to unknown code. These properties can express a relation
-  between the value of the state variables before and after the external call, where the external call is free to do anything, including making reentrant calls to the analyzed contract. Primed variables represent the state variables' values after said external call. Example: ``lock -> x = x'``.
+- Invariants de contrat : ce sont des propriétés sur les variables d'état du contrat
+  qui sont vraies avant et après chaque transaction possible que le contrat peut exécuter.
+  Par exemple, ``x >= y``, où ``x`` et ``y`` sont les variables d'état d'un contrat.
+- Propriétés de réentraînement : elles représentent le comportement du contrat
+  en présence d'appels externes à du code inconnu. Ces propriétés peuvent exprimer une relation
+  entre la valeur des variables d'état avant et après l'appel externe, où l'appel externe est libre de faire n'importe quoi,
+  y compris d'effectuer des appels réentrants au contrat analysé.
+  Les variables amorcées représentent les valeurs des variables d'état après ledit appel externe. Exemple : ``lock -> x = x'``.
 
-The user can choose the type of invariants to be reported using the CLI option ``--model-checker-invariants "contract,reentrancy"`` or as an array in the field ``settings.modelChecker.invariants`` in the :ref:`JSON input<compiler-api>`.
-By default the SMTChecker does not report invariants.
+L'utilisateur peut choisir le type d'invariants à rapporter en utilisant l'option CLI ``--model-checker-invariants "contract,reentrancy"`` ou comme un tableau dans le champ ``settings.modelChecker.invariants`` dans l'entrée :ref:`JSON<compiler-api>`.
+Par défaut, le SMTChecker ne rapporte pas les invariants.
 
-Division and Modulo With Slack Variables
+Division et modulo avec des variables muettes
 ========================================
 
-Spacer, the default Horn solver used by the SMTChecker, often dislikes division
-and modulo operations inside Horn rules. Because of that, by default the
-Solidity division and modulo operations are encoded using the constraint
-``a = b * d + m`` where ``d = a / b`` and ``m = a % b``.
-However, other solvers, such as Eldarica, prefer the syntactically precise operations.
-The command line flag ``--model-checker-div-mod-no-slacks`` and the JSON option
-``settings.modelChecker.divModNoSlacks`` can be used to toggle the encoding
-depending on the used solver preferences.
+Spacer, le solveur de Corne par défaut utilisé par le SMTChecker, n'aime souvent pas les opérations de division et de
+modulation dans les règles de Horn. Pour cette raison, par défaut,
+les opérations de division et de modulo de Solidity sont codées en utilisant la contrainte suivante
+``a = b * d + m`` où ``d = a / b`` et ``m = a % b``.
+Cependant, d'autres solveurs, comme Eldarica, préfèrent les opérations syntaxiquement précises.
+L'indicateur de ligne de commande ``--model-checker-div-mod-no-slacks`` et l'option JSON
+``settings.modelChecker.divModNoSlacks`` peuvent être utilisés pour basculer le codage
+en fonction des préférences du solveur utilisé.
 
-Natspec Function Abstraction
+Abstraction des fonctions Natspec
 ============================
 
-Certain functions including common math methods such as ``pow``
-and ``sqrt`` may be too complex to be analyzed in a fully automated way.
-These functions can be annotated with Natspec tags that indicate to the
-SMTChecker that these functions should be abstracted. This means that the
-body of the function is not used, and when called, the function will:
+Certaines fonctions, y compris les méthodes mathématiques courantes telles que ``pow``
+et ``sqrt`` peuvent être trop complexes pour être analysées de manière entièrement automatisée.
+Ces fonctions peuvent être annotées avec des balises Natspec qui indiquent au contrôleur
+SMTChecker que ces fonctions doivent être abstraites. Cela signifie que
+de la fonction n'est pas utilisé et que, lorsqu'elle est appelée, la fonction :
 
-- Return a nondeterministic value, and either keep the state variables unchanged if the abstracted function is view/pure, or also set the state variables to nondeterministic values otherwise. This can be used via the annotation ``/// @custom:smtchecker abstract-function-nondet``.
-- Act as an uninterpreted function. This means that the semantics of the function (given by the body) are ignored, and the only property this function has is that given the same input it guarantees the same output. This is currently under development and will be available via the annotation ``/// @custom:smtchecker abstract-function-uf``.
+- retournera une valeur non déterministe, et soit gardera les variables d'état inchangées si la fonction abstraite est view/pure, soit fixera également les variables d'état à des valeurs non déterministes dans le cas contraire. Ceci peut être utilisé via l'annotation ``/// @custom:smtchecker abstract-function-nondet``.
+- Agir comme une fonction non interprétée. Cela signifie que la sémantique de la fonction (donnée par le corps) est ignorée, et que la seule propriété de cette fonction est que, pour une même entrée, elle garantit la même sortie. Ceci est actuellement en cours de développement et sera disponible via l'annotation ``/// @custom:smtchecker abstract-function-uf``.
 
 .. _smtchecker_engines:
 
-Model Checking Engines
+Moteurs de vérification de modèles réduits
 ======================
 
-The SMTChecker module implements two different reasoning engines, a Bounded
-Model Checker (BMC) and a system of Constrained Horn Clauses (CHC).  Both
-engines are currently under development, and have different characteristics.
-The engines are independent and every property warning states from which engine
-it came. Note that all the examples above with counterexamples were
-reported by CHC, the more powerful engine.
+Le module SMTChecker implémente deux moteurs de raisonnement différents, un Bounded
+Model Checker (BMC) et un système de Clauses de Corne Contraintes (CHC).  Les deux
+moteurs sont actuellement en cours de développement, et ont des caractéristiques différentes.
+Les moteurs sont indépendants et chaque avertissement de propriété indique de quel moteur
+il provient. Notez que tous les exemples ci-dessus avec des contre-exemples ont été
+rapportés par CHC, le moteur le plus puissant.
 
-By default both engines are used, where CHC runs first, and every property that
-was not proven is passed over to BMC. You can choose a specific engine via the CLI
-option ``--model-checker-engine {all,bmc,chc,none}`` or the JSON option
+Par défaut, les deux moteurs sont utilisés, CHC s'exécute en premier, et chaque propriété qui
+n'a pas été prouvée est transmise à BMC. Vous pouvez choisir un moteur spécifique via l'interface CLI
+``--model-checker-engine {all,bmc,chc,none}`` ou l'option JSON
 ``settings.modelChecker.engine={all,bmc,chc,none}``.
 
-Bounded Model Checker (BMC)
+Contrôleur de modèles délimités (BMC)
 ---------------------------
 
-The BMC engine analyzes functions in isolation, that is, it does not take the
-overall behavior of the contract over multiple transactions into account when
-analyzing each function.  Loops are also ignored in this engine at the moment.
-Internal function calls are inlined as long as they are not recursive, directly
-or indirectly. External function calls are inlined if possible. Knowledge
-that is potentially affected by reentrancy is erased.
+Le moteur BMC analyse les fonctions de manière isolée, c'est-à-dire qu'il ne prend pas en compte le
+comportement global du contrat sur plusieurs transactions lorsqu'il analyse chaque fonction.
+Les boucles sont également ignorées dans ce moteur pour le moment.
+Les appels de fonctions internes sont inlined tant qu'ils ne sont pas récursifs, directement
+ou indirectement. Les appels de fonctions externes sont inlined si possible. Connaissance
+qui est potentiellement affectée par la réentrance est effacée.
 
-The characteristics above make BMC prone to reporting false positives,
-but it is also lightweight and should be able to quickly find small local bugs.
+Les caractéristiques ci-dessus font que la BMC est susceptible de signaler des faux positifs,
+mais il est également léger et devrait être capable de trouver rapidement de petits bogues locaux.
 
-Constrained Horn Clauses (CHC)
+Clauses de corne contraintes (CHC)
 ------------------------------
 
-A contract's Control Flow Graph (CFG) is modelled as a system of
-Horn clauses, where the life cycle of the contract is represented by a loop
-that can visit every public/external function non-deterministically. This way,
-the behavior of the entire contract over an unbounded number of transactions
-is taken into account when analyzing any function. Loops are fully supported
-by this engine. Internal function calls are supported, and external function
-calls assume the called code is unknown and can do anything.
+Le graphique de flux de contrôle (CFG) d'un contrat est modélisé comme un système de
+clauses de Horn, où le cycle de vie du contrat est représenté par une boucle
+qui peut visiter chaque fonction publique/externe de manière non-déterministe. De cette façon,
+le comportement de l'ensemble du contrat sur un nombre illimité de transactions
+est pris en compte lors de l'analyse de toute fonction. Les boucles sont entièrement prises en charge
+par ce moteur. Les appels de fonctions internes sont pris en charge, et les appels de fonctions
+externes supposent que le code appelé est inconnu et peut faire n'importe quoi.
 
-The CHC engine is much more powerful than BMC in terms of what it can prove,
-and might require more computing resources.
+Le moteur CHC est beaucoup plus puissant que BMC en termes de ce qu'il peut prouver,
+et peut nécessiter plus de ressources informatiques.
 
-SMT and Horn solvers
+Solveurs SMT et Horn
 ====================
 
-The two engines detailed above use automated theorem provers as their logical
-backends.  BMC uses an SMT solver, whereas CHC uses a Horn solver. Often the
-same tool can act as both, as seen in `z3 <https://github.com/Z3Prover/z3>`_,
-which is primarily an SMT solver and makes `Spacer
-<https://spacer.bitbucket.io/>`_ available as a Horn solver, and `Eldarica
-<https://github.com/uuverifiers/eldarica>`_ which does both.
+Les deux moteurs détaillés ci-dessus utilisent des prouveurs de théorèmes automatisés comme leur
+logique. BMC utilise un solveur SMT, tandis que CHC utilise un solveur de Horn. Souvent le
+même outil peut agir comme les deux, comme on le voit dans `z3 <https://github.com/Z3Prover/z3>`_,
+qui est principalement un solveur SMT et qui rend `Spacer
+<https://spacer.bitbucket.io/>`_ disponible comme solveur de Horn, et `Eldarica
+<https://github.com/uuverifiers/eldarica>`_ qui fait les deux.
 
-The user can choose which solvers should be used, if available, via the CLI
-option ``--model-checker-solvers {all,cvc4,smtlib2,z3}`` or the JSON option
-``settings.modelChecker.solvers=[smtlib2,z3]``, where:
+L'utilisateur peut choisir quels solveurs doivent être utilisés, s'ils sont disponibles, via l'option CLI
+``--model-checker-solvers {all,cvc4,smtlib2,z3}`` ou l'option JSON
+``settings.modelChecker.solvers=[smtlib2,z3]``, où :
 
-- ``cvc4`` is only available if the ``solc`` binary is compiled with it. Only BMC uses ``cvc4``.
-- ``smtlib2`` outputs SMT/Horn queries in the `smtlib2 <http://smtlib.cs.uiowa.edu/>`_ format.
-  These can be used together with the compiler's `callback mechanism <https://github.com/ethereum/solc-js>`_ so that
-  any solver binary from the system can be employed to synchronously return the results of the queries to the compiler.
-  This is currently the only way to use Eldarica, for example, since it does not have a C++ API.
-  This can be used by both BMC and CHC depending on which solvers are called.
-- ``z3`` is available
+- ``cvc4`` n'est disponible que si le binaire ``solc`` est compilé avec. Seul BMC utilise ``cvc4``.
+- ``smtlib2`` produit des requêtes SMT/Horn dans le format `smtlib2 <http://smtlib.cs.uiowa.edu/>`_.
+  Celles-ci peuvent être utilisées avec le `mécanisme de rappel du compilateur <https://github.com/ethereum/solc-js>`_ de sorte que
+  tout solveur binaire du système peut être employé pour renvoyer de manière synchrone les résultats des requêtes au compilateur.
+  C'est actuellement la seule façon d'utiliser Eldarica, par exemple, puisqu'il ne dispose pas d'une API C++.
+  Cela peut être utilisé à la fois par BMC et CHC, selon les solveurs appelés.
+- ``z3`` est disponible
 
-  - if ``solc`` is compiled with it;
-  - if a dynamic ``z3`` library of version 4.8.x is installed in a Linux system (from Solidity 0.7.6);
-  - statically in ``soljson.js`` (from Solidity 0.6.9), that is, the Javascript binary of the compiler.
+  - si ``solc`` est compilé avec lui ;
+  - si une bibliothèque dynamique ``z3`` de version 4.8.x est installée dans un système Linux (à partir de Solidity 0.7.6) ;
+  - statiquement dans ``soljson.js`` (à partir de Solidity 0.6.9), c'est-à-dire le binaire Javascript du compilateur.
 
-Since both BMC and CHC use ``z3``, and ``z3`` is available in a greater variety
-of environments, including in the browser, most users will almost never need to be
-concerned about this option. More advanced users might apply this option to try
-alternative solvers on more complex problems.
+Étant donné que BMC et CHC utilisent tous deux ``z3``, et que ``z3`` est disponible dans une plus grande variété
+d'environnements, y compris dans le navigateur, la plupart des utilisateurs n'auront presque jamais à se
+préoccuper de cette option. Les utilisateurs plus avancés peuvent utiliser cette option pour essayer
+des solveurs alternatifs sur des problèmes plus complexes.
 
-Please note that certain combinations of chosen engine and solver will lead to
-the SMTChecker doing nothing, for example choosing CHC and ``cvc4``.
+Veuillez noter que certaines combinaisons de moteur et de solveur choisis conduiront à ce que
+SMTChecker ne fera rien, par exemple choisir CHC et ``cvc4``.
 
 *******************************
-Abstraction and False Positives
+Abstraction et faux positifs
 *******************************
 
-The SMTChecker implements abstractions in an incomplete and sound way: If a bug
-is reported, it might be a false positive introduced by abstractions (due to
-erasing knowledge or using a non-precise type). If it determines that a
-verification target is safe, it is indeed safe, that is, there are no false
-negatives (unless there is a bug in the SMTChecker).
+Le SMTChecker implémente les abstractions d'une manière incomplète et saine : Si un bogue
+est signalé, il peut s'agir d'un faux positif introduit par les abstractions (dû à
+l'effacement de connaissances ou l'utilisation d'un type non précis). S'il détermine qu'une
+cible de vérification est sûre, elle est effectivement sûre, c'est-à-dire qu'il n'y a pas de faux
+négatifs (à moins qu'il y ait un bug dans le SMTChecker).
 
-If a target cannot be proven you can try to help the solver by using the tuning
-options in the previous section.
-If you are sure of a false positive, adding ``require`` statements in the code
-with more information may also give some more power to the solver.
+Si une cible ne peut pas être prouvée, vous pouvez essayer d'aider le solveur en utilisant les options de réglage
+dans la section précédente.
+Si vous êtes sûr d'un faux positif, ajouter des déclarations ``require`` dans le code
+avec plus d'informations peut également donner plus de puissance au solveur.
 
-SMT Encoding and Types
+Encodage et types SMT
 ======================
 
-The SMTChecker encoding tries to be as precise as possible, mapping Solidity types
-and expressions to their closest `SMT-LIB <http://smtlib.cs.uiowa.edu/>`_
-representation, as shown in the table below.
+L'encodage SMTChecker essaye d'être aussi précis que possible, en faisant correspondre les types
+et expressions Solidity à leur représentation `SMT-LIB <http://smtlib.cs.uiowa.edu/>`_ la plus proche,
+comme le montre le tableau ci-dessous.
 
 +-----------------------+--------------------------------+-----------------------------+
-|Solidity type          |SMT sort                        |Theories                     |
+|Type Solidity          |Triage SMT                      |Théories                     |
 +=======================+================================+=============================+
-|Boolean                |Bool                            |Bool                         |
+|Booléen                |Bool                            |Bool                         |
 +-----------------------+--------------------------------+-----------------------------+
 |intN, uintN, address,  |Integer                         |LIA, NIA                     |
 |bytesN, enum, contract |                                |                             |
@@ -672,52 +672,55 @@ representation, as shown in the table below.
 +-----------------------+--------------------------------+-----------------------------+
 |struct                 |Tuple                           |Datatypes                    |
 +-----------------------+--------------------------------+-----------------------------+
-|other types            |Integer                         |LIA                          |
+|autres types           |Integer                         |LIA                          |
 +-----------------------+--------------------------------+-----------------------------+
 
-Types that are not yet supported are abstracted by a single 256-bit unsigned
-integer, where their unsupported operations are ignored.
+Les types qui ne sont pas encore pris en charge sont abstraits par un seul entier non signé de
+256 bits, où leurs opérations non supportées sont ignorées.
 
-For more details on how the SMT encoding works internally, see the paper
-`SMT-based Verification of Solidity Smart Contracts <https://github.com/leonardoalt/text/blob/master/solidity_isola_2018/main.pdf>`_.
+Pour plus de détails sur la façon dont l'encodage SMT fonctionne en interne, voir l'article
+`Vérification basée sur SMT des contrats intelligents Solidity <https://github.com/leonardoalt/text/blob/master/solidity_isola_2018/main.pdf>`_.
 
-Function Calls
+Appels de fonction
 ==============
 
-In the BMC engine, function calls to the same contract (or base contracts) are
-inlined when possible, that is, when their implementation is available.  Calls
-to functions in other contracts are not inlined even if their code is
-available, since we cannot guarantee that the actual deployed code is the same.
+Dans le moteur BMC, les appels de fonctions vers le même contrat (ou contrats de base) sont
+inlined lorsque cela est possible, c'est-à-dire lorsque leur implémentation est disponible.
+Les appels de fonctions dans d'autres contrats ne sont pas inlined même si leur code est
+disponible, car nous ne pouvons pas garantir que le code déployé est le même.
 
-The CHC engine creates nonlinear Horn clauses that use summaries of the called
-functions to support internal function calls. External function calls are treated
-as calls to unknown code, including potential reentrant calls.
+Le moteur CHC crée des clauses Horn non linéaires qui utilisent des résumés des fonctions appelées
+pour prendre en charge les appels de fonctions internes. Les appels de fonctions externes sont traités
+comme des appels à du code inconnu, y compris les appels réentrants potentiels.
 
-Complex pure functions are abstracted by an uninterpreted function (UF) over
-the arguments.
+Les fonctions pures complexes sont abstraites par une fonction non interprétée (UF) sur
+les arguments.
 
 +-----------------------------------+--------------------------------------+
-|Functions                          |BMC/CHC behavior                      |
+|Fonctions                          |Comportement BMC/CHC                  |
 +===================================+======================================+
-|``assert``                         |Verification target.                  |
+|``assert``                         |Objectif de vérification.             |
 +-----------------------------------+--------------------------------------+
-|``require``                        |Assumption.                           |
+|``require``                        |Assomption.                           |
 +-----------------------------------+--------------------------------------+
-|internal call                      |BMC: Inline function call.            |
-|                                   |CHC: Function summaries.              |
+|appel interne                      |BMC: Appel de fonction en ligne.      |
+|                                   |CHC: Résumés des fonctions.           |
 +-----------------------------------+--------------------------------------+
-|external call to known code        |BMC: Inline function call or          |
-|                                   |erase knowledge about state variables |
-|                                   |and local storage references.         |
-|                                   |CHC: Assume called code is unknown.   |
-|                                   |Try to infer invariants that hold     |
-|                                   |after the call returns.               |
+|appel externe à un code connu      |BMC : Appel de fonction en ligne ou   |
+|                                   |L'appel de fonction en ligne ou       |
+|                                   |l'effacement des connaissances sur les|
+|                                   |variables d'état                      |
+|                                   |et des références de stockage local.  |
+|                                   |CHC : Supposer que le code appelé est |
+|                                   |inconnu.                              |
+|                                   |Essayer de déduire les invariants qui |
+|                                   |tiennent après le retour de l'appel.  |
 +-----------------------------------+--------------------------------------+
-|Storage array push/pop             |Supported precisely.                  |
-|                                   |Checks whether it is popping an       |
-|                                   |empty array.                          |
+|Réseau de stockage push/pop        |Supporté précisément.                 |
+|                                   |Vérifie s'il s'agit de faire sauter un|
+|                                   |tableau vide.                         |
 +-----------------------------------+--------------------------------------+
-|ABI functions                      |Abstracted with UF.                   |
+|Fonctions ABI                      |Abstracted with UF.                   |
 +-----------------------------------+--------------------------------------+
 |``addmod``, ``mulmod``             |Supported precisely.                  |
 +-----------------------------------+--------------------------------------+
@@ -725,25 +728,27 @@ the arguments.
 |``keccak256``, ``ecrecover``       |                                      |
 |``ripemd160``                      |                                      |
 +-----------------------------------+--------------------------------------+
-|pure functions without             |Abstracted with UF                    |
-|implementation (external or        |                                      |
-|complex)                           |                                      |
+|Fonctions pures sans               |Abstraitement avec UF                 |
+|implémentation (externe ou         |                                      |
+|complexe)                          |                                      |
 +-----------------------------------+--------------------------------------+
-|external functions without         |BMC: Erase state knowledge and assume |
-|implementation                     |result is nondeterminisc.             |
-|                                   |CHC: Nondeterministic summary.        |
-|                                   |Try to infer invariants that hold     |
-|                                   |after the call returns.               |
+|fonctions externes sans            |BMC : Effacer les connaissances de    |
+|mise en œuvre                      |l'État et assumer Le résultat est     |
+|                                   |indéterminé.                          |
+|                                   |CHC : Résumé non déterministe.        |
+|                                   |Essayez d'inférer des invariants qui  |
+|                                   |tiennent après le retour de l'appel.  |
 +-----------------------------------+--------------------------------------+
-|transfer                           |BMC: Checks whether the contract's    |
-|                                   |balance is sufficient.                |
-|                                   |CHC: does not yet perform the check.  |
+|transfert                          |BMC : Vérifie si le solde             |
+|                                   |du contrat est suffisant.             |
+|                                   |CHC : n'effectue pas encore le        |
+|                                   |contrôle.                             |
 +-----------------------------------+--------------------------------------+
-|others                             |Currently unsupported                 |
+|autres                             |Actuellement non pris en charge       |
 +-----------------------------------+--------------------------------------+
 
-Using abstraction means loss of precise knowledge, but in many cases it does
-not mean loss of proving power.
+L'utilisation de l'abstraction signifie la perte de connaissances précises, mais dans de nombreux cas, elle
+ne signifie pas une perte de puissance de preuve.
 
 .. code-block:: solidity
 
@@ -768,29 +773,26 @@ not mean loss of proving power.
         }
     }
 
-In the example above, the SMTChecker is not expressive enough to actually
-compute ``ecrecover``, but by modelling the function calls as uninterpreted
-functions we know that the return value is the same when called on equivalent
-parameters. This is enough to prove that the assertion above is always true.
+Dans l'exemple ci-dessus, le SMTChecker n'est pas assez expressif pour
+calculer réellement "ecrecover", mais en modélisant les appels de fonctions comme des fonctions
+non interprétées, nous savons que la valeur de retour est la même lorsqu'elle est appelée avec des
+paramètres équivalents. Ceci est suffisant pour prouver que l'assertion ci-dessus est toujours vraie.
 
-Abstracting a function call with an UF can be done for functions known to be
-deterministic, and can be easily done for pure functions.  It is however
-difficult to do this with general external functions, since they might depend
-on state variables.
+L'abstraction d'un appel de fonction avec un UF peut être faite pour des fonctions connues pour être
+déterministes, et peut être facilement réalisée pour les fonctions pures.
+Il est cependant difficile de le faire avec des fonctions externes générales, puisqu'elles peuvent
+de variables d'état.
 
-Reference Types and Aliasing
+Types de référence et alias
 ============================
 
-Solidity implements aliasing for reference types with the same :ref:`data
-location<data-location>`.
-That means one variable may be modified through a reference to the same data
-area.
-The SMTChecker does not keep track of which references refer to the same data.
-This implies that whenever a local reference or state variable of reference
-type is assigned, all knowledge regarding variables of the same type and data
-location is erased.
-If the type is nested, the knowledge removal also includes all the prefix base
-types.
+Solidity implémente l'aliasing pour les types de référence avec le même :ref:`data emplacement<data-location>`.
+Cela signifie qu'une variable peut être modifiée à travers une référence à la même données.
+Le SMTChecker ne garde pas trace des références qui font référence aux mêmes données.
+Cela implique que chaque fois qu'une référence locale ou une variable d'état de type référence
+est assignée, toutes les connaissances concernant les variables de même type et de même emplacement
+données est effacée.
+Si le type est imbriqué, la suppression de la connaissance inclut également tous les types.
 
 .. code-block:: solidity
 
@@ -811,17 +813,17 @@ types.
             a[0] = 2;
             c[0][0] = 2;
             b[0] = 1;
-            // Erasing knowledge about memory references should not
-            // erase knowledge about state variables.
+            // Effacer les connaissances sur les références mémoire ne devrait pas
+            // effacer les connaissances sur les variables d'état.
             assert(array1[0] == 42);
-            // However, an assignment to a storage reference will erase
-            // storage knowledge accordingly.
+            // Cependant, une affectation à une référence de stockage effacera
+            // la connaissance du stockage en conséquence.
             d[0] = 2;
-            // Fails as false positive because of the assignment above.
+            // Échoue en tant que faux positif à cause de l'affectation ci-dessus.
             assert(array1[0] == 42);
-            // Fails because `a == b` is possible.
+            // Échoue car `a == b` est possible.
             assert(a[0] == 2);
-            // Fails because `c[i] == b` is possible.
+            // Échoue car `c[i] == b` est possible.
             assert(c[0][0] == 2);
             assert(d[0] == 2);
             assert(b[0] == 1);
@@ -836,48 +838,48 @@ types.
         }
     }
 
-After the assignment to ``b[0]``, we need to clear knowledge about ``a`` since
-it has the same type (``uint[]``) and data location (memory).  We also need to
-clear knowledge about ``c``, since its base type is also a ``uint[]`` located
-in memory. This implies that some ``c[i]`` could refer to the same data as
-``b`` or ``a``.
+Après l'affectation à ``b[0]``, nous devons effacer la connaissance de ``a``,
+puisqu'il a le même type (``uint[]``) et le même emplacement de données (mémoire). Nous devons également
+effacer les connaissances sur ``c``, puisque son type de base est également un ``uint[]`` situé
+dans la mémoire. Cela implique qu'un ``c[i]`` pourrait faire référence aux mêmes données que
+``b`` ou ``a``.
 
-Notice that we do not clear knowledge about ``array`` and ``d`` because they
-are located in storage, even though they also have type ``uint[]``.  However,
-if ``d`` was assigned, we would need to clear knowledge about ``array`` and
-vice-versa.
+Remarquez que nous n'avons pas de connaissances claires sur ``array`` et ``d``,
+parce qu'ils sont situés dans le stockage, même s'ils ont aussi le type ``uint[]``. Cependant,
+si ``d`` était assigné, nous devrions effacer la connaissance sur ``array`` et
+et vice-versa.
 
-Contract Balance
+Bilan des contrats
 ================
 
-A contract may be deployed with funds sent to it, if ``msg.value`` > 0 in the
-deployment transaction.
-However, the contract's address may already have funds before deployment,
-which are kept by the contract.
-Therefore, the SMTChecker assumes that ``address(this).balance >= msg.value``
-in the constructor in order to be consistent with the EVM rules.
-The contract's balance may also increase without triggering any calls to the
-contract, if
+Un contrat peut être déployé avec des fonds qui lui sont envoyés, si ``msg.value`` > 0 dans la
+transaction de déploiement.
+Cependant, l'adresse du contrat peut déjà avoir des fonds avant le déploiement,
+qui sont conservés par le contrat.
+Par conséquent, le SMTChecker suppose que ``adress(this).balance >= msg.value``
+dans le constructeur afin d'être cohérent avec les règles EVM.
+Le solde du contrat peut également augmenter sans déclencher d'appel au contrat
+contrat, si :
 
-- ``selfdestruct`` is executed by another contract with the analyzed contract
-  as the target of the remaining funds,
-- the contract is the coinbase (i.e., ``block.coinbase``) of some block.
+- ``selfdestruct`` est exécuté par un autre contrat avec le contrat analysé
+  comme cible des fonds restants,
+- le contrat est la base de données de pièces de monnaie (i.e., ``block.coinbase``) d'un bloc.
 
-To model this properly, the SMTChecker assumes that at every new transaction
-the contract's balance may grow by at least ``msg.value``.
+Pour modéliser cela correctement, le SMTChecker suppose qu'à chaque nouvelle transaction
+le solde du contrat peut augmenter d'au moins ``msg.value``.
 
-**********************
-Real World Assumptions
-**********************
+************************
+Hypothèses du monde réel
+************************
 
-Some scenarios can be expressed in Solidity and the EVM, but are expected to
-never occur in practice.
-One of such cases is the length of a dynamic storage array overflowing during a
-push: If the ``push`` operation is applied to an array of length 2^256 - 1, its
-length silently overflows.
-However, this is unlikely to happen in practice, since the operations required
-to grow the array to that point would take billions of years to execute.
-Another similar assumption taken by the SMTChecker is that an address' balance
-can never overflow.
+Certains scénarios peuvent être exprimés dans Solidity et dans l'EVM, mais on s'attend à ce qu'ils ne se produisent
+jamais se produire dans la pratique.
+L'un de ces cas est la longueur d'un tableau de stockage dynamique qui déborde pendant un processus de
+poussée : Si l'opération ``push`` est appliquée à un tableau de longueur 2^256 - 1, sa
+longueur déborde silencieusement.
+Cependant, il est peu probable que cela se produise dans la pratique, car les opérations nécessaires
+pour faire croître le tableau à ce point prendraient des milliards d'années à être exécutées.
+Une autre hypothèse similaire prise par le SMTChecker est que le solde d'une adresse
+ne peut jamais déborder.
 
-A similar idea was presented in `EIP-1985 <https://eips.ethereum.org/EIPS/eip-1985>`_.
+Une idée similaire a été présentée dans `EIP-1985 <https://eips.ethereum.org/EIPS/eip-1985>`_.

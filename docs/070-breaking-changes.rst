@@ -1,133 +1,133 @@
 ********************************
-Solidity v0.7.0 Breaking Changes
+Solidity v0.7.0 Changements de dernière minute
 ********************************
 
-This section highlights the main breaking changes introduced in Solidity
-version 0.7.0, along with the reasoning behind the changes and how to update
-affected code.
-For the full list check
-`the release changelog <https://github.com/ethereum/solidity/releases/tag/v0.7.0>`_.
+Cette section met en évidence les principaux changements de rupture introduits dans Solidity
+version 0.7.0, ainsi que le raisonnement derrière ces changements et la façon de mettre à jour
+code affecté.
+Pour la liste complète, consultez
+le changelog de la version <https://github.com/ethereum/solidity/releases/tag/v0.7.0>`_.
 
 
-Silent Changes of the Semantics
+Changements silencieux de la sémantique
 ===============================
 
-* Exponentiation and shifts of literals by non-literals (e.g. ``1 << x`` or ``2 ** x``)
-  will always use either the type ``uint256`` (for non-negative literals) or
-  ``int256`` (for negative literals) to perform the operation.
-  Previously, the operation was performed in the type of the shift amount / the
-  exponent which can be misleading.
+* L'exponentiation et les décalages de littéraux par des non-littéraux (par exemple, ``1 << x`` ou ``2 ** x``)
+  utiliseront toujours soit le type ``uint256`` (pour les littéraux non négatifs), soit le type
+  ``int256`` (pour les littéraux négatifs) pour effectuer l'opération.
+  Auparavant, l'opération était effectuée dans le type de la quantité de décalage / l'exposant, ce qui peut être trompeur.
+  exposant, ce qui peut être trompeur.
 
 
-Changes to the Syntax
+Modifications de la syntaxe
 =====================
 
-* In external function and contract creation calls, Ether and gas is now specified using a new syntax:
-  ``x.f{gas: 10000, value: 2 ether}(arg1, arg2)``.
-  The old syntax -- ``x.f.gas(10000).value(2 ether)(arg1, arg2)`` -- will cause an error.
+* Dans les appels de fonctions externes et de création de contrats, l'éther et le gaz sont maintenant spécifiés en utilisant une nouvelle syntaxe :
+  ``x.f{gaz : 10000, valeur : 2 éther}(arg1, arg2)``.
+  L'ancienne syntaxe -- ``x.f.gas(10000).value(2 ether)(arg1, arg2)`` -- provoquera une erreur.
 
-* The global variable ``now`` is deprecated, ``block.timestamp`` should be used instead.
-  The single identifier ``now`` is too generic for a global variable and could give the impression
-  that it changes during transaction processing, whereas ``block.timestamp`` correctly
-  reflects the fact that it is just a property of the block.
+* La variable globale ``now`` est obsolète, ``block.timestamp`` devrait être utilisée à la place.
+  L'identifiant unique ``now`` est trop générique pour une variable globale et pourrait donner l'impression
+  qu'elle change pendant le traitement de la transaction, alors que ``block.timestamp`` reflète correctement
+  reflète correctement le fait qu'il s'agit d'une propriété du bloc.
 
-* NatSpec comments on variables are only allowed for public state variables and not
-  for local or internal variables.
+* Les commentaires NatSpec sur les variables ne sont autorisés que pour les variables d'état publiques et non
+  pour les variables locales ou internes.
 
-* The token ``gwei`` is a keyword now (used to specify, e.g. ``2 gwei`` as a number)
-  and cannot be used as an identifier.
+* Le jeton ``gwei`` est maintenant un mot-clé (utilisé pour spécifier, par exemple, ``2 gwei`` comme un nombre)
+  et ne peut pas être utilisé comme un identifiant.
 
-* String literals now can only contain printable ASCII characters and this also includes a variety of
-  escape sequences, such as hexadecimal (``\xff``) and unicode escapes (``\u20ac``).
+* Les chaînes de caractères ne peuvent plus contenir que des caractères ASCII imprimables, ce qui inclut une variété de séquences d'échappement, telles que les hexadécimales.
+  séquences d'échappement, telles que les échappements hexadécimaux (``xff``) et unicode (``u20ac``).
 
-* Unicode string literals are supported now to accommodate valid UTF-8 sequences. They are identified
-  with the ``unicode`` prefix: ``unicode"Hello 😃"``.
+* Les chaînes littérales Unicode sont désormais prises en charge pour accueillir les séquences UTF-8 valides. Ils sont identifiés
+  avec le préfixe ``unicode`` : ``unicode "Hello 😃"``.
 
-* State Mutability: The state mutability of functions can now be restricted during inheritance:
-  Functions with default state mutability can be overridden by ``pure`` and ``view`` functions
-  while ``view`` functions can be overridden by ``pure`` functions.
-  At the same time, public state variables are considered ``view`` and even ``pure``
-  if they are constants.
+* Mutabilité d'état : La mutabilité d'état des fonctions peut maintenant être restreinte pendant l'héritage :
+  Les fonctions avec une mutabilité d'état par défaut peuvent être remplacées par des fonctions ``pure'' et ``view''.
+  tandis que les fonctions ``view`` peuvent être remplacées par des fonctions ``pure``.
+  En même temps, les variables d'état publiques sont considérées comme ``view`` et même ``pure`` si elles sont constantes.
+  si elles sont des constantes.
 
 
 
-Inline Assembly
+Assemblage en ligne
 ---------------
 
-* Disallow ``.`` in user-defined function and variable names in inline assembly.
-  It is still valid if you use Solidity in Yul-only mode.
+* Interdire ``.`` dans les noms de fonctions et de variables définies par l'utilisateur dans l'assemblage en ligne.
+  C'est toujours valable si vous utilisez Solidity en mode Yul-only.
 
-* Slot and offset of storage pointer variable ``x`` are accessed via ``x.slot``
-  and ``x.offset`` instead of ``x_slot`` and ``x_offset``.
+* L'emplacement et le décalage de la variable pointeur de stockage ``x`` sont accessibles via ``x.slot`` et ``x.offset``.
+  et ``x.offset`` au lieu de ``x_slot`` et ``x_offset``.
 
-Removal of Unused or Unsafe Features
+Suppression des fonctionnalités inutilisées ou dangereuses
 ====================================
 
-Mappings outside Storage
+Mappages en dehors du stockage
 ------------------------
 
-* If a struct or array contains a mapping, it can only be used in storage.
-  Previously, mapping members were silently skipped in memory, which
-  is confusing and error-prone.
+* Si une structure ou un tableau contient un mappage, il ne peut être utilisé que dans le stockage.
+  Auparavant, les membres du mappage étaient ignorés en mémoire, ce qui est déroutant et source d'erreurs.
+  ce qui est déroutant et source d'erreurs.
 
-* Assignments to structs or arrays in storage does not work if they contain
+* Les affectations aux structures ou tableaux dans le stockage ne fonctionnent pas s'ils contiennent des mappings.
   mappings.
-  Previously, mappings were silently skipped during the copy operation, which
-  is misleading and error-prone.
+  Auparavant, les mappings étaient ignorés silencieusement pendant l'opération de copie, ce qui
+  ce qui est trompeur et source d'erreurs.
 
-Functions and Events
+Fonctions et événements
 --------------------
 
-* Visibility (``public`` / ``internal``) is not needed for constructors anymore:
-  To prevent a contract from being created, it can be marked ``abstract``.
-  This makes the visibility concept for constructors obsolete.
+* La visibilité (``public`` / ``internal`') n'est plus nécessaire pour les constructeurs :
+  Pour empêcher un contrat d'être créé, il peut être marqué ``abstract``.
+  Cela rend le concept de visibilité pour les constructeurs obsolète.
 
-* Type Checker: Disallow ``virtual`` for library functions:
-  Since libraries cannot be inherited from, library functions should not be virtual.
+* Contrôleur de type : Désaccorder ``virtual`` pour les fonctions de bibliothèque :
+  Puisque les bibliothèques ne peuvent pas être héritées, les fonctions de bibliothèque ne devraient pas être virtuelles.
 
-* Multiple events with the same name and parameter types in the same
-  inheritance hierarchy are disallowed.
+* Plusieurs événements avec le même nom et les mêmes types de paramètres dans la même hiérarchie d'héritage sont interdits.
+  même hiérarchie d'héritage sont interdits.
 
-* ``using A for B`` only affects the contract it is mentioned in.
-  Previously, the effect was inherited. Now, you have to repeat the ``using``
-  statement in all derived contracts that make use of the feature.
+* ``utiliser A pour B`` n'affecte que le contrat dans lequel il est mentionné.
+  Auparavant, l'effet était hérité. Maintenant, vous devez répéter l'instruction "using" dans tous les contrats dérivés qui font usage de cette instruction.
+  dans tous les contrats dérivés qui utilisent cette fonctionnalité.
 
 Expressions
 -----------
 
-* Shifts by signed types are disallowed.
-  Previously, shifts by negative amounts were allowed, but reverted at runtime.
+* Les décalages par des types signés ne sont pas autorisés.
+  Auparavant, les décalages par des montants négatifs étaient autorisés, mais ils étaient annulés à l'exécution.
 
-* The ``finney`` and ``szabo`` denominations are removed.
-  They are rarely used and do not make the actual amount readily visible. Instead, explicit
-  values like ``1e20`` or the very common ``gwei`` can be used.
+* Les dénominations ``finney`` et ``szabo`' sont supprimées.
+  Elles sont rarement utilisées et ne rendent pas le montant réel facilement visible. A la place, des valeurs explicites
+  valeurs explicites comme "1e20" ou le très commun "gwei" peuvent être utilisées.
 
-Declarations
+Déclarations
 ------------
 
-* The keyword ``var`` cannot be used anymore.
-  Previously, this keyword would parse but result in a type error and
-  a suggestion about which type to use. Now, it results in a parser error.
+* Le mot-clé ``var`` ne peut plus être utilisé.
+  Auparavant, ce mot-clé était analysé mais donnait lieu à une erreur de type et à une suggestion sur le type à utiliser.
+  une suggestion sur le type à utiliser. Maintenant, il résulte en une erreur d'analyse.
 
-Interface Changes
+Changements d'interface
 =================
 
-* JSON AST: Mark hex string literals with ``kind: "hexString"``.
-* JSON AST: Members with value ``null`` are removed from JSON output.
-* NatSpec: Constructors and functions have consistent userdoc output.
+* JSON AST : Marquer les littéraux de chaînes hexagonales avec ``kind : "hexString"``.
+* JSON AST : Les membres avec la valeur ``null`` sont supprimés de la sortie JSON.
+* NatSpec : Les constructeurs et les fonctions ont une sortie userdoc cohérente.
 
 
-How to update your code
+Comment mettre à jour votre code
 =======================
 
-This section gives detailed instructions on how to update prior code for every breaking change.
+Cette section donne des instructions détaillées sur la façon de mettre à jour le code antérieur pour chaque changement de rupture.
 
-* Change ``x.f.value(...)()`` to ``x.f{value: ...}()``. Similarly ``(new C).value(...)()`` to
-  ``new C{value: ...}()`` and ``x.f.gas(...).value(...)()`` to ``x.f{gas: ..., value: ...}()``.
-* Change ``now`` to ``block.timestamp``.
-* Change types of right operand in shift operators to unsigned types. For example change ``x >> (256 - y)`` to
+* Changez ``x.f.value(...)()`` en ``x.f{value : ...}()``. De même, ``(new C).value(...)()`` en
+  ``nouveau C{valeur : ...}()`` et ``x.f.gas(...).valeur(...)()`` en ``x.f{gas : ..., valeur : ...}()``.
+* Remplacez ``now`` par ``block.timestamp``.
+* Changez les types de l'opérande droit dans les opérateurs de décalage en types non signés. Par exemple, remplacez ``x >> (256 - y)`` par
   ``x >> uint(256 - y)``.
-* Repeat the ``using A for B`` statements in all derived contracts if needed.
-* Remove the ``public`` keyword from every constructor.
-* Remove the ``internal`` keyword from every constructor and add ``abstract`` to the contract (if not already present).
-* Change ``_slot`` and ``_offset`` suffixes in inline assembly to ``.slot`` and ``.offset``, respectively.
+* Répétez les déclarations ``utilisant A pour B`` dans tous les contrats dérivés si nécessaire.
+* Supprimez le mot-clé "public" de chaque constructeur.
+* Supprimer le mot-clé "interne" de chaque constructeur et ajouter "abstrait" au contrat (s'il n'est pas déjà présent).
+* Changez les suffixes ``_slot`` et ``_offset`' dans l'assemblage en ligne en ``.slot`` et ``.offset`', respectivement.
