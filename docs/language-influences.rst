@@ -1,25 +1,25 @@
 ###################
-Language Influences
+Influences de la langue
 ###################
 
-Solidity is a `curly-bracket language <https://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Curly-bracket_languages>`_
-that has been influenced and inspired by several well-known programming languages.
+Solidity est un `langage à virgule flottante <https://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Curly-bracket_languages>`_
+qui a été influencé et inspiré par plusieurs langages de programmation bien connus.
 
-Solidity is most profoundly influenced by C++, but also borrowed concepts from languages like
-Python, JavaScript, and others.
+Solidity est le plus profondément influencé par le C++, mais a également emprunté des concepts à des langages comme
+Python, JavaScript, et autres.
 
-The influence from C++ can be seen in the syntax for variable declarations, for loops, the concept
-of overloading functions, implicit and explicit type conversions and many other details.
+L'influence du C++ est visible dans la syntaxe des déclarations de variables, les boucles for, le concept
+de surcharge des fonctions, les conversions de type implicites et explicites et de nombreux autres détails.
 
-In the early days of the language, Solidity used to be partly influenced by JavaScript.
-This was due to function-level scoping of variables and the use of the keyword ``var``.
-The JavaScript influence was reduced starting from version 0.4.0.
-Now, the main remaining similarity to JavaScript is that functions are defined using the keyword
-``function``. Solidity also supports import syntax and semantics that
-are similar to those available in JavaScript. Besides those points, Solidity looks like
-most other curly-bracket languages and has no major JavaScript influence anymore.
+Aux premiers jours du langage, Solidity était en partie influencé par JavaScript.
+Cela était dû à la détermination de la portée des variables au niveau des fonctions et à l'utilisation du mot-clé "var".
+L'influence de JavaScript a été réduite à partir de la version 0.4.0.
+Maintenant, la principale similitude restante avec JavaScript est que les fonctions sont définies en utilisant le mot-clé
+``function``. Solidity prend également en charge la syntaxe et la sémantique de l'importation qui
+qui sont similaires à celles disponibles en JavaScript. En dehors de ces points, Solidity ressemble à
+la plupart des autres langages à accolades et n'a plus d'influence majeure de JavaScript.
 
-Another influence to Solidity was Python. Solidity's modifiers were added trying to model
-Python's decorators with a much more restricted functionality. Furthermore, multiple inheritance, C3 linearization,
-and the ``super`` keyword are taken from Python as well as the general assignment and copy semantics of value
-and reference types.
+Python a également influencé Solidity. Les modificateurs de Solidity ont été ajoutés en essayant de modéliser les décorateurs de Python avec plus d'efficacité.
+les décorateurs de Python avec une fonctionnalité beaucoup plus restreinte. De plus, l'héritage multiple, la linéarisation C3,
+et le mot-clé "super" sont tirés de Python, ainsi que la sémantique générale de l'assignation
+et des types de référence.

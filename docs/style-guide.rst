@@ -1,59 +1,61 @@
 .. index:: style, coding style
 
-#############
-Style Guide
-#############
+###############
+Guide de style
+###############
 
 ************
 Introduction
 ************
 
-This guide is intended to provide coding conventions for writing solidity code.
-This guide should be thought of as an evolving document that will change over
-time as useful conventions are found and old conventions are rendered obsolete.
+Ce guide est destiné à fournir des conventions de codage pour l'écriture du code Solidity.
+Ce guide doit être considéré comme un document évolutif qui changera
+au fur et à mesure que des conventions utiles seront trouvées et que les anciennes conventions seront rendues obsolètes.
 
-Many projects will implement their own style guides.  In the event of
-conflicts, project specific style guides take precedence.
+De nombreux projets mettront en place leurs propres guides de style. En cas de
+conflits, les guides de style spécifiques au projet sont prioritaires.
 
-The structure and many of the recommendations within this style guide were
-taken from python's
+La structure et un grand nombre de recommandations de ce guide de style ont été
+tirées du guide de style de python
 `pep8 style guide <https://www.python.org/dev/peps/pep-0008/>`_.
 
-The goal of this guide is *not* to be the right way or the best way to write
-solidity code.  The goal of this guide is *consistency*.  A quote from python's
+Le but de ce guide n'est *pas* d'être la bonne ou la meilleure façon d'écrire du
+code Solidity. Le but de ce guide est la *consistance*. Une citation de python
 `pep8 <https://www.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds>`_
-captures this concept well.
+résume bien ce concept.
 
 .. note::
 
-    A style guide is about consistency. Consistency with this style guide is important. Consistency within a project is more important. Consistency within one module or function is most important.
+    Un guide de style est une question de cohérence. La cohérence avec ce guide de style est importante.
+    La cohérence au sein d'un module ou d'une fonction est la plus importante.
 
-    But most importantly: **know when to be inconsistent** -- sometimes the style guide just doesn't apply. When in doubt, use your best judgement. Look at other examples and decide what looks best. And don't hesitate to ask!
+    Mais le plus important : **savoir quand être incohérent** - parfois le guide de style ne s'applique tout simplement pas.
+    En cas de doute, utilisez votre meilleur jugement. Regardez d'autres exemples et décidez de ce qui vous semble le mieux. Et n'hésitez pas à demander !
 
 
-***********
-Code Layout
-***********
+********************
+Présentation du code
+********************
 
 
 Indentation
 ===========
 
-Use 4 spaces per indentation level.
+Utilisez 4 espaces par niveau d'indentation.
 
-Tabs or Spaces
+Tabs ou Espaces
+===============
+
+Les espaces sont la méthode d'indentation préférée.
+
+Il faut éviter de mélanger les tabulations et les espaces.
+
+Lignes vierges
 ==============
 
-Spaces are the preferred indentation method.
+Entourer les déclarations de haut niveau dans le code source de solidity de deux lignes vides.
 
-Mixing tabs and spaces should be avoided.
-
-Blank Lines
-===========
-
-Surround top level declarations in solidity source with two blank lines.
-
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -74,7 +76,7 @@ Yes:
         // ...
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -92,11 +94,11 @@ No:
         // ...
     }
 
-Within a contract surround function declarations with a single blank line.
+Dans un contrat, les déclarations de fonctions sont entourées d'une seule ligne vierge.
 
-Blank lines may be omitted between groups of related one-liners (such as stub functions for an abstract contract)
+Les lignes vides peuvent être omises entre des groupes de déclarations d'une seule ligne (comme les fonctions de base d'un contrat abstrait).
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -119,7 +121,7 @@ Yes:
         }
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -143,22 +145,22 @@ No:
 
 .. _maximum_line_length:
 
-Maximum Line Length
-===================
+Longueur maximale de la ligne
+=============================
 
-Keeping lines under the `PEP 8 recommendation <https://www.python.org/dev/peps/pep-0008/#maximum-line-length>`_ to a maximum of 79 (or 99)
-characters helps readers easily parse the code.
+Garder les lignes sous la recommandation `PEP 8 <https://www.python.org/dev/peps/pep-0008/#maximum-line-length>`_ à un maximum de 79 (ou 99)
+caractères aide les lecteurs à analyser facilement le code.
 
-Wrapped lines should conform to the following guidelines.
+Les lignes enveloppées doivent se conformer aux directives suivantes.
 
-1. The first argument should not be attached to the opening parenthesis.
-2. One, and only one, indent should be used.
-3. Each argument should fall on its own line.
-4. The terminating element, :code:`);`, should be placed on the final line by itself.
+1. Le premier argument ne doit pas être attaché à la parenthèse ouvrante.
+2. Une, et une seule, indentation doit être utilisée.
+3. Chaque argument doit être placé sur sa propre ligne.
+4. L'élément de terminaison, :code:`);`, doit être placé seul sur la dernière ligne.
 
-Function Calls
+Appels de fonction
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -168,7 +170,7 @@ Yes:
         longArgument3
     );
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -198,9 +200,9 @@ No:
         longArgument2,
         longArgument3);
 
-Assignment Statements
+Déclarations d'affectation
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -211,7 +213,7 @@ Yes:
         argument4
     );
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -220,9 +222,9 @@ No:
                                                                        argument3,
                                                                        argument4);
 
-Event Definitions and Event Emitters
+Définitions d'événements et émetteurs d'événements
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -242,7 +244,7 @@ Yes:
         options
     );
 
-No:
+Non "
 
 .. code-block:: solidity
 
@@ -258,17 +260,17 @@ No:
                       amount,
                       options);
 
-Source File Encoding
-====================
+Codage du fichier source
+========================
 
-UTF-8 or ASCII encoding is preferred.
+L'encodage UTF-8 ou ASCII est préféré.
 
-Imports
-=======
+Importations
+============
 
-Import statements should always be placed at the top of the file.
+Les déclarations d'importation doivent toujours être placées en haut du fichier.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -281,12 +283,11 @@ Yes:
         // ...
     }
 
-
     contract B is Owned {
         // ...
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -305,24 +306,24 @@ No:
         // ...
     }
 
-Order of Functions
-==================
+Ordre des fonctions
+===================
 
-Ordering helps readers identify which functions they can call and to find the constructor and fallback definitions easier.
+L'ordre aide les lecteurs à identifier les fonctions qu'ils peuvent appeler et à trouver plus facilement les définitions des constructeurs et des fonctions de repli.
 
-Functions should be grouped according to their visibility and ordered:
+Les fonctions doivent être regroupées en fonction de leur visibilité et ordonnées :
 
 - constructor
-- receive function (if exists)
-- fallback function (if exists)
+- receive function (si elle existe)
+- fallback function (si elle existe)
 - external
 - public
 - internal
 - private
 
-Within a grouping, place the ``view`` and ``pure`` functions last.
+Dans un regroupement, placez les fonctions ``view`` et ``pure`` en dernier.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -341,26 +342,26 @@ Yes:
             // ...
         }
 
-        // External functions
+        // Fonctions externes
         // ...
 
-        // External functions that are view
+        // Fonctions externes qui sont view
         // ...
 
-        // External functions that are pure
+        // Fonctions externes qui sont pure
         // ...
 
-        // Public functions
+        // Fonctions publiques
         // ...
 
-        // Internal functions
+        // Fonctions internes
         // ...
 
-        // Private functions
+        // Fonctions privées
         // ...
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -378,54 +379,54 @@ No:
             // ...
         }
 
-        // Private functions
+        // Fonctions privées
         // ...
 
-        // Public functions
+        // Fonctions publiques
         // ...
 
         constructor() {
             // ...
         }
 
-        // Internal functions
+        // Fonctions internes
         // ...
     }
 
-Whitespace in Expressions
-=========================
+Espaces blancs dans les expressions
+===================================
 
-Avoid extraneous whitespace in the following  situations:
+Évitez les espaces blancs superflus dans les situations suivantes :
 
-Immediately inside parenthesis, brackets or braces, with the exception of single line function declarations.
+Immédiatement à l'intérieur des parenthèses, des crochets ou des accolades, à l'exception des déclarations de fonctions sur une seule ligne.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
     spam(ham[1], Coin({name: "ham"}));
 
-No:
+Non :
 
 .. code-block:: solidity
 
     spam( ham[ 1 ], Coin( { name: "ham" } ) );
 
-Exception:
+Exception :
 
 .. code-block:: solidity
 
     function singleLine() public { spam(); }
 
-Immediately before a comma, semicolon:
+Immédiatement avant une virgule, un point-virgule :
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
     function spam(uint i, Coin coin) public;
 
-No:
+Non;
 
 .. code-block:: solidity
 
@@ -441,7 +442,7 @@ Yes:
     y = 2;
     long_variable = 3;
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -449,9 +450,9 @@ No:
     y             = 2;
     long_variable = 3;
 
-Don't include a whitespace in the receive and fallback functions:
+Ne pas inclure d'espace dans les fonctions de réception et de repli :
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -463,7 +464,7 @@ Yes:
         ...
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -476,18 +477,18 @@ No:
     }
 
 
-Control Structures
+Structures de contrôle
 ==================
 
-The braces denoting the body of a contract, library, functions and structs
-should:
+Les accolades désignant le corps d'un contrat, d'une bibliothèque, de fonctions et de structs
+doivent :
 
-* open on the same line as the declaration
-* close on their own line at the same indentation level as the beginning of the
-  declaration.
-* The opening brace should be preceded by a single space.
+* s'ouvrir sur la même ligne que la déclaration
+* se fermer sur leur propre ligne au même niveau d'indentation que le début de la
+  déclaration.
+* L'accolade d'ouverture doit être précédée d'un espace.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -501,7 +502,7 @@ Yes:
         }
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -516,15 +517,15 @@ No:
         }
     }
 
-The same recommendations apply to the control structures ``if``, ``else``, ``while``,
-and ``for``.
+Les mêmes recommandations s'appliquent aux structures de contrôle ``if``, ``else``, ``while``,
+et ``for``.
 
-Additionally there should be a single space between the control structures
-``if``, ``while``, and ``for`` and the parenthetic block representing the
-conditional, as well as a single space between the conditional parenthetic
-block and the opening brace.
+En outre, les structures de contrôle suivantes doivent être séparées par un espace unique
+``if``, ``while`` et ``for`` et le bloc entre parenthèses représentant le
+conditionnel, ainsi qu'un espace entre le bloc parenthétique conditionnel
+et l'accolade ouvrante.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -536,7 +537,7 @@ Yes:
         ...
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -551,17 +552,17 @@ No:
     for (...) {
         ...;}
 
-For control structures whose body contains a single statement, omitting the
-braces is ok *if* the statement is contained on a single line.
+Pour les structures de contrôle dont le corps contient une seule déclaration, l'omission des accolades
+est acceptable *si* la déclaration est contenue sur une seule ligne.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
     if (x < 10)
         x += 1;
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -571,11 +572,11 @@ No:
             value: 42
         }));
 
-For ``if`` blocks which have an ``else`` or ``else if`` clause, the ``else`` should be
-placed on the same line as the ``if``'s closing brace. This is an exception compared
-to the rules of other block-like structures.
+Pour les blocs ``if`` qui ont une clause ``else`` ou ``else if``, la clause ``else``
+doit être placée sur la même ligne que l'accolade fermant le bloc ``if``. Il s'agit d'une exception par rapport
+aux règles des autres structures de type bloc.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -593,7 +594,7 @@ Yes:
     else
         x -= 1;
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -604,18 +605,18 @@ No:
         x -= 1;
     }
 
-Function Declaration
+Déclaration de fonction
 ====================
 
-For short function declarations, it is recommended for the opening brace of the
-function body to be kept on the same line as the function declaration.
+Pour les déclarations de fonction courtes, il est recommandé de garder l'accolade d'ouverture
+du corps de la fonction sur la même ligne que la déclaration de la fonction.
 
-The closing brace should be at the same indentation level as the function
-declaration.
+L'accolade fermante doit être au même niveau d'indentation que la déclaration de fonction.
+de la fonction.
 
-The opening brace should be preceded by a single space.
+L'accolade ouvrante doit être précédée d'un seul espace.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -627,7 +628,7 @@ Yes:
         return x + 1;
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -647,15 +648,15 @@ No:
     function increment(uint x) public pure returns (uint) {
         return x + 1;}
 
-The modifier order for a function should be:
+L'ordre des modificateurs pour une fonction doit être :
 
-1. Visibility
-2. Mutability
-3. Virtual
-4. Override
-5. Custom modifiers
+1. Visibilité
+2. Mutabilité
+3. Virtuel
+4. Remplacer
+5. Modificateurs personnalisés
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -667,7 +668,7 @@ Yes:
         selfdestruct(owner);
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -679,12 +680,12 @@ No:
         selfdestruct(owner);
     }
 
-For long function declarations, it is recommended to drop each argument onto
-it's own line at the same indentation level as the function body.  The closing
-parenthesis and opening bracket should be placed on their own line as well at
-the same indentation level as the function declaration.
+Pour les longues déclarations de fonctions, il est recommandé de déposer chaque argument
+sur sa propre ligne au même niveau d'indentation que le corps de la fonction. La
+parenthèse fermante et la parenthèse ouvrante doivent être placées sur leur propre ligne
+au même niveau d'indentation que la déclaration de fonction.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -701,7 +702,7 @@ Yes:
         doSomething();
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -729,10 +730,10 @@ No:
         doSomething();
     }
 
-If a long function declaration has modifiers, then each modifier should be
-dropped to its own line.
+Si une longue déclaration de fonction comporte des modificateurs, chaque modificateur doit être déposé
+sur sa propre ligne.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -758,7 +759,7 @@ Yes:
         doSomething();
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -784,9 +785,9 @@ No:
         doSomething();
     }
 
-Multiline output parameters and return statements should follow the same style recommended for wrapping long lines found in the :ref:`Maximum Line Length <maximum_line_length>` section.
+Les paramètres de sortie et les instructions de retour multilignes doivent suivre le même style que celui recommandé pour l'habillage des longues lignes dans la section :ref:`Longueur de ligne maximale <maximum_length_line>`.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -811,7 +812,7 @@ Yes:
         );
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -832,34 +833,29 @@ No:
                 veryLongReturnArg1);
     }
 
-For constructor functions on inherited contracts whose bases require arguments,
-it is recommended to drop the base constructors onto new lines in the same
-manner as modifiers if the function declaration is long or hard to read.
+Pour les fonctions constructrices sur les contrats hérités dont les bases nécessitent des arguments,
+il est recommandé de déposer les constructeurs de base sur de nouvelles lignes
+de la même manière que les modificateurs si la déclaration de la fonction est longue ou difficile à lire.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
-    // Base contracts just to make this compile
+    // Contrats de base juste pour que cela compile
     contract B {
         constructor(uint) {
         }
     }
-
-
     contract C {
         constructor(uint, uint) {
         }
     }
-
-
     contract D {
         constructor(uint) {
         }
     }
-
 
     contract A is B, C, D {
         uint x;
@@ -874,14 +870,14 @@ Yes:
         }
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
 
-    // Base contracts just to make this compile
+    // Contrats de base juste pour que cela compile
     contract B {
         constructor(uint) {
         }
@@ -924,26 +920,26 @@ No:
     }
 
 
-When declaring short functions with a single statement, it is permissible to do it on a single line.
+Lorsque vous déclarez des fonctions courtes avec une seule déclaration, il est permis de le faire sur une seule ligne.
 
-Permissible:
+C'est autorisé :
 
 .. code-block:: solidity
 
     function shortFunction() public { doSomething(); }
 
-These guidelines for function declarations are intended to improve readability.
-Authors should use their best judgement as this guide does not try to cover all
-possible permutations for function declarations.
+Ces directives pour les déclarations de fonctions sont destinées à améliorer la lisibilité.
+Les auteurs doivent faire preuve de discernement car ce guide ne prétend pas couvrir toutes les
+permutations possibles pour les déclarations de fonctions.
 
-Mappings
+Mappages
 ========
 
-In variable declarations, do not separate the keyword ``mapping`` from its
-type by a space. Do not separate any nested ``mapping`` keyword from its type by
-whitespace.
+Dans les déclarations de variables, ne séparez pas le mot-clé ``mapping`` de son
+type par un espace. Ne séparez pas un mot-clé ``mapping`` imbriqué de son type par un
+espace.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -952,7 +948,7 @@ Yes:
     mapping(uint => mapping(bool => Data[])) public data;
     mapping(uint => mapping(uint => s)) data;
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -961,47 +957,47 @@ No:
     mapping (uint => mapping (bool => Data[])) public data;
     mapping(uint => mapping (uint => s)) data;
 
-Variable Declarations
-=====================
+Déclarations de variables
+=========================
 
-Declarations of array variables should not have a space between the type and
-the brackets.
+Les déclarations de variables de tableau ne doivent pas comporter d'espace entre le type et
+les parenthèses.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
     uint[] x;
 
-No:
+Non :
 
 .. code-block:: solidity
 
     uint [] x;
 
 
-Other Recommendations
+Autres recommandations
 =====================
 
-* Strings should be quoted with double-quotes instead of single-quotes.
+* Les chaînes de caractères devraient être citées avec des guillemets doubles au lieu de guillemets simples.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
     str = "foo";
-    str = "Hamlet says, 'To be or not to be...'";
+    str = "Hamlet dit : 'Être ou ne pas être...'";
 
-No:
+Non :
 
 .. code-block:: solidity
 
     str = 'bar';
-    str = '"Be yourself; everyone else is already taken." -Oscar Wilde';
+    str = '"Soyez vous-même ; tous les autres sont déjà pris." -Oscar Wilde';
 
-* Surround operators with a single space on either side.
+* Entourer les opérateurs d'un espace unique de chaque côté.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
     :force:
@@ -1011,7 +1007,7 @@ Yes:
     x += 3 + 4;
     x |= y && z;
 
-No:
+Non :
 
 .. code-block:: solidity
     :force:
@@ -1021,12 +1017,12 @@ No:
     x += 3+4;
     x |= y&&z;
 
-* Operators with a higher priority than others can exclude surrounding
-  whitespace in order to denote precedence.  This is meant to allow for
-  improved readability for complex statement. You should always use the same
-  amount of whitespace on either side of an operator:
+* Les opérateurs ayant une priorité plus élevée que les autres peuvent exclure les espaces
+  afin d'indiquer la préséance. Ceci a pour but de permettre
+  d'améliorer la lisibilité d'une déclaration complexe. Vous devez toujours utiliser la même
+  quantité d'espaces blancs de part et d'autre d'un opérateur :
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -1034,7 +1030,7 @@ Yes:
     x = 2*y + 3*z;
     x = (a+b) * (a-b);
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -1042,87 +1038,86 @@ No:
     x = y+z;
     x +=1;
 
-***************
-Order of Layout
-***************
+*********************
+Ordre de mise en page
+*********************
 
-Layout contract elements in the following order:
+Disposez les éléments du contrat dans l'ordre suivant :
 
-1. Pragma statements
-2. Import statements
+1. Déclarations de pragmatisme
+2. Instructions d'importation
 3. Interfaces
-4. Libraries
-5. Contracts
+4. Bibliothèques
+5. Contrats
 
-Inside each contract, library or interface, use the following order:
+À l'intérieur de chaque contrat, bibliothèque ou interface, utilisez l'ordre suivant :
 
-1. Type declarations
-2. State variables
-3. Events
-4. Modifiers
-5. Functions
+1. Les déclarations de type
+2. Variables d'état
+3. Événements
+4. Fonctions
 
 .. note::
 
-    It might be clearer to declare types close to their use in events or state
-    variables.
+    Il peut être plus clair de déclarer les types à proximité de leur utilisation dans les événements ou les
+    variables d'état.
 
-******************
-Naming Conventions
-******************
+*************************
+Conventions d'appellation
+*************************
 
-Naming conventions are powerful when adopted and used broadly.  The use of
-different conventions can convey significant *meta* information that would
-otherwise not be immediately available.
+Les conventions de dénomination sont puissantes lorsqu'elles sont adoptées et utilisées à grande échelle. L'utilisation de
+différentes conventions peut véhiculer des informations *méta* significatives
+qui, autrement, ne seraient pas immédiatement disponibles.
 
-The naming recommendations given here are intended to improve the readability,
-and thus they are not rules, but rather guidelines to try and help convey the
-most information through the names of things.
+Les recommandations de nommage données ici sont destinées à améliorer la lisibilité,
+et ne sont donc pas des règles, mais plutôt des lignes directrices pour essayer d'aider à transmettre le
+plus d'informations à travers les noms des choses.
 
-Lastly, consistency within a codebase should always supersede any conventions
-outlined in this document.
+Enfin, la cohérence au sein d'une base de code devrait toujours prévaloir sur les conventions
+décrites dans ce document.
 
 
-Naming Styles
+Styles de dénomination
+======================
+
+Pour éviter toute confusion, les noms suivants seront utilisés pour faire référence à différents
+styles d'appellation.
+
+* ``b`` (lettre minuscule simple)
+* ``B`` (lettre majuscule simple)
+* ``lettresminuscules``
+* ``minuscule_avec_underscores``
+* ``MAJUSCULE``
+* ``MAJUSCULE_AVEC_UNDERSCORES``
+* ``MotsEnMajuscule`` (ou MotsEnMaj)
+* ``casMixe`` (diffère des CapitalizedWords par le caractère minuscule initial !)
+* ``Mots_Capitalisés_Avec_Underscores``
+
+.. note:: Lorsque vous utilisez des sigles dans CapWords, mettez toutes les lettres des sigles en majuscules. Ainsi, HTTPServerError est préférable à HttpServerError. Lors de l'utilisation d'initiales en mixedCase, mettez toutes les lettres des initiales en majuscules, mais gardez la première en minuscule si elle est le début du nom. Ainsi, xmlHTTPRequest est préférable à XMLHTTPRequest.
+
+
+Noms à éviter
 =============
 
-To avoid confusion, the following names will be used to refer to different
-naming styles.
+* ``l`` - Lettre minuscule el
+* ``O`` - Lettre majuscule oh
+* ``I`` - Lettre majuscule eye
 
-* ``b`` (single lowercase letter)
-* ``B`` (single uppercase letter)
-* ``lowercase``
-* ``lower_case_with_underscores``
-* ``UPPERCASE``
-* ``UPPER_CASE_WITH_UNDERSCORES``
-* ``CapitalizedWords`` (or CapWords)
-* ``mixedCase`` (differs from CapitalizedWords by initial lowercase character!)
-* ``Capitalized_Words_With_Underscores``
-
-.. note:: When using initialisms in CapWords, capitalize all the letters of the initialisms. Thus HTTPServerError is better than HttpServerError. When using initialisms in mixedCase, capitalize all the letters of the initialisms, except keep the first one lower case if it is the beginning of the name. Thus xmlHTTPRequest is better than XMLHTTPRequest.
+N'utilisez jamais l'un de ces noms pour des noms de variables à une seule lettre.  Elles sont
+souvent impossibles à distinguer des chiffres un et zéro.
 
 
-Names to Avoid
-==============
-
-* ``l`` - Lowercase letter el
-* ``O`` - Uppercase letter oh
-* ``I`` - Uppercase letter eye
-
-Never use any of these for single letter variable names.  They are often
-indistinguishable from the numerals one and zero.
-
-
-Contract and Library Names
+Noms de contrats et de bibliothèques
 ==========================
 
-* Contracts and libraries should be named using the CapWords style. Examples: ``SimpleToken``, ``SmartBank``, ``CertificateHashRepository``, ``Player``, ``Congress``, ``Owned``.
-* Contract and library names should also match their filenames.
-* If a contract file includes multiple contracts and/or libraries, then the filename should match the *core contract*. This is not recommended however if it can be avoided.
+* Les contrats et les bibliothèques doivent être nommés en utilisant le style CapWords. Exemples : ``SimpleToken``, ``SmartBank``, ``CertificateHashRepository``, ``Player``, ``Congress``, ``Owned``.
+* Les noms des contrats et des bibliothèques doivent également correspondre à leurs noms de fichiers.
+* Si un fichier de contrat comprend plusieurs contrats et/ou bibliothèques, alors le nom du fichier doit correspondre au *contrat principal*. Cela n'est cependant pas recommandé si cela peut être évité.
 
-As shown in the example below, if the contract name is ``Congress`` and the library name is ``Owned``, then their associated filenames should be ``Congress.sol`` and ``Owned.sol``.
+Comme le montre l'exemple ci-dessous, si le nom du contrat est ``Congress`` et celui de la bibliothèque ``Owned``, les noms de fichiers associés doivent être ``Congress.sol`` et ``Owned.sol``.
 
-Yes:
+Oui :
 
 .. code-block:: solidity
 
@@ -1147,7 +1142,7 @@ Yes:
         }
     }
 
-and in ``Congress.sol``:
+et dans ``Congress.sol`` :
 
 .. code-block:: solidity
 
@@ -1161,7 +1156,7 @@ and in ``Congress.sol``:
         //...
     }
 
-No:
+Non :
 
 .. code-block:: solidity
 
@@ -1186,7 +1181,7 @@ No:
         }
     }
 
-and in ``Congress.sol``:
+et dans ``Congress.sol``:
 
 .. code-block:: solidity
 
@@ -1201,65 +1196,65 @@ and in ``Congress.sol``:
         //...
     }
 
-Struct Names
+Noms de structures
 ==========================
 
-Structs should be named using the CapWords style. Examples: ``MyCoin``, ``Position``, ``PositionXY``.
+Les structures doivent être nommées en utilisant le style CapWords. Exemples :``MonCoin``, ``Position``, ``PositionXY``.
 
 
-Event Names
-===========
+Noms d'événements
+======================
 
-Events should be named using the CapWords style. Examples: ``Deposit``, ``Transfer``, ``Approval``, ``BeforeTransfer``, ``AfterTransfer``.
-
-
-Function Names
-==============
-
-Functions should use mixedCase. Examples: ``getBalance``, ``transfer``, ``verifyOwner``, ``addMember``, ``changeOwner``.
+Les événements doivent être nommés en utilisant le style CapWords. Exemples : ``Dépôt``, ``Transfert``, ``Approbation``, ``AvantTransfert``, ``AprèsTransfert``.
 
 
-Function Argument Names
+Noms des fonctions
+====================
+
+Les fonctions doivent utiliser la casse mixte. Exemples : ``getBalance``, ``transfer``, ``verifyOwner``, ``addMember``, ``changeOwner``.
+
+
+Noms des arguments de la fonction
 =======================
 
-Function arguments should use mixedCase. Examples: ``initialSupply``, ``account``, ``recipientAddress``, ``senderAddress``, ``newOwner``.
+Les arguments des fonctions doivent utiliser des majuscules et des minuscules. Exemples : ``initialSupply``, ``account``, ``recipientAddress``, ``senderAddress``, ``newOwner``.
 
-When writing library functions that operate on a custom struct, the struct
-should be the first argument and should always be named ``self``.
-
-
-Local and State Variable Names
-==============================
-
-Use mixedCase. Examples: ``totalSupply``, ``remainingSupply``, ``balancesOf``, ``creatorAddress``, ``isPreSale``, ``tokenExchangeRate``.
+Lorsque vous écrivez des fonctions de bibliothèque qui opèrent sur un struct personnalisé, le struct
+doit être le premier argument et doit toujours être nommée ``self``.
 
 
-Constants
+Noms des variables locales et des variables d'état
+==================================================
+
+Utilisez la casse mixte. Exemples : ``totalSupply``, ``remainingSupply``, ``balancesOf``, ``creatorAddress``, ``isPreSale``, ``tokenExchangeRate``.
+
+
+Constantes
 =========
 
-Constants should be named with all capital letters with underscores separating
-words. Examples: ``MAX_BLOCKS``, ``TOKEN_NAME``, ``TOKEN_TICKER``, ``CONTRACT_VERSION``.
+Les constantes doivent être nommées avec des lettres majuscules et des caractères de soulignement pour séparer les mots.
+Exemples : ``MAX_BLOCKS``, ``TOKEN_NAME``, ``TOKEN_TICKER``, ``CONTRACT_VERSION``.
 
 
-Modifier Names
+Noms des modificateurs
 ==============
 
-Use mixedCase. Examples: ``onlyBy``, ``onlyAfter``, ``onlyDuringThePreSale``.
+Utilisez la casse mixte. Exemples : ``onlyBy``, ``onlyAfter``, ``onlyDuringThePreSale``.
 
 
 Enums
 =====
 
-Enums, in the style of simple type declarations, should be named using the CapWords style. Examples: ``TokenGroup``, ``Frame``, ``HashStyle``, ``CharacterLocation``.
+Les Enums, dans le style des déclarations de type simples, doivent être nommés en utilisant le style CapWords. Exemples : ``TokenGroup``, ``Frame``, ``HashStyle``, ``CharacterLocation``.
 
 
-Avoiding Naming Collisions
-==========================
+Éviter les collisions de noms
+=============================
 
 * ``single_trailing_underscore_``
 
-This convention is suggested when the desired name collides with that of a
-built-in or otherwise reserved name.
+Cette convention est suggérée lorsque le nom souhaité entre en collision avec celui d'un
+nom intégré ou autrement réservé.
 
 .. _style_guide_natspec:
 
@@ -1267,38 +1262,38 @@ built-in or otherwise reserved name.
 NatSpec
 *******
 
-Solidity contracts can also contain NatSpec comments. They are written with a
-triple slash (``///``) or a double asterisk block (``/** ... */``) and
-they should be used directly above function declarations or statements.
+Les contrats Solidity peuvent également contenir des commentaires NatSpec. Ils sont écrits avec une
+triple barre oblique (``///``) ou un double astérisque (``/** ... */``).
+Ils doivent être utilisés directement au-dessus des déclarations de fonctions ou des instructions.
 
-For example, the contract from :ref:`a simple smart contract <simple-smart-contract>` with the comments
-added looks like the one below:
+Par exemple, le contrat de :ref:`un smart contract simple <simple-smart-contract>` avec les commentaires
+ajoutés, ressemble à celui ci-dessous :
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.16 <0.9.0;
 
-    /// @author The Solidity Team
-    /// @title A simple storage example
+    /// @author L'équipe Solidity
+    /// @title Un exemple simple de stockage
     contract SimpleStorage {
         uint storedData;
 
-        /// Store `x`.
-        /// @param x the new value to store
-        /// @dev stores the number in the state variable `storedData`
+        /// Stocke `x`.
+        /// @param x la nouvelle valeur à stocker
+        /// @dev stocke le nombre dans la variable d'état `storedData`.
         function set(uint x) public {
             storedData = x;
         }
 
-        /// Return the stored value.
-        /// @dev retrieves the value of the state variable `storedData`
-        /// @return the stored value
+        /// Retourner la valeur stockée.
+        /// @dev récupère la valeur de la variable d'état `storedData`.
+        /// @retourne la valeur stockée
         function get() public view returns (uint) {
             return storedData;
         }
     }
 
-It is recommended that Solidity contracts are fully annotated using :ref:`NatSpec <natspec>` for all public interfaces (everything in the ABI).
+Il est recommandé que les contrats Solidity soient entièrement annotés en utilisant :ref:`NatSpec <natspec>` pour toutes les interfaces publiques (tout ce qui se trouve dans l'ABI).
 
-Please see the section about :ref:`NatSpec <natspec>` for a detailed explanation.
+Veuillez consulter la section sur :ref:`NatSpec <natspec>` pour une explication détaillée.

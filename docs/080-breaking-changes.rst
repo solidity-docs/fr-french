@@ -1,176 +1,176 @@
 ********************************
-Solidity v0.8.0 Breaking Changes
+Solidity v0.8.0 Changements de rupture
 ********************************
 
-This section highlights the main breaking changes introduced in Solidity
+Cette section met en évidence les principaux changements de rupture introduits dans Solidity
 version 0.8.0.
-For the full list check
-`the release changelog <https://github.com/ethereum/solidity/releases/tag/v0.8.0>`_.
+Pour la liste complète, consultez
+le changelog de la version `0.8.0 <https://github.com/ethereum/solidity/releases/tag/v0.8.0>`_.
 
-Silent Changes of the Semantics
+Changements silencieux de la sémantique
 ===============================
 
-This section lists changes where existing code changes its behaviour without
-the compiler notifying you about it.
+Cette section répertorie les modifications où le code existant change de comportement sans que
+le compilateur vous en informe.
 
-* Arithmetic operations revert on underflow and overflow. You can use ``unchecked { ... }`` to use
-  the previous wrapping behaviour.
+* Les opérations arithmétiques s'inversent en cas de sous-dépassement et de dépassement. Vous pouvez utiliser ``unchecked { ... }`` pour utiliser
+  le comportement d'enveloppement précédent.
 
-  Checks for overflow are very common, so we made them the default to increase readability of code,
-  even if it comes at a slight increase of gas costs.
+  Les vérifications pour le débordement sont très communes, donc nous les avons faites par défaut pour augmenter la lisibilité du code,
+  même si cela entraîne une légère augmentation du coût de l'essence.
 
-* ABI coder v2 is activated by default.
+* ABI coder v2 est activé par défaut.
 
-  You can choose to use the old behaviour using ``pragma abicoder v1;``.
-  The pragma ``pragma experimental ABIEncoderV2;`` is still valid, but it is deprecated and has no effect.
-  If you want to be explicit, please use ``pragma abicoder v2;`` instead.
+  Vous pouvez choisir d'utiliser l'ancien comportement en utilisant ``pragma abicoder v1;``.
+  Le pragma ``pragma experimental ABIEncoderV2;`` est toujours valide, mais il est déprécié et n'a aucun effet.
+  Si vous voulez être explicite, veuillez utiliser le pragma ``pragma abicoder v2;`` à la place.
 
-  Note that ABI coder v2 supports more types than v1 and performs more sanity checks on the inputs.
-  ABI coder v2 makes some function calls more expensive and it can also make contract calls
-  revert that did not revert with ABI coder v1 when they contain data that does not conform to the
-  parameter types.
+  Notez que ABI coder v2 supporte plus de types que v1 et effectue plus de contrôles d'intégrité sur les entrées.
+  ABI coder v2 rend certains appels de fonctions plus coûteux et il peut aussi faire des appels de contrats
+  réversibles qui n'étaient pas réversibles avec ABI coder v1 lorsqu'ils contiennent des données qui ne sont pas conformes aux types de paramètres.
+  types de paramètres.
 
-* Exponentiation is right associative, i.e., the expression ``a**b**c`` is parsed as ``a**(b**c)``.
-  Before 0.8.0, it was parsed as ``(a**b)**c``.
+* L'exponentiation est associative à droite, c'est-à-dire que l'expression ``a**b**c`` est interprétée comme ``a**(b**c)``.
+  Avant la version 0.8.0, elle était interprétée comme ``(a**b)**c``.
 
-  This is the common way to parse the exponentiation operator.
+  C'est la façon courante d'analyser l'opérateur d'exponentiation.
 
-* Failing assertions and other internal checks like division by zero or arithmetic overflow do
-  not use the invalid opcode but instead the revert opcode.
-  More specifically, they will use error data equal to a function call to ``Panic(uint256)`` with an error code specific
-  to the circumstances.
+* Les assertions qui échouent et d'autres vérifications internes comme la division par zéro ou le dépassement arithmétique
+  n'utilisent pas l'opcode invalide mais plutôt l'opcode de retour.
+  Plus précisément, ils utiliseront des données d'erreur égales à un appel de fonction à ``Panic(uint256)`` avec un code d'erreur spécifique aux circonstances.
+  aux circonstances.
 
-  This will save gas on errors while it still allows static analysis tools to distinguish
-  these situations from a revert on invalid input, like a failing ``require``.
+  Cela permettra d'économiser du gaz sur les erreurs tout en permettant aux outils d'analyse statique de distinguer ces situations d'un retour sur invalidité.
+  distinguer ces situations d'un retour en arrière sur une entrée invalide, comme un ``require`` échoué.
 
-* If a byte array in storage is accessed whose length is encoded incorrectly, a panic is caused.
-  A contract cannot get into this situation unless inline assembly is used to modify the raw representation of storage byte arrays.
+* Si l'on accède à un tableau d'octets en stockage dont la longueur est mal codée, une panique est provoquée.
+  Un contrat ne peut pas se retrouver dans cette situation à moins que l'assemblage en ligne soit utilisé pour modifier la représentation brute des tableaux d'octets de stockage.
 
-* If constants are used in array length expressions, previous versions of Solidity would use arbitrary precision
-  in all branches of the evaluation tree. Now, if constant variables are used as intermediate expressions,
-  their values will be properly rounded in the same way as when they are used in run-time expressions.
+* Si des constantes sont utilisées dans les expressions de longueur de tableau, les versions précédentes de Solidity utilisaient une précision arbitraire dans toutes les branches de l'arbre d'évaluation.
+  dans toutes les branches de l'arbre d'évaluation. Maintenant, si des variables constantes sont utilisées comme expressions intermédiaires,
+  leurs valeurs seront correctement arrondies de la même manière que lorsqu'elles sont utilisées dans des expressions d'exécution.
 
-* The type ``byte`` has been removed. It was an alias of ``bytes1``.
+* Le type ``byte`` a été supprimé. C'était un alias de ``bytes1``.
 
-New Restrictions
+Nouvelles restrictions
 ================
 
-This section lists changes that might cause existing contracts to not compile anymore.
+Cette section énumère les changements qui pourraient empêcher les contrats existants de se compiler.
 
-* There are new restrictions related to explicit conversions of literals. The previous behaviour in
-  the following cases was likely ambiguous:
+* Il existe de nouvelles restrictions liées aux conversions explicites de littéraux. Le comportement précédent dans
+  les cas suivants était probablement ambigu :
 
-  1. Explicit conversions from negative literals and literals larger than ``type(uint160).max`` to
-     ``address`` are disallowed.
-  2. Explicit conversions between literals and an integer type ``T`` are only allowed if the literal
-     lies between ``type(T).min`` and ``type(T).max``. In particular, replace usages of ``uint(-1)``
-     with ``type(uint).max``.
-  3. Explicit conversions between literals and enums are only allowed if the literal can
-     represent a value in the enum.
-  4. Explicit conversions between literals and ``address`` type (e.g. ``address(literal)``) have the
-     type ``address`` instead of ``address payable``. One can get a payable address type by using an
-     explicit conversion, i.e., ``payable(literal)``.
+  1. Les conversions explicites de littéraux négatifs et de littéraux plus grands que ``type(uint160).max`` en
+     ``adresse`` sont interdites.
+  2. Les conversions explicites entre des littéraux et un type de nombre entier ``T`` ne sont autorisées que si le littéral
+     se situe entre ``type(T).min`` et ``type(T).max``. En particulier, remplacez les utilisations de ``uint(-1)`` par ``type(uint)``.
+     par ``type(uint).max``.
+  3. Les conversions explicites entre les littéraux et les énumérations ne sont autorisées que si le littéral peut
+     représenter une valeur de l'énumération.
+  4. Les conversions explicites entre les littéraux et le type ``adresse`` (par exemple ``address(literal)``) ont le type ``address``.
+     type ``adresse`` au lieu de ``adresse payable``. On peut obtenir un type d'adresse payable en utilisant une
+     conversion explicite, c'est-à-dire ``payable(literal)``.
 
-* :ref:`Address literals<address_literals>` have the type ``address`` instead of ``address
-  payable``. They can be converted to ``address payable`` by using an explicit conversion, e.g.
+* :ref:`Les littéraux d'adresse<address_literals>` ont le type ``address`` au lieu de ``address
+  payable``. Ils peuvent être convertis en ``adresse payable`` en utilisant une conversion explicite, par exemple
   ``payable(0xdCad3a6d3569DF655070DEd06cb7A1b2Ccd1D3AF)``.
 
-* There are new restrictions on explicit type conversions. The conversion is only allowed when there
-  is at most one change in sign, width or type-category (``int``, ``address``, ``bytesNN``, etc.).
-  To perform multiple changes, use multiple conversions.
+* Il y a de nouvelles restrictions sur les conversions de type explicites. La conversion n'est autorisée que lorsqu'il y a
+  lorsqu'il y a au plus un changement de signe, de largeur ou de catégorie de type (``int``, ``address``, ``bytesNN``, etc.).
+  Pour effectuer plusieurs changements, il faut utiliser plusieurs conversions.
 
-  Let us use the notation ``T(S)`` to denote the explicit conversion ``T(x)``, where, ``T`` and
-  ``S`` are types, and ``x`` is any arbitrary variable of type ``S``. An example of such a
-  disallowed conversion would be ``uint16(int8)`` since it changes both width (8 bits to 16 bits)
-  and sign (signed integer to unsigned integer). In order to do the conversion, one has to go
-  through an intermediate type. In the previous example, this would be ``uint16(uint8(int8))`` or
-  ``uint16(int16(int8))``. Note that the two ways to convert will produce different results e.g.,
-  for ``-1``. The following are some examples of conversions that are disallowed by this rule.
+  Utilisons la notation ``T(S)`` pour désigner la conversion explicite ``T(x)``, où, ``T`` et
+  ``S`` sont des types, et ``x`` est une variable arbitraire de type ``S``. Un exemple d'une telle
+  exemple d'une telle conversion non autorisée serait ``uint16(int8)`` puisqu'elle change à la fois la largeur (8 bits à 16 bits)
+  et le signe (d'entier signé à entier non signé). Pour effectuer la conversion, il faut passer par un type intermédiaire.
+  passer par un type intermédiaire. Dans l'exemple précédent, ce serait ``uint16(uint8(int8))`` ou
+  ``uint16(int16(int8))``. Notez que les deux façons de convertir produiront des résultats différents, par ex,
+  pour ``-1``. Voici quelques exemples de conversions qui ne sont pas autorisées par cette règle.
 
-  - ``address(uint)`` and ``uint(address)``: converting both type-category and width. Replace this by
-    ``address(uint160(uint))`` and ``uint(uint160(address))`` respectively.
-  - ``payable(uint160)``, ``payable(bytes20)`` and ``payable(integer-literal)``: converting both
-    type-category and state-mutability. Replace this by ``payable(address(uint160))``,
-    ``payable(address(bytes20))`` and ``payable(address(integer-literal))`` respectively. Note that
-    ``payable(0)`` is valid and is an exception to the rule.
-  - ``int80(bytes10)`` and ``bytes10(int80)``: converting both type-category and sign. Replace this by
-    ``int80(uint80(bytes10))`` and ``bytes10(uint80(int80)`` respectively.
-  - ``Contract(uint)``: converting both type-category and width. Replace this by
-    ``Contract(address(uint160(uint)))``.
+  - ``address(uint)`` et ``uint(address)`` : conversion à la fois de la catégorie de type et de la largeur. Remplacez-les par
+    ``address(uint160(uint))`` et ``uint(uint160(address))`` respectivement.
+  - ``payable(uint160)``, ``payable(bytes20)`` et ``payable(integer-literal)`` : conversion de la catégorie de type et de la
+    la catégorie de type et la mutabilité d'état. Remplacez-les par ``payable(address(uint160))``,
+    ``payable(address(bytes20))`` et ``payable(address(integer-literal))`` respectivement. Notez que
+    ``payable(0)`` est valide et constitue une exception à la règle.
+  - ``int80(bytes10)`` et ``bytes10(int80)`` : conversion de la catégorie de type et du signe. Remplacez-les par
+    ``int80(uint80(bytes10))`` et ``bytes10(uint80(int80)`` respectivement.
+  - ``Contract(uint)`` : convertit à la fois la catégorie de type et le signe. Remplacez-la par
+    ``Contract(adresse(uint160(uint)))``.
 
-  These conversions were disallowed to avoid ambiguity. For example, in the expression ``uint16 x =
-  uint16(int8(-1))``, the value of ``x`` would depend on whether the sign or the width conversion
-  was applied first.
+  Ces conversions ont été interdites pour éviter toute ambiguïté. Par exemple, dans l'expression ``uint16 x =
+  uint16(int8(-1))``, la valeur de ``x`` dépendrait de la conversion du signe ou de la largeur appliquée en premier lieu.
+  a été appliquée en premier.
 
-* Function call options can only be given once, i.e. ``c.f{gas: 10000}{value: 1}()`` is invalid and has to be changed to ``c.f{gas: 10000, value: 1}()``.
+* Les options d'appel de fonction ne peuvent être données qu'une seule fois, c'est-à-dire que ``c.f{gas : 10000}{value : 1}()`` est invalide et doit être changé en ``c.f{gas : 10000, value : 1}()``.
 
-* The global functions ``log0``, ``log1``, ``log2``, ``log3`` and ``log4`` have been removed.
+* Les fonctions globales ``log0``, ``log1``, ``log2``, ``log3`` et ``log4`` ont été supprimées.
 
-  These are low-level functions that were largely unused. Their behaviour can be accessed from inline assembly.
+  Ce sont des fonctions de bas niveau qui étaient largement inutilisées. Leur comportement est accessible depuis l'assemblage en ligne.
 
-* ``enum`` definitions cannot contain more than 256 members.
+* Les définitions de ``enum`` ne peuvent pas contenir plus de 256 membres.
 
-  This will make it safe to assume that the underlying type in the ABI is always ``uint8``.
+  Cela permet de supposer que le type sous-jacent dans l'ABI est toujours ``uint8``.
 
-* Declarations with the name ``this``, ``super`` and ``_`` are disallowed, with the exception of
-  public functions and events. The exception is to make it possible to declare interfaces of contracts
-  implemented in languages other than Solidity that do permit such function names.
+* Les déclarations portant les noms "this", "super" et "_" ne sont pas autorisées, à l'exception des fonctions et événements publics.
+  fonctions et événements publics. Cette exception a pour but de permettre la déclaration d'interfaces de contrats
+  implémentées dans des langages autres que Solidity qui autorisent de tels noms de fonctions.
 
-* Remove support for the ``\b``, ``\f``, and ``\v`` escape sequences in code.
-  They can still be inserted via hexadecimal escapes, e.g. ``\x08``, ``\x0c``, and ``\x0b``, respectively.
+* Suppression de la prise en charge des séquences d'échappement ``b``, ``f`` et ``v`'' dans le code.
+  Elles peuvent toujours être insérées par le biais d'échappements hexadécimaux, par exemple, respectivement, " ``X08``, " ``X0c`` et " ``X0b``.
 
-* The global variables ``tx.origin`` and ``msg.sender`` have the type ``address`` instead of
-  ``address payable``. One can convert them into ``address payable`` by using an explicit
-  conversion, i.e., ``payable(tx.origin)`` or ``payable(msg.sender)``.
+* Les variables globales ``tx.origin`` et ``msg.sender`` ont le type ``address`` au lieu de
+  ``adresse payable``. On peut les convertir en ``adresse payable`` en utilisant une conversion
+  explicite, c'est-à-dire ``payable(tx.origin)`` ou ``payable(msg.sender)``.
 
-  This change was done since the compiler cannot determine whether or not these addresses
-  are payable or not, so it now requires an explicit conversion to make this requirement visible.
+  Ce changement a été fait car le compilateur ne peut pas déterminer si ces adresses sont payables ou non.
+  sont payables ou non, donc il faut maintenant une conversion explicite pour rendre cette exigence visible.
 
-* Explicit conversion into ``address`` type always returns a non-payable ``address`` type. In
-  particular, the following explicit conversions have the type ``address`` instead of ``address
-  payable``:
+* La conversion explicite en type ``adresse`` retourne toujours un type ``adresse`` non payable. Dans
+  En particulier, les conversions explicites suivantes ont le type ``adresse`` au lieu de ``adresse
+  payable " :
 
-  - ``address(u)`` where ``u`` is a variable of type ``uint160``. One can convert ``u``
-    into the type ``address payable`` by using two explicit conversions, i.e.,
-    ``payable(address(u))``.
-  - ``address(b)`` where ``b`` is a variable of type ``bytes20``. One can convert ``b``
-    into the type ``address payable`` by using two explicit conversions, i.e.,
-    ``payable(address(b))``.
-  - ``address(c)`` where ``c`` is a contract. Previously, the return type of this
-    conversion depended on whether the contract can receive Ether (either by having a receive
-    function or a payable fallback function). The conversion ``payable(c)`` has the type ``address
-    payable`` and is only allowed when the contract ``c`` can receive Ether. In general, one can
-    always convert ``c`` into the type ``address payable`` by using the following explicit
-    conversion: ``payable(address(c))``. Note that ``address(this)`` falls under the same category
-    as ``address(c)`` and the same rules apply for it.
+  - ``adresse(u)`` où ``u`` est une variable de type ``uint160``. On peut convertir ``u``
+    dans le type ``adresse payable`` en utilisant deux conversions explicites, c'est-à-dire,
+    ``payable(adresse(u))``.
+  - ``adresse(b)`` où ``b`` est une variable de type ``bytes20``. On peut convertir ``b``
+    dans le type ``adresse payable`` en utilisant deux conversions explicites, c'est-à-dire,
+    ``payable(adresse(b))``.
+  - ``adresse(c)`` où ``c`` est un contrat. Auparavant, le type de retour de cette
+    conversion dépendait de la possibilité pour le contrat de recevoir de l'Ether (soit en ayant une fonction de réception
+    ou une fonction de repli payable). La conversion ``payable(c)`` a le type ``adresse
+    payable" et n'est autorisée que si le contrat "c" peut recevoir de l'éther. En général, on peut
+    convertir ``c`` en type ``adresse payable`` en utilisant la conversion explicite suivante
+    explicite suivante : ``payable(adresse(c))``. Notez que ``address(this)`` tombe sous la même catégorie
+    que ``address(c)`` et les mêmes règles s'appliquent pour elle.
 
-* The ``chainid`` builtin in inline assembly is now considered ``view`` instead of ``pure``.
+* La construction de "chainid" dans l'assemblage en ligne est maintenant considérée comme une "vue" au lieu d'une "pure".
 
-* Unary negation cannot be used on unsigned integers anymore, only on signed integers.
+* La négation unaire ne peut plus être utilisée sur les entiers non signés, seulement sur les entiers signés.
 
-Interface Changes
+Changements d'interface
 =================
 
-* The output of ``--combined-json`` has changed: JSON fields ``abi``, ``devdoc``, ``userdoc`` and
-  ``storage-layout`` are sub-objects now. Before 0.8.0 they used to be serialised as strings.
+* La sortie de ``--combined-json`` a changé : Les champs JSON ``abi``, ``devdoc``, ``userdoc`` et
+  ``storage-layout`` sont maintenant des sous-objets. Avant la version 0.8.0, ils étaient sérialisés sous forme de chaînes de caractères.
 
-* The "legacy AST" has been removed (``--ast-json`` on the commandline interface and ``legacyAST`` for standard JSON).
-  Use the "compact AST" (``--ast-compact--json`` resp. ``AST``) as replacement.
+* L'"ancien AST" a été supprimé (``--ast-json`` sur l'interface de la ligne de commande et ``legacyAST`` pour le JSON standard).
+  Utilisez l'"AST compact" (``--ast-compact--json`` resp. ``AST``) en remplacement.
 
-* The old error reporter (``--old-reporter``) has been removed.
+* L'ancien rapporteur d'erreurs (``--old-reporter``) a été supprimé.
 
 
-How to update your code
+Comment mettre à jour votre code
 =======================
 
-- If you rely on wrapping arithmetic, surround each operation with ``unchecked { ... }``.
-- Optional: If you use SafeMath or a similar library, change ``x.add(y)`` to ``x + y``, ``x.mul(y)`` to ``x * y`` etc.
-- Add ``pragma abicoder v1;`` if you want to stay with the old ABI coder.
-- Optionally remove ``pragma experimental ABIEncoderV2`` or ``pragma abicoder v2`` since it is redundant.
-- Change ``byte`` to ``bytes1``.
-- Add intermediate explicit type conversions if required.
-- Combine ``c.f{gas: 10000}{value: 1}()`` to ``c.f{gas: 10000, value: 1}()``.
-- Change ``msg.sender.transfer(x)`` to ``payable(msg.sender).transfer(x)`` or use a stored variable of ``address payable`` type.
-- Change ``x**y**z`` to ``(x**y)**z``.
-- Use inline assembly as a replacement for ``log0``, ..., ``log4``.
-- Negate unsigned integers by subtracting them from the maximum value of the type and adding 1 (e.g. ``type(uint256).max - x + 1``, while ensuring that `x` is not zero)
+- Si vous comptez sur l'arithmétique enveloppante, entourez chaque opération de ``unchecked { ... }``.
+- Optionnel : Si vous utilisez SafeMath ou une bibliothèque similaire, changez ``x.add(y)`` en ``x + y``, ``x.mul(y)`` en ``x * y`` etc.
+- Ajoutez ``pragma abicoder v1;`` si vous voulez rester avec l'ancien codeur ABI.
+- Supprimez éventuellement ``pragma experimental ABIEncoderV2`` ou ``pragma abicoder v2`` car ils sont redondants.
+- Changez ``byte`` en ``bytes1``.
+- Ajouter des conversions de types explicites intermédiaires si nécessaire.
+- Combinez ``c.f{gas : 10000}{value : 1}()`` en ``c.f{gas : 10000, value : 1}()``.
+- Remplacez ``msg.sender.transfer(x)`` par ``payable(msg.sender).transfer(x)`` ou utilisez une variable stockée de type ``adresse payable``.
+- Remplacez ``x**y**z`` par ``(x**y)**z``.
+- Utilisez l'assemblage en ligne en remplacement de ``log0``, ..., ``log4``.
+- Négation des entiers non signés en les soustrayant de la valeur maximale du type et en ajoutant 1 (par exemple, ``type(uint256).max - x + 1``, tout en s'assurant que `x` n'est pas zéro)

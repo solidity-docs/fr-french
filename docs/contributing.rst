@@ -1,189 +1,189 @@
 ############
-Contributing
+Contribution
 ############
 
-Help is always welcome and there are plenty of options how you can contribute to Solidity.
+L'aide est toujours la bienvenue et il existe de nombreuses possibilités de contribuer à Solidity.
 
-In particular, we appreciate support in the following areas:
+En particulier, nous apprécions le soutien dans les domaines suivants :
 
-* Reporting issues.
-* Fixing and responding to `Solidity's GitHub issues
-  <https://github.com/ethereum/solidity/issues>`_, especially those tagged as
-  `"good first issue" <https://github.com/ethereum/solidity/labels/good%20first%20issue>`_ which are
-  meant as introductory issues for external contributors.
-* Improving the documentation.
-* Translating the documentation into more languages.
-* Responding to questions from other users on `StackExchange
-  <https://ethereum.stackexchange.com>`_ and the `Solidity Gitter Chat
+* Signaler les problèmes.
+* Corriger et répondre aux problèmes de `Solidity's GitHub issues.
+  <https://github.com/ethereum/solidity/issues>`_, en particulier ceux marqués comme
+  `"good first issue" <https://github.com/ethereum/solidity/labels/good%20first%20issue>`_ qui sont
+  destinés à servir de problèmes d'introduction pour les contributeurs externes.
+* Améliorer la documentation.
+* Traduire la documentation dans plus de langues.
+* Répondre aux questions des autres utilisateurs sur `StackExchange
+  <https://ethereum.stackexchange.com>`_ et le `Solidity Gitter Chat
   <https://gitter.im/ethereum/solidity>`_.
-* Getting involved in the language design process by proposing language changes or new features in the `Solidity forum <https://forum.soliditylang.org/>`_ and providing feedback.
+* S'impliquer dans le processus de conception du langage en proposant des changements de langage ou de nouvelles fonctionnalités sur le forum `Solidity <https://forum.soliditylang.org/>`_ et en fournissant des commentaires.
 
-To get started, you can try :ref:`building-from-source` in order to familiarize
-yourself with the components of Solidity and the build process. Also, it may be
-useful to become well-versed at writing smart-contracts in Solidity.
+Pour commencer, vous pouvez essayer :ref:`building-from-source` afin de
+vous familiariser avec les composants de Solidity et le processus de construction.
+En outre, il peut être utile de vous familiariser avec l'écriture de contrats intelligents dans Solidity.
 
-Please note that this project is released with a `Contributor Code of Conduct <https://raw.githubusercontent.com/ethereum/solidity/develop/CODE_OF_CONDUCT.md>`_. By participating in this project - in the issues, pull requests, or Gitter channels - you agree to abide by its terms.
+Veuillez noter que ce projet est publié avec un `Code de conduite du contributeur <https://raw.githubusercontent.com/ethereum/solidity/develop/CODE_OF_CONDUCT.md>`_. En participant à ce projet - dans les problèmes, les demandes de pull, ou les canaux Gitter - vous acceptez de respecter ses termes.
 
-Team Calls
+Appels de l'équipe
 ==========
 
-If you have issues or pull requests to discuss, or are interested in hearing what
-the team and contributors are working on, you can join our public team calls:
+Si vous avez des problèmes ou des demandes de pull à discuter, ou si vous êtes intéressé à entendre ce sur quoi
+l'équipe et les contributeurs travaillent, vous pouvez rejoindre nos appels d'équipe publics :
 
-- Mondays at 3pm CET/CEST.
-- Wednesdays at 2pm CET/CEST.
+- Les lundis à 15h CET/CEST.
+- Les mercredis à 14h CET/CEST.
 
-Both calls take place on `Jitsi <https://meet.ethereum.org/solidity>`_.
+Les deux appels ont lieu sur `Jitsi <https://meet.ethereum.org/solidity>`_.
 
-How to Report Issues
+Comment signaler des problèmes
 ====================
 
-To report an issue, please use the
-`GitHub issues tracker <https://github.com/ethereum/solidity/issues>`_. When
-reporting issues, please mention the following details:
+Pour signaler un problème, veuillez utiliser le
+`GitHub issues tracker <https://github.com/ethereum/solidity/issues>`_. Lorsque
+rapportant des problèmes, veuillez mentionner les détails suivants :
 
-* Solidity version.
-* Source code (if applicable).
-* Operating system.
-* Steps to reproduce the issue.
-* Actual vs. expected behaviour.
+* Version de Solidity.
+* Code source (le cas échéant).
+* Système d'exploitation.
+* Étapes pour reproduire le problème.
+* Le comportement réel par rapport au comportement attendu.
 
-Reducing the source code that caused the issue to a bare minimum is always
-very helpful and sometimes even clarifies a misunderstanding.
+Il est toujours très utile de réduire au strict minimum le code source à l'origine du problème.
+Très utile et permet même parfois de clarifier un malentendu.
 
-Workflow for Pull Requests
+Flux de travail pour les demandes de Pull
 ==========================
 
-In order to contribute, please fork off of the ``develop`` branch and make your
-changes there. Your commit messages should detail *why* you made your change
-in addition to *what* you did (unless it is a tiny change).
+Pour contribuer, merci de vous détacher de la branche ``develop`` et d'y faire vos modifications ici.
+Vos messages de commit doivent détailler *pourquoi* vous avez fait votre changement
+en plus de *ce que vous avez fait (sauf si c'est un changement minuscule)*.
 
-If you need to pull in any changes from ``develop`` after making your fork (for
-example, to resolve potential merge conflicts), please avoid using ``git merge``
-and instead, ``git rebase`` your branch. This will help us review your change
-more easily.
+Si vous avez besoin de retirer des changements de la branche ``develop`` après avoir fait votre fork (par
+(par exemple, pour résoudre des conflits de fusion potentiels), évitez d'utiliser ``git merge``
+et à la place, ``git rebase`` votre branche. Cela nous aidera à revoir votre changement
+plus facilement.
 
-Additionally, if you are writing a new feature, please ensure you add appropriate
-test cases under ``test/`` (see below).
+De plus, si vous écrivez une nouvelle fonctionnalité, veuillez vous assurer que vous ajoutez des
+tests appropriés sous ``test/`` (voir ci-dessous).
 
-However, if you are making a larger change, please consult with the `Solidity Development Gitter channel
-<https://gitter.im/ethereum/solidity-dev>`_ (different from the one mentioned above, this one is
-focused on compiler and language development instead of language usage) first.
+Cependant, si vous effectuez un changement plus important, veuillez consulter le `canal Gitter du développement de Solidity
+<https://gitter.im/ethereum/solidity-dev>`_ (différent de celui mentionné ci-dessus, celui-ci est
+axé sur le développement du compilateur et du langage plutôt que sur l'utilisation du langage) en premier lieu.
 
-New features and bugfixes should be added to the ``Changelog.md`` file: please
-follow the style of previous entries, when applicable.
+Les nouvelles fonctionnalités et les corrections de bogues doivent être ajoutées au fichier ``Changelog.md`` : veuillez
+suivre le style des entrées précédentes, le cas échéant.
 
-Finally, please make sure you respect the `coding style
+Enfin, veillez à respecter le ``style de codage
 <https://github.com/ethereum/solidity/blob/develop/CODING_STYLE.md>`_
-for this project. Also, even though we do CI testing, please test your code and
-ensure that it builds locally before submitting a pull request.
+pour ce projet. De plus, même si nous effectuons des tests CI, veuillez tester votre code et
+assurez-vous qu'il se construit localement avant de soumettre une demande de pull.
 
-Thank you for your help!
+Merci pour votre aide !
 
-Running the Compiler Tests
+Exécution des tests du compilateur
 ==========================
 
-Prerequisites
+Conditions préalables
 -------------
 
-For running all compiler tests you may want to optionally install a few
-dependencies (`evmone <https://github.com/ethereum/evmone/releases>`_,
-`libz3 <https://github.com/Z3Prover/z3>`_, and
+Pour exécuter tous les tests du compilateur, vous pouvez vouloir installer facultativement quelques
+dépendances (`evmone <https://github.com/ethereum/evmone/releases>`_,
+`libz3 <https://github.com/Z3Prover/z3>`_, et
 `libhera <https://github.com/ewasm/hera>`_).
 
-On macOS some of the testing scripts expect GNU coreutils to be installed.
-This can be easiest accomplished using Homebrew: ``brew install coreutils``.
+Sur macOS, certains des scripts de test attendent que GNU coreutils soit installé.
+Ceci peut être accompli plus facilement en utilisant Homebrew : ``brew install coreutils``.
 
-Running the Tests
+Exécution des tests
 -----------------
 
-Solidity includes different types of tests, most of them bundled into the
+Solidity inclut différents types de tests, la plupart d'entre eux étant regroupés dans l'application ``Boost C++ Test Framework``.
 `Boost C++ Test Framework <https://www.boost.org/doc/libs/release/libs/test/doc/html/index.html>`_ application ``soltest``.
-Running ``build/test/soltest`` or its wrapper ``scripts/soltest.sh`` is sufficient for most changes.
+Exécuter ``build/test/soltest`` ou son wrapper ``scripts/soltest.sh`` est suffisant pour la plupart des modifications.
 
-The ``./scripts/tests.sh`` script executes most Solidity tests automatically,
-including those bundled into the `Boost C++ Test Framework <https://www.boost.org/doc/libs/release/libs/test/doc/html/index.html>`_
-application ``soltest`` (or its wrapper ``scripts/soltest.sh``), as well as command line tests and
-compilation tests.
+Le script `./scripts/tests.sh`` exécute automatiquement la plupart des tests Solidity,
+y compris ceux inclus dans le `Boost C++ Test Framework <https://www.boost.org/doc/libs/release/libs/test/doc/html/index.html>`_
+l'application ``soltest`` (ou son enveloppe ``scripts/soltest.sh``), ainsi que les tests en ligne de commande et les
+tests de compilation.
 
-The test system automatically tries to discover the location of
-the `evmone <https://github.com/ethereum/evmone/releases>`_ for running the semantic tests.
+Le système de test essaie automatiquement de découvrir
+l'emplacement du `evmone <https://github.com/ethereum/evmone/releases>`_ pour exécuter les tests sémantiques.
 
-The ``evmone`` library must be located in the ``deps`` or ``deps/lib`` directory relative to the
-current working directory, to its parent or its parent's parent. Alternatively an explicit location
-for the ``evmone`` shared object can be specified via the ``ETH_EVMONE`` environment variable.
+La bibliothèque ``evmone`` doit être située dans le répertoire ``deps`` ou ``deps/lib`` relativement au
+répertoire de travail actuel, à son parent ou au parent de son parent. Alternativement, un emplacement explicite
+pour l'objet partagé ``evmone`` peut être spécifié via la variable d'environnement ``ETH_EVMONE``.
 
-``evmone`` is needed mainly for running semantic and gas tests.
-If you do not have it installed, you can skip these tests by passing the ``--no-semantic-tests``
-flag to ``scripts/soltest.sh``.
+``evmone`` est principalement nécessaire pour l'exécution de tests sémantiques et de gaz.
+Si vous ne l'avez pas installé, vous pouvez ignorer ces tests en passant l'option ``--no-semantic-tests``
+à ``scripts/soltest.sh``.
 
-Running Ewasm tests is disabled by default and can be explicitly enabled
-via ``./scripts/soltest.sh --ewasm`` and requires `hera <https://github.com/ewasm/hera>`_
-to be found by ``soltest``.
-The mechanism for locating the ``hera`` library is the same as for ``evmone``, except that the
-variable for specifying an explicit location is called ``ETH_HERA``.
+L'exécution des tests Ewasm est désactivée par défaut et peut être explicitement activée
+via ``./scripts/soltest.sh --ewasm`` et nécessite que `hera <https://github.com/ewasm/hera>`_ soit trouvé par ``soltest.sh``.
+Pour être trouvé par ``soltest``.
+Le mécanisme de localisation de la bibliothèque ``hera`` est le même que pour ``evmone``, sauf que la
+variable permettant de spécifier un emplacement explicite est appelée ``ETH_HERA``.
 
-The ``evmone`` and ``hera`` libraries should both end with the file name
-extension ``.so`` on Linux, ``.dll`` on Windows systems and ``.dylib`` on macOS.
+Les bibliothèques ``evmone`` et ``hera`' doivent toutes deux se terminer par l'extension de fichier
+avec l'extension ``.so`` sur Linux, ``.dll`` sur les systèmes Windows et ``.dylib`` sur macOS.
 
-For running SMT tests, the ``libz3`` library must be installed and locatable
-by ``cmake`` during compiler configure stage.
+Pour exécuter les tests SMT, la bibliothèque ``libz3`` doit être installée et localisable
+par ``cmake`` pendant l'étape de configuration du compilateur.
 
-If the ``libz3`` library is not installed on your system, you should disable the
-SMT tests by exporting ``SMT_FLAGS=--no-smt`` before running ``./scripts/tests.sh`` or
-running ``./scripts/soltest.sh --no-smt``.
-These tests are ``libsolidity/smtCheckerTests`` and ``libsolidity/smtCheckerTestsJSON``.
+Si la bibliothèque ``libz3`` n'est pas installée sur votre système, vous devriez désactiver les
+tests SMT en exportant ``SMT_FLAGS=--no-smt`` avant de lancer ``./scripts/tests.sh`` ou de
+en exécutant `./scripts/soltest.sh --no-smt``.
+Ces tests sont ``libsolidity/smtCheckerTests`` et ``libsolidity/smtCheckerTestsJSON``.
 
-.. note ::
+.. note::
 
-    To get a list of all unit tests run by Soltest, run ``./build/test/soltest --list_content=HRF``.
+    Pour obtenir une liste de tous les tests unitaires exécutés par Soltest, exécutez ``./build/test/soltest --list_content=HRF``.
 
-For quicker results you can run a subset of, or specific tests.
+Pour obtenir des résultats plus rapides, vous pouvez exécuter un sous-ensemble de tests ou des tests spécifiques.
 
-To run a subset of tests, you can use filters:
+Pour exécuter un sous-ensemble de tests, vous pouvez utiliser des filtres :
 ``./scripts/soltest.sh -t TestSuite/TestName``,
-where ``TestName`` can be a wildcard ``*``.
+où ``TestName`` peut être un joker ``*``.
 
-Or, for example, to run all the tests for the yul disambiguator:
+Ou, par exemple, pour exécuter tous les tests pour le désambiguïsateur yul :
 ``./scripts/soltest.sh -t "yulOptimizerTests/disambiguator/*" --no-smt``.
 
-``./build/test/soltest --help`` has extensive help on all of the options available.
+``./build/test/soltest --help`` a une aide étendue sur toutes les options disponibles.
 
-See especially:
+Voir en particulier :
 
-- `show_progress (-p) <https://www.boost.org/doc/libs/release/libs/test/doc/html/boost_test/utf_reference/rt_param_reference/show_progress.html>`_ to show test completion,
-- `run_test (-t) <https://www.boost.org/doc/libs/release/libs/test/doc/html/boost_test/utf_reference/rt_param_reference/run_test.html>`_ to run specific tests cases, and
-- `report-level (-r) <https://www.boost.org/doc/libs/release/libs/test/doc/html/boost_test/utf_reference/rt_param_reference/report_level.html>`_ give a more detailed report.
+- `show_progress (-p) <https://www.boost.org/doc/libs/release/libs/test/doc/html/boost_test/utf_reference/rt_param_reference/show_progress.html>`_ pour montrer l'achèvement du test,
+- `run_test (-t) <https://www.boost.org/doc/libs/release/libs/test/doc/html/boost_test/utf_reference/rt_param_reference/run_test.html>`_ pour exécuter des cas de tests spécifiques, et
+- `report-level (-r) <https://www.boost.org/doc/libs/release/libs/test/doc/html/boost_test/utf_reference/rt_param_reference/report_level.html>`_ donner un rapport plus détaillé.
 
-.. note ::
+.. note::
 
-    Those working in a Windows environment wanting to run the above basic sets
-    without libz3. Using Git Bash, you use: ``./build/test/Release/soltest.exe -- --no-smt``.
-    If you are running this in plain Command Prompt, use ``.\build\test\Release\soltest.exe -- --no-smt``.
+    Ceux qui travaillent dans un environnement Windows et qui veulent exécuter les jeux de base ci-dessus
+    sans libz3. En utilisant Git Bash, vous utilisez : ``./build/test/Release/soltest.exe -- --no-smt``.
+    Si vous exécutez ceci dans une Invite de Commande simple, utilisez : ``./build/test/Release/soltest.exe -- --no-smt``.
 
-If you want to debug using GDB, make sure you build differently than the "usual".
-For example, you could run the following command in your ``build`` folder:
+Si vous voulez déboguer à l'aide de GDB, assurez-vous que vous construisez différemment de ce qui est "habituel".
+Par exemple, vous pouvez exécuter la commande suivante dans votre dossier ``build`` :
 .. code-block:: bash
 
    cmake -DCMAKE_BUILD_TYPE=Debug ..
    make
 
-This creates symbols so that when you debug a test using the ``--debug`` flag,
-you have access to functions and variables in which you can break or print with.
+Cela crée des symboles de sorte que lorsque vous déboguez un test en utilisant le drapeau ``--debug``,
+vous avez accès aux fonctions et aux variables avec lesquelles vous pouvez casser ou imprimer.
 
-The CI runs additional tests (including ``solc-js`` and testing third party Solidity
-frameworks) that require compiling the Emscripten target.
+Le CI exécute des tests supplémentaires (y compris ``solc-js`` et le test de frameworks Solidity tiers)
+qui nécessitent la compilation de la cible Emscripten.
 
-Writing and Running Syntax Tests
+Écrire et exécuter des tests de syntaxe
 --------------------------------
 
-Syntax tests check that the compiler generates the correct error messages for invalid code
-and properly accepts valid code.
-They are stored in individual files inside the ``tests/libsolidity/syntaxTests`` folder.
-These files must contain annotations, stating the expected result(s) of the respective test.
-The test suite compiles and checks them against the given expectations.
+Les tests de syntaxe vérifient que le compilateur génère les messages d'erreur corrects pour le code invalide
+et accepte correctement le code valide.
+Ils sont stockés dans des fichiers individuels à l'intérieur du dossier ``tests/libsolidity/syntaxTests``.
+Ces fichiers doivent contenir des annotations, indiquant le(s) résultat(s) attendu(s) du test respectif.
+La suite de tests les compile et les vérifie par rapport aux attentes données.
 
-For example: ``./test/libsolidity/syntaxTests/double_stateVariable_declaration.sol``
+Par exemple : ``./test/libsolidity/syntaxTests/double_stateVariable_declaration.sol``
 
 .. code-block:: solidity
 
@@ -192,17 +192,17 @@ For example: ``./test/libsolidity/syntaxTests/double_stateVariable_declaration.s
         uint128 variable;
     }
     // ----
-    // DeclarationError: (36-52): Identifier already declared.
+    // DeclarationError: (36-52): Identifiant déjà déclaré.
 
-A syntax test must contain at least the contract under test itself, followed by the separator ``// ----``. The comments that follow the separator are used to describe the
-expected compiler errors or warnings. The number range denotes the location in the source where the error occurred.
-If you want the contract to compile without any errors or warning you can leave
-out the separator and the comments that follow it.
+Un test de syntaxe doit contenir au moins le contrat testé lui-même, suivi du séparateur ``// ----``. Les commentaires qui suivent le séparateur sont utilisés pour décrire les
+erreurs ou les avertissements attendus du compilateur. La fourchette de numéros indique l'emplacement dans le code source où l'erreur s'est produite.
+Si vous voulez que le contrat compile sans aucune erreur ou avertissement, vous pouvez omettre
+le séparateur et les commentaires qui le suivent.
 
-In the above example, the state variable ``variable`` was declared twice, which is not allowed. This results in a ``DeclarationError`` stating that the identifier was already declared.
+Dans l'exemple ci-dessus, la variable d'état ``variable`` a été déclarée deux fois, ce qui n'est pas autorisé. Il en résulte un ``DeclarationError`` indiquant que l'identifiant a déjà été déclaré.
 
-The ``isoltest`` tool is used for these tests and you can find it under ``./build/test/tools/``. It is an interactive tool which allows
-editing of failing contracts using your preferred text editor. Let's try to break this test by removing the second declaration of ``variable``:
+L'outil ``isoltest`` est utilisé pour ces tests et vous pouvez le trouver sous ``./build/test/tools/``. C'est un outil interactif qui permet
+d'éditer les contrats défaillants en utilisant votre éditeur de texte préféré. Essayons de casser ce test en supprimant la deuxième déclaration de ``variable`` :
 
 .. code-block:: solidity
 
@@ -210,9 +210,9 @@ editing of failing contracts using your preferred text editor. Let's try to brea
         uint256 variable;
     }
     // ----
-    // DeclarationError: (36-52): Identifier already declared.
+    // DeclarationError: (36-52): Identifiant déjà déclaré.
 
-Running ``./build/test/tools/isoltest`` again results in a test failure:
+Lancer ``./build/test/tools/isoltest`` à nouveau entraîne un échec du test :
 
 .. code-block:: text
 
@@ -223,24 +223,24 @@ Running ``./build/test/tools/isoltest`` again results in a test failure:
             }
 
         Expected result:
-            DeclarationError: (36-52): Identifier already declared.
+            DeclarationError: (36-52): Identifiant déjà déclaré.
         Obtained result:
             Success
 
 
-``isoltest`` prints the expected result next to the obtained result, and also
-provides a way to edit, update or skip the current contract file, or quit the application.
+``isoltest`` imprime le résultat attendu à côté du résultat obtenu, et fournit aussi
+un moyen de modifier, de mettre à jour ou d'ignorer le fichier de contrat actuel, ou de quitter l'application.
 
-It offers several options for failing tests:
+Il offre plusieurs options pour les tests qui échouent :
 
-- ``edit``: ``isoltest`` tries to open the contract in an editor so you can adjust it. It either uses the editor given on the command line (as ``isoltest --editor /path/to/editor``), in the environment variable ``EDITOR`` or just ``/usr/bin/editor`` (in that order).
-- ``update``: Updates the expectations for contract under test. This updates the annotations by removing unmet expectations and adding missing expectations. The test is then run again.
-- ``skip``: Skips the execution of this particular test.
-- ``quit``: Quits ``isoltest``.
+- ``edit`` : ``isoltest`` essaie d'ouvrir le contrat dans un éditeur pour que vous puissiez l'ajuster. Il utilise soit l'éditeur donné sur la ligne de commande (comme ``isoltest --editor /path/to/editor``), dans la variable d'environnement ``EDITOR`` ou juste ``/usr/bin/editor`` (dans cet ordre).
+- ``update`` : Met à jour les attentes pour le contrat en cours de test. Cela met à jour les annotations en supprimant les attentes non satisfaites et en ajoutant les attentes manquantes. Le test est ensuite exécuté à nouveau.
+- ``skip`` : Ignore l'exécution de ce test particulier.
+- ``quit'' : Quitte ``isoltest``.
 
-All of these options apply to the current contract, expect ``quit`` which stops the entire testing process.
+Toutes ces options s'appliquent au contrat en cours, à l'exception de ``quit`` qui arrête l'ensemble du processus de test.
 
-Automatically updating the test above changes it to
+La mise à jour automatique du test ci-dessus le change en
 
 .. code-block:: solidity
 
@@ -249,33 +249,33 @@ Automatically updating the test above changes it to
     }
     // ----
 
-and re-run the test. It now passes again:
+et relancez le test. Il passe à nouveau :
 
 .. code-block:: text
 
-    Re-running test case...
+    Ré-exécution du cas de test...
     syntaxTests/double_stateVariable_declaration.sol: OK
 
 
 .. note::
 
-    Choose a name for the contract file that explains what it tests, e.g. ``double_variable_declaration.sol``.
-    Do not put more than one contract into a single file, unless you are testing inheritance or cross-contract calls.
-    Each file should test one aspect of your new feature.
+    Choisissez un nom pour le fichier du contrat qui explique ce qu'il teste, par exemple "double_variable_declaration.sol".
+    Ne mettez pas plus d'un contrat dans un seul fichier, sauf si vous testez l'héritage ou les appels croisés de contrats.
+    Chaque fichier doit tester un aspect de votre nouvelle fonctionnalité.
 
 
-Running the Fuzzer via AFL
+Exécution du Fuzzer via AFL
 ==========================
 
-Fuzzing is a technique that runs programs on more or less random inputs to find exceptional execution
-states (segmentation faults, exceptions, etc). Modern fuzzers are clever and run a directed search
-inside the input. We have a specialized binary called ``solfuzzer`` which takes source code as input
-and fails whenever it encounters an internal compiler error, segmentation fault or similar, but
-does not fail if e.g., the code contains an error. This way, fuzzing tools can find internal problems in the compiler.
+Le fuzzing est une technique qui consiste à exécuter des programmes sur des entrées plus ou moins aléatoires afin de trouver des états
+d'exécution exceptionnels (défauts de segmentation, exceptions, etc.). Les fuzzers modernes sont intelligents et effectuent une recherche dirigée
+à l'intérieur de l'entrée. Nous avons un binaire spécialisé appelé ``solfuzzer`` qui prend le code source comme entrée
+et échoue chaque fois qu'il rencontre une erreur interne du compilateur, un défaut de segmentation ou similaire.
+mais n'échoue pas si, par exemple, le code contient une erreur. De cette façon, les outils de fuzzing peuvent trouver des problèmes internes dans le compilateur.
 
-We mainly use `AFL <https://lcamtuf.coredump.cx/afl/>`_ for fuzzing. You need to download and
-install the AFL packages from your repositories (afl, afl-clang) or build them manually.
-Next, build Solidity (or just the ``solfuzzer`` binary) with AFL as your compiler:
+Nous utilisons principalement `AFL <https://lcamtuf.coredump.cx/afl/>`_ pour le fuzzing. Vous devez télécharger et
+installer les paquets AFL depuis vos dépôts (afl, afl-clang) ou les construire manuellement.
+Ensuite, construisez Solidity (ou juste le binaire ``solfuzzer``) avec AFL comme compilateur :
 
 .. code-block:: bash
 
@@ -285,7 +285,7 @@ Next, build Solidity (or just the ``solfuzzer`` binary) with AFL as your compile
     cmake .. -DCMAKE_C_COMPILER=path/to/afl-gcc -DCMAKE_CXX_COMPILER=path/to/afl-g++
     make solfuzzer
 
-At this stage you should be able to see a message similar to the following:
+À ce stade, vous devriez pouvoir voir un message similaire à celui qui suit :
 
 .. code-block:: text
 
@@ -296,16 +296,16 @@ At this stage you should be able to see a message similar to the following:
     [+] Instrumented 1949 locations (64-bit, non-hardened mode, ratio 100%).
     [100%] Linking CXX executable solfuzzer
 
-If the instrumentation messages did not appear, try switching the cmake flags pointing to AFL's clang binaries:
+Si les messages d'instrumentation n'apparaissent pas, essayez de changer les drapeaux cmake pointant vers les binaires clang de l'AFL :
 
 .. code-block:: bash
 
-    # if previously failed
+    # si l'échec précédent
     make clean
     cmake .. -DCMAKE_C_COMPILER=path/to/afl-clang -DCMAKE_CXX_COMPILER=path/to/afl-clang++
     make solfuzzer
 
-Otherwise, upon execution the fuzzer halts with an error saying binary is not instrumented:
+Sinon, lors de l'exécution, le fuzzer s'arrête avec une erreur disant que le binaire n'est pas instrumenté :
 
 .. code-block:: text
 
@@ -327,9 +327,9 @@ Otherwise, upon execution the fuzzer halts with an error saying binary is not in
              Location : check_binary(), afl-fuzz.c:6920
 
 
-Next, you need some example source files. This makes it much easier for the fuzzer
-to find errors. You can either copy some files from the syntax tests or extract test files
-from the documentation or the other tests:
+Ensuite, vous avez besoin de quelques fichiers sources d'exemple. Cela permet au fuzzer de trouver des erreurs
+plus facilement. Vous pouvez soit copier certains fichiers des tests de syntaxe, soit extraire des fichiers de test
+de la documentation ou des autres tests :
 
 .. code-block:: bash
 
@@ -340,160 +340,161 @@ from the documentation or the other tests:
     # extract from documentation:
     path/to/solidity/scripts/isolate_tests.py path/to/solidity/docs
 
-The AFL documentation states that the corpus (the initial input files) should not be
-too large. The files themselves should not be larger than 1 kB and there should be
-at most one input file per functionality, so better start with a small number of.
-There is also a tool called ``afl-cmin`` that can trim input files
-that result in similar behaviour of the binary.
+La documentation de l'AFL indique que le corpus (les fichiers d'entrée initiaux) ne doit pas être
+trop volumineux. Les fichiers eux-mêmes ne devraient pas être plus grands que 1 kB et il devrait y avoir
+au maximum un fichier d'entrée par fonctionnalité, donc mieux vaut commencer avec un petit nombre de fichiers.
+Il existe également un outil appelé ``afl-cmin`` qui peut couper les fichiers d'entrée
+qui ont pour résultat un comportement similaire du binaire.
 
-Now run the fuzzer (the ``-m`` extends the size of memory to 60 MB):
+Maintenant, lancez le fuzzer (le ``-m`` étend la taille de la mémoire à 60 Mo) :
 
 .. code-block:: bash
 
     afl-fuzz -m 60 -i /tmp/test_cases -o /tmp/fuzzer_reports -- /path/to/solfuzzer
 
-The fuzzer creates source files that lead to failures in ``/tmp/fuzzer_reports``.
-Often it finds many similar source files that produce the same error. You can
-use the tool ``scripts/uniqueErrors.sh`` to filter out the unique errors.
+Le fuzzer crée des fichiers sources qui conduisent à des échecs dans ``/tmp/fuzzer_reports``.
+Il trouve souvent de nombreux fichiers sources similaires qui produisent la même erreur. Vous pouvez
+utiliser l'outil ``scripts/uniqueErrors.sh`` pour filtrer les erreurs uniques.
 
-Whiskers
+Moustaches
 ========
 
-*Whiskers* is a string templating system similar to `Mustache <https://mustache.github.io>`_. It is used by the
-compiler in various places to aid readability, and thus maintainability and verifiability, of the code.
+*Whiskers* est un système de modélisation de chaînes de caractères similaire à `Mustache <https://mustache.github.io>`_. Il est utilisé par le
+compilateur à divers endroits pour faciliter la lisibilité, et donc la maintenabilité et la vérifiabilité, du code.
 
-The syntax comes with a substantial difference to Mustache. The template markers ``{{`` and ``}}`` are
-replaced by ``<`` and ``>`` in order to aid parsing and avoid conflicts with :ref:`yul`
-(The symbols ``<`` and ``>`` are invalid in inline assembly, while ``{`` and ``}`` are used to delimit blocks).
-Another limitation is that lists are only resolved one depth and they do not recurse. This may change in the future.
+La syntaxe présente une différence par rapport à Mustache. Les marqueurs de template `{{`` et ``}}`` sont
+remplacés par ``<`` et ``>`` afin de faciliter l'analyse et d'éviter les conflits avec :ref:`yul``.
+(Les symboles `<`` et `>`` sont invalides dans l'assemblage en ligne, tandis que ``{`` et ``}`` sont utilisés pour délimiter les blocs).
+Une autre limitation est que les listes ne sont résolues qu'à une seule profondeur et qu'elles ne sont pas récursives. Cela peut changer dans le futur.
 
-A rough specification is the following:
+Une spécification approximative est la suivante :
 
-Any occurrence of ``<name>`` is replaced by the string-value of the supplied variable ``name`` without any
-escaping and without iterated replacements. An area can be delimited by ``<#name>...</name>``. It is replaced
-by as many concatenations of its contents as there were sets of variables supplied to the template system,
-each time replacing any ``<inner>`` items by their respective value. Top-level variables can also be used
-inside such areas.
+Toute occurrence de ``<name>`` est remplacée par la valeur de la variable fournie ``name`` sans aucun échappement et sans remplacement itératif.
+Une zone peut être délimitée par ``<#name>...</name>`. Elle est remplacée
+par autant de concaténations de son contenu qu'il y avait d'ensembles de variables fournis au système de modèles,
+en remplaçant chaque fois les éléments ``<inner>`` par leur valeur respective. Les variables de haut niveau peuvent également être utilisées
+à l'intérieur de ces zones.
 
-There are also conditionals of the form ``<?name>...<!name>...</name>``, where template replacements
-continue recursively either in the first or the second segment depending on the value of the boolean
-parameter ``name``. If ``<?+name>...<!+name>...</+name>`` is used, then the check is whether
-the string parameter ``name`` is non-empty.
+Il existe également des conditionnels de la forme ``<?name>...<!name>...</name>``, où les remplacements de modèles
+se poursuivent récursivement dans le premier ou le second segment, en fonction de la valeur du paramètre
+booléen ``name``. Si ``<?+name>...<!+name>...</+name>` est utilisé, alors la vérification consiste à savoir si
+le paramètre chaîne de caractères ``name`` est non vide.
 
 .. _documentation-style:
 
-Documentation Style Guide
+Guide de style de la documentation
 =========================
 
-In the following section you find style recommendations specifically focusing on documentation
-contributions to Solidity.
+Dans la section suivante, vous trouverez des recommandations de style spécifiquement axées sur la documentation
+des contributions à Solidity.
 
-English Language
+Langue anglaise
 ----------------
 
-Use English, with British English spelling preferred, unless using project or brand names. Try to reduce the usage of
-local slang and references, making your language as clear to all readers as possible. Below are some references to help:
+Utilisez l'anglais, avec une préférence pour l'orthographe anglaise britannique, sauf si vous utilisez des noms de projets ou de marques.
+Essayez de réduire l'utilisation de l'argot et les références locales, en rendant votre langage aussi clair que possible pour tous les lecteurs.
+Vous trouverez ci-dessous quelques références pour vous aider :
 
-* `Simplified technical English <https://en.wikipedia.org/wiki/Simplified_Technical_English>`_
-* `International English <https://en.wikipedia.org/wiki/International_English>`_
-* `British English spelling <https://en.oxforddictionaries.com/spelling/british-and-spelling>`_
+* `L'anglais technique simplifié <https://en.wikipedia.org/wiki/Simplified_Technical_English>`_.
+* `Anglais international <https://en.wikipedia.org/wiki/International_English>`_
+* `L'orthographe de l'anglais britannique <https://en.oxforddictionaries.com/spelling/british-and-spelling>`_
 
 
 .. note::
 
-    While the official Solidity documentation is written in English, there are community contributed :ref:`translations`
-    in other languages available. Please refer to the `translation guide <https://github.com/solidity-docs/translation-guide>`_
-    for information on how to contribute to the community translations.
+    Bien que la documentation officielle de Solidity soit écrite en anglais, il existe des :ref:`traductions` contribuées par la communauté dans d'autres langues.
+    dans d'autres langues sont disponibles. Veuillez vous référer au `guide de traduction <https://github.com/solidity-docs/translation-guide>`_
+    pour savoir comment contribuer aux traductions de la communauté.
 
-Title Case for Headings
+Cas de titre pour les en-têtes
 -----------------------
 
-Use `title case <https://titlecase.com>`_ for headings. This means capitalise all principal words in
-titles, but not articles, conjunctions, and prepositions unless they start the
-title.
+Utilisez la casse des titres <https://titlecase.com>`_ pour les titres. Cela signifie qu'il faut mettre en majuscule tous les mots principaux dans
+titres, mais pas les articles, les conjonctions et les prépositions, sauf s'ils commencent le
+titre.
 
-For example, the following are all correct:
+Par exemple, les exemples suivants sont tous corrects :
 
 * Title Case for Headings.
-* For Headings Use Title Case.
-* Local and State Variable Names.
-* Order of Layout.
+* Pour les titres, utilisez la casse du titre.
+* Noms de variables locales et d'État.
+* Ordre de mise en page.
 
-Expand Contractions
+Développer les contractions
 -------------------
 
-Use expanded contractions for words, for example:
+Utilisez des contractions développées pour les mots, par exemple :
 
-* "Do not" instead of "Don't".
-* "Can not" instead of "Can't".
+* "Do not" au lieu de "Don't".
+* Can not" au lieu de "Can't".
 
-Active and Passive Voice
+Voix active et passive
 ------------------------
 
-Active voice is typically recommended for tutorial style documentation as it
-helps the reader understand who or what is performing a task. However, as the
-Solidity documentation is a mixture of tutorials and reference content, passive
-voice is sometimes more applicable.
+La voix active est généralement recommandée pour la documentation de type tutoriel car elle
+car elle aide le lecteur à comprendre qui ou quoi effectue une tâche. Cependant, comme la
+documentation de Solidity est un mélange de tutoriels et de contenu de référence,
+la voix passive est parfois plus appropriée.
 
-As a summary:
+En résumé :
 
-* Use passive voice for technical reference, for example language definition and internals of the Ethereum VM.
-* Use active voice when describing recommendations on how to apply an aspect of Solidity.
+* Utilisez la voix passive pour les références techniques, par exemple la définition du langage et les éléments internes de la VM Ethereum.
+* Utilisez la voix active pour décrire des recommandations sur la façon d'appliquer un aspect de Solidity.
 
-For example, the below is in passive voice as it specifies an aspect of Solidity:
+Par exemple, le texte ci-dessous est à la voix passive car il spécifie un aspect de Solidity :
 
-  Functions can be declared ``pure`` in which case they promise not to read
-  from or modify the state.
+  Les fonctions peuvent être déclarées "pures", auquel cas elles promettent de ne pas lire
+  ou de modifier l'état.
 
-For example, the below is in active voice as it discusses an application of Solidity:
+Par exemple, le texte ci-dessous est à la voix active car il traite d'une application de Solidity :
 
-  When invoking the compiler, you can specify how to discover the first element
-  of a path, and also path prefix remappings.
+  Lorsque vous invoquez le compilateur, vous pouvez spécifier comment découvrir le premier élément
+  d'un chemin, ainsi que les remappages de préfixes de chemin.
 
-Common Terms
+Termes courants
 ------------
 
-* "Function parameters" and "return variables", not input and output parameters.
+* "Paramètres de fonction" et "variables de retour", et non pas paramètres d'entrée et de sortie.
 
-Code Examples
+Exemples de code
 -------------
 
-A CI process tests all code block formatted code examples that begin with ``pragma solidity``, ``contract``, ``library``
-or ``interface`` using the ``./test/cmdlineTests.sh`` script when you create a PR. If you are adding new code examples,
-ensure they work and pass tests before creating the PR.
+Un processus CI teste tous les exemples de code formatés en blocs de code qui commencent par " pragma solidity ", " contrat ", " bibliothèque " ou " interface ".
+ou " interface " en utilisant le script " ./test/cmdlineTests.sh " lorsque vous créez un PR. Si vous ajoutez de nouveaux exemples de code,
+assurez-vous qu'ils fonctionnent et passent les tests avant de créer le PR.
 
-Ensure that all code examples begin with a ``pragma`` version that spans the largest where the contract code is valid.
-For example ``pragma solidity >=0.4.0 <0.9.0;``.
+Assurez-vous que tous les exemples de code commencent par une version de ``pragma`` qui couvre la plus grande partie où le code du contrat est valide.
+Par exemple, ``pragma solidity >=0.4.0 <0.9.0;``.
 
-Running Documentation Tests
+Exécution des Tests de Documentation
 ---------------------------
 
-Make sure your contributions pass our documentation tests by running ``./scripts/docs.sh`` that installs dependencies
-needed for documentation and checks for any problems such as broken links or syntax issues.
+Assurez-vous que vos contributions passent nos tests de documentation en exécutant ``./scripts/docs.sh`` qui installe les dépendances nécessaires à la documentation et vérifie les problèmes éventuels.
+Nécessaires à la documentation et vérifie l'absence de problèmes tels que des liens brisés ou des problèmes de syntaxe.
 
-Solidity Language Design
+Conception du langage Solidity
 ========================
 
-To actively get involved in the language design process and share your ideas concerning the future of Solidity,
-please join the `Solidity forum <https://forum.soliditylang.org/>`_.
+Pour vous impliquer activement dans le processus de conception du langage et partager vos idées concernant l'avenir de Solidity,
+veuillez rejoindre le `forum Solidity <https://forum.soliditylang.org/>`_.
 
-The Solidity forum serves as the place to propose and discuss new language features and their implementation in
-the early stages of ideation or modifications of existing features.
+Le forum Solidity sert de lieu pour proposer et discuter de nouvelles fonctionnalités du langage et de leur mise en œuvre dans
+les premiers stades de l'idéation ou des modifications de fonctionnalités existantes.
 
-As soon as proposals get more tangible, their
-implementation will also be discussed in the `Solidity GitHub repository <https://github.com/ethereum/solidity>`_
-in the form of issues.
+Dès que les propositions deviennent plus tangibles, leur
+implémentation sera également discutée dans le dépôt `Solidity GitHub <https://github.com/ethereum/solidity>`_
+sous la forme de questions.
 
-In addition to the forum and issue discussions, we regularly host language design discussion calls in which selected
-topics, issues or feature implementations are debated in detail. The invitation to those calls is shared via the forum.
+En plus du forum et des discussions sur les problèmes, nous organisons régulièrement des appels de discussion sur la conception du langage dans lesquels des
+sujets, questions ou implémentations de fonctionnalités sélectionnés sont débattus en détail. L'invitation à ces appels est partagée via le forum.
 
-We are also sharing feedback surveys and other content that is relevant to language design in the forum.
+Nous partageons également des enquêtes de satisfaction et d'autres contenus pertinents pour la conception des langues sur le forum.
 
-If you want to know where the team is standing in terms or implementing new features, you can follow the implementation status in the `Solidity Github project <https://github.com/ethereum/solidity/projects/43>`_.
-Issues in the design backlog need further specification and will either be discussed in a language design call or in a regular team call. You can
-see the upcoming changes for the next breaking release by changing from the default branch (`develop`) to the `breaking branch <https://github.com/ethereum/solidity/tree/breaking>`_.
+Si vous voulez savoir où en est l'équipe en termes d'implémentation de nouvelles fonctionnalités, vous pouvez suivre le statut de l'implémentation dans le projet `Solidity Github <https://github.com/ethereum/solidity/projects/43>`_.
+Les questions dans le backlog de conception nécessitent une spécification plus approfondie et seront soit discutées dans un appel de conception de langue ou dans un appel d'équipe régulier. Vous pouvez
+voir les changements à venir pour la prochaine version de rupture en passant de la branche par défaut (`develop`) à la `breaking branch <https://github.com/ethereum/solidity/tree/breaking>`_.
 
-For ad-hoc cases and questions you can reach out to us via the `Solidity-dev Gitter channel <https://gitter.im/ethereum/solidity-dev>`_, a
-dedicated chatroom for conversations around the Solidity compiler and language development.
+Pour les cas particuliers et les questions, vous pouvez nous contacter via le canal `Solidity-dev Gitter <https://gitter.im/ethereum/solidity-dev>`_, un
+chatroom dédié aux conversations autour du compilateur Solidity et du développement du langage.
 
-We are happy to hear your thoughts on how we can improve the language design process to be even more collaborative and transparent.
+Nous sommes heureux d'entendre vos réflexions sur la façon dont nous pouvons améliorer le processus de conception du langage pour qu'il soit encore plus collaboratif et transparent.

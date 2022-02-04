@@ -1,5 +1,5 @@
 ##################################
-Expressions and Control Structures
+Expressions et structures de contrôle
 ##################################
 
 .. index:: ! parameter, parameter;input, parameter;output, function parameter, parameter;function, return variable, variable;return, return
@@ -7,83 +7,83 @@ Expressions and Control Structures
 
 .. index:: if, else, while, do/while, for, break, continue, return, switch, goto
 
-Control Structures
+Structures de contrôle
 ===================
 
-Most of the control structures known from curly-braces languages are available in Solidity:
+La plupart des structures de contrôle connues des langages à accolades sont disponibles dans Solidity :
 
-There is: ``if``, ``else``, ``while``, ``do``, ``for``, ``break``, ``continue``, ``return``, with
-the usual semantics known from C or JavaScript.
+Il y a : " if ", " else ", "while ", " do ", " for ", " break ", " continue ", " return ", avec la sémantique
+la sémantique habituelle connue en C ou en JavaScript.
 
-Solidity also supports exception handling in the form of ``try``/``catch``-statements,
-but only for :ref:`external function calls <external-function-calls>` and
-contract creation calls. Errors can be created using the :ref:`revert statement <revert-statement>`.
+Solidity prend également en charge la gestion des exceptions sous la forme de déclarations " try " et " catch ",
+mais seulement pour :ref:`les appels de fonctions externes <external-function-calls>` et pour
+les appels de création de contrat. Les erreurs peuvent être créées en utilisant l'instruction :ref:`revert <revert-statement>`.
 
-Parentheses can *not* be omitted for conditionals, but curly braces can be omitted
-around single-statement bodies.
+Les parenthèses ne peuvent *pas* être omises pour les conditionnels, mais les accolades peuvent être omises
+autour des corps d'énoncés simples.
 
-Note that there is no type conversion from non-boolean to boolean types as
-there is in C and JavaScript, so ``if (1) { ... }`` is *not* valid
-Solidity.
+Notez qu'il n'y a pas de conversion de type de non-booléen à booléen comme en C et JavaScript.
+booléens comme c'est le cas en C et en JavaScript, donc "if (1) { ... }`` n'est *pas* valide
+Solidité.
 
 .. index:: ! function;call, function;internal, function;external
 
 .. _function-calls:
 
-Function Calls
+Appels de fonction
 ==============
 
 .. _internal-function-calls:
 
-Internal Function Calls
+Appels de fonctions internes
 -----------------------
 
-Functions of the current contract can be called directly ("internally"), also recursively, as seen in
-this nonsensical example:
+Les fonctions du contrat en cours peuvent être appelées directement ("en interne"), également de manière récursive, comme on le voit dans
+cet exemple absurde :
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.22 <0.9.0;
 
-    // This will report a warning
+    // Ceci signalera un avertissement
     contract C {
         function g(uint a) public pure returns (uint ret) { return a + f(); }
         function f() internal pure returns (uint ret) { return g(7) + f(); }
     }
 
-These function calls are translated into simple jumps inside the EVM. This has
-the effect that the current memory is not cleared, i.e. passing memory references
-to internally-called functions is very efficient. Only functions of the same
-contract instance can be called internally.
+Ces appels de fonction sont traduits en simples sauts à l'intérieur de l'EVM. Cela a pour
+l'effet que la mémoire courante n'est pas effacée, c'est-à-dire que le passage des références de mémoire
+aux fonctions appelées en interne est très efficace. Seules les fonctions de la même
+instance de contrat peuvent être appelées en interne.
 
-You should still avoid excessive recursion, as every internal function call
-uses up at least one stack slot and there are only 1024 slots available.
+Vous devez néanmoins éviter toute récursion excessive, car chaque appel de fonction interne
+utilise au moins un emplacement de pile et il n'y a que 1024 emplacements disponibles.
 
 .. _external-function-calls:
 
 External Function Calls
 -----------------------
 
-Functions can also be called using the ``this.g(8);`` and ``c.g(2);`` notation, where
-``c`` is a contract instance and ``g`` is a function belonging to ``c``.
-Calling the function ``g`` via either way results in it being called "externally", using a
-message call and not directly via jumps.
-Please note that function calls on ``this`` cannot be used in the constructor,
-as the actual contract has not been created yet.
+Les fonctions peuvent également être appelées en utilisant la notation " this.g(8);`` et " c.g(2);``, où
+``c`` est une instance de contrat et ``g`` est une fonction appartenant à ``c``.
+L'appel de la fonction `g`` de l'une ou l'autre façon a pour conséquence qu'elle est appelée "en externe", en utilisant
+appel de message et non directement via des sauts.
+Veuillez noter que les appels de fonction sur ``this`` ne peuvent pas être utilisés dans le constructeur,
+car le contrat réel n'a pas encore été créé.
 
-Functions of other contracts have to be called externally. For an external call,
-all function arguments have to be copied to memory.
+Les fonctions des autres contrats doivent être appelées en externe. Pour un appel externe,
+tous les arguments de la fonction doivent être copiés en mémoire.
 
 .. note::
-    A function call from one contract to another does not create its own transaction,
-    it is a message call as part of the overall transaction.
+    Un appel de fonction d'un contrat à un autre ne crée pas sa propre transaction,
+    il s'agit d'un appel de message faisant partie de la transaction globale.
 
-When calling functions of other contracts, you can specify the amount of Wei or
-gas sent with the call with the special options ``{value: 10, gas: 10000}``.
-Note that it is discouraged to specify gas values explicitly, since the gas costs
-of opcodes can change in the future. Any Wei you send to the contract is added
-to the total balance of that contract:
+Lorsque vous appelez des fonctions d'autres contrats, vous pouvez préciser la quantité de Wei ou de
+gaz envoyée avec l'appel avec les options spéciales ``{valeur : 10, gaz : 10000}``.
+Notez qu'il est déconseillé de spécifier des valeurs de gaz explicitement, puisque les coûts de gaz
+des opcodes peuvent changer dans le futur. Tout Wei que vous envoyez au contrat est ajouté
+au solde total de ce contrat :
 
 .. code-block:: solidity
 
@@ -100,63 +100,63 @@ to the total balance of that contract:
         function callFeed() public { feed.info{value: 10, gas: 800}(); }
     }
 
-You need to use the modifier ``payable`` with the ``info`` function because
-otherwise, the ``value`` option would not be available.
+Vous devez utiliser le modificateur ``payable`` avec la fonction ``info`` parce que
+sinon, l'option ``value`` ne serait pas disponible.
 
 .. warning::
-  Be careful that ``feed.info{value: 10, gas: 800}`` only locally sets the
-  ``value`` and amount of ``gas`` sent with the function call, and the
-  parentheses at the end perform the actual call. So
-  ``feed.info{value: 10, gas: 800}`` does not call the function and
-  the ``value`` and ``gas`` settings are lost, only
-  ``feed.info{value: 10, gas: 800}()`` performs the function call.
+  Attention, ``feed.info{value : 10, gaz : 800}`` ne définit que localement la valeur
+  et la quantité de ``gaz`` envoyée avec l'appel de la fonction, et que les
+  parenthèses à la fin effectuent l'appel réel. Donc
+  ``feed.info{value : 10, gaz : 800}`` n'appelle pas la fonction et
+  et les paramètres "valeur" et ``gaz`` sont perdus, mais seulement
+  ``feed.info{value : 10, gaz : 800}()`` effectue l'appel de fonction.
 
-Due to the fact that the EVM considers a call to a non-existing contract to
-always succeed, Solidity uses the ``extcodesize`` opcode to check that
-the contract that is about to be called actually exists (it contains code)
-and causes an exception if it does not. This check is skipped if the return
-data will be decoded after the call and thus the ABI decoder will catch the
-case of a non-existing contract.
+En raison du fait que l'EVM considère qu'un appel vers un contrat inexistant
+toujours réussir, Solidity utilise l'opcode ``extcodesize`` pour vérifier que
+le contrat qui est sur le point d'être appelé existe réellement (il contient du code)
+et provoque une exception si ce n'est pas le cas. Cette vérification est ignorée si les
+données de retour seront décodées après l'appel et donc le décodeur ABI va attraper le
+cas d'un contrat inexistant.
 
-Note that this check is not performed in case of :ref:`low-level calls <address_related>` which
-operate on addresses rather than contract instances.
+Notez que cette vérification n'est pas effectuée dans le cas de :ref:`appels de bas niveau <address_related>` qui
+opèrent sur des adresses plutôt que sur des instances de contrat.
 
 .. note::
-    Be careful when using high-level calls to
-    :ref:`precompiled contracts <precompiledContracts>`,
-    since the compiler considers them non-existing according to the
-    above logic even though they execute code and can return data.
+    Soyez prudent lorsque vous utilisez des appels de haut niveau à
+    :ref:`contrats précompilés <precompiledContracts>`,
+    car le compilateur les considère comme inexistants selon la logique
+    logique ci-dessus, même s'ils exécutent du code et peuvent retourner des données.
 
-Function calls also cause exceptions if the called contract itself
-throws an exception or goes out of gas.
+Les appels de fonction provoquent également des exceptions si le contrat appelé lui-même
+lève une exception ou tombe en panne.
 
 .. warning::
-    Any interaction with another contract imposes a potential danger, especially
-    if the source code of the contract is not known in advance. The
-    current contract hands over control to the called contract and that may potentially
-    do just about anything. Even if the called contract inherits from a known parent contract,
-    the inheriting contract is only required to have a correct interface. The
-    implementation of the contract, however, can be completely arbitrary and thus,
-    pose a danger. In addition, be prepared in case it calls into other contracts of
-    your system or even back into the calling contract before the first
-    call returns. This means
-    that the called contract can change state variables of the calling contract
-    via its functions. Write your functions in a way that, for example, calls to
-    external functions happen after any changes to state variables in your contract
-    so your contract is not vulnerable to a reentrancy exploit.
+    Toute interaction avec un autre contrat impose un danger potentiel, surtout
+    si le code source du contrat n'est pas connu à l'avance. Le
+    contrat en cours transmet le contrôle au contrat appelé et celui-ci peut potentiellement
+    faire à peu près n'importe quoi. Même si le contrat appelé hérite d'un contrat parent connu,
+    le contrat hérité est seulement tenu d'avoir une interface correcte. Le site
+    L'implémentation du contrat, cependant, peut être complètement arbitraire et donc..,
+    constituer un danger. En outre, il faut se préparer à l'éventualité qu'il fasse appel à
+    d'autres contrats de votre système ou même de revenir au contrat appelant avant que le premier
+    appel ne revienne. Cela signifie
+    que le contrat appelé peut modifier les variables d'état du contrat appelant
+    via ses fonctions. Écrivez vos fonctions de manière à ce que, par exemple, les appels aux
+    fonctions externes se produisent après toute modification des variables d'état dans votre contrat
+    afin que votre contrat ne soit pas vulnérable à un exploit de réentraînement.
 
 .. note::
-    Before Solidity 0.6.2, the recommended way to specify the value and gas was to
-    use ``f.value(x).gas(g)()``. This was deprecated in Solidity 0.6.2 and is no
-    longer possible since Solidity 0.7.0.
+    Avant Solidity 0.6.2, la manière recommandée de spécifier la valeur et le gaz était de
+    utiliser "f.value(x).gas(g)()``. Cette méthode a été dépréciée dans Solidity 0.6.2 et n'est
+    plus possible depuis Solidity 0.7.0.
 
-Named Calls and Anonymous Function Parameters
+Appels nominatifs et paramètres de fonctions anonymes
 ---------------------------------------------
 
-Function call arguments can be given by name, in any order,
-if they are enclosed in ``{ }`` as can be seen in the following
-example. The argument list has to coincide by name with the list of
-parameters from the function declaration, but can be in arbitrary order.
+Les arguments d'un appel de fonction peuvent être donnés par leur nom, dans n'importe quel ordre,
+s'ils sont entourés de ``{ }`` comme on peut le voir dans
+l'exemple suivant. La liste d'arguments doit coïncider par son nom avec la liste des
+paramètres de la déclaration de la fonction, mais peut être dans un ordre arbitraire.
 
 .. code-block:: solidity
 
@@ -176,11 +176,11 @@ parameters from the function declaration, but can be in arbitrary order.
 
     }
 
-Omitted Function Parameter Names
+Noms des paramètres de la fonction omise
 --------------------------------
 
-The names of unused parameters (especially return parameters) can be omitted.
-Those parameters will still be present on the stack, but they are inaccessible.
+Les noms des paramètres non utilisés (en particulier les paramètres de retour) peuvent être omis.
+Ces paramètres seront toujours présents sur la pile, mais ils seront inaccessibles.
 
 .. code-block:: solidity
 
@@ -188,7 +188,7 @@ Those parameters will still be present on the stack, but they are inaccessible.
     pragma solidity >=0.4.22 <0.9.0;
 
     contract C {
-        // omitted name for parameter
+        // nom omis pour le paramètre
         function func(uint k, uint) public pure returns(uint) {
             return k;
         }
@@ -199,17 +199,18 @@ Those parameters will still be present on the stack, but they are inaccessible.
 
 .. _creating-contracts:
 
-Creating Contracts via ``new``
+Créer des contrats via ``new`` (nouveau)
 ==============================
 
-A contract can create other contracts using the ``new`` keyword. The full
-code of the contract being created has to be known when the creating contract
-is compiled so recursive creation-dependencies are not possible.
+Un contrat peut créer d'autres contrats en utilisant le mot-clé ``new``. Le
+code complet du contrat en cours de création doit être connu lorsque le contrat créateur
+est compilé afin que les dépendances récursives de création ne soient pas possibles.
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
+
     contract D {
         uint public x;
         constructor(uint a) payable {
@@ -232,34 +233,34 @@ is compiled so recursive creation-dependencies are not possible.
         }
     }
 
-As seen in the example, it is possible to send Ether while creating
-an instance of ``D`` using the ``value`` option, but it is not possible
-to limit the amount of gas.
-If the creation fails (due to out-of-stack, not enough balance or other problems),
-an exception is thrown.
+Comme on le voit dans l'exemple, il est possible d'envoyer de l'Ether en créant
+une instance de ``D`` en utilisant l'option ``value``, mais il n'est pas possible de
+de limiter la quantité d'éther.
+Si la création échoue (à cause d'un dépassement de pile, d'un équilibre insuffisant ou d'autres problèmes),
+une exception est levée.
 
-Salted contract creations / create2
+Créations de contrats salés / create2
 -----------------------------------
 
-When creating a contract, the address of the contract is computed from
-the address of the creating contract and a counter that is increased with
-each contract creation.
+Lors de la création d'un contrat, l'adresse du contrat est calculée à partir de
+l'adresse du contrat créateur et d'un compteur qui est augmenté à chaque création de
+chaque création de contrat.
 
-If you specify the option ``salt`` (a bytes32 value), then contract creation will
-use a different mechanism to come up with the address of the new contract:
+Si vous spécifiez l'option ``salt`` (une valeur bytes32), alors la création de contrat utilisera un
+un mécanisme différent pour trouver l'adresse du nouveau contrat :
 
-It will compute the address from the address of the creating contract,
-the given salt value, the (creation) bytecode of the created contract and the constructor
-arguments.
+Elle calculera l'adresse à partir de l'adresse du contrat en cours de création,
+la valeur du sel donnée, le bytecode (de création) du contrat créé et les
+arguments du constructeur.
 
-In particular, the counter ("nonce") is not used. This allows for more flexibility
-in creating contracts: You are able to derive the address of the
-new contract before it is created. Furthermore, you can rely on this address
-also in case the creating
-contracts creates other contracts in the meantime.
+En particulier, le compteur ("nonce") n'est pas utilisé. Cela permet une plus grande flexibilité
+dans la création de contrats : Vous pouvez dériver l'adresse du
+nouveau contrat avant qu'il ne soit créé. En outre, vous pouvez vous fier à cette adresse
+également dans le cas où le créateur
+contrat crée d'autres contrats entre-temps.
 
-The main use-case here is contracts that act as judges for off-chain interactions,
-which only need to be created if there is a dispute.
+Le principal cas d'utilisation ici est celui des contrats qui agissent en tant que juges pour les interactions hors chaîne,
+qui n'ont besoin d'être créés que s'il y a un différend.
 
 .. code-block:: solidity
 
@@ -274,9 +275,9 @@ which only need to be created if there is a dispute.
 
     contract C {
         function createDSalted(bytes32 salt, uint arg) public {
-            // This complicated expression just tells you how the address
-            // can be pre-computed. It is just there for illustration.
-            // You actually only need ``new D{salt: salt}(arg)``.
+            // Cette expression compliquée vous indique simplement comment l'adresse
+            // peut être précalculée. Elle n'est là qu'à titre d'illustration.
+            // En fait, vous n'avez besoin que de ``new D{salt : salt}(arg)``.
             address predictedAddress = address(uint160(uint(keccak256(abi.encodePacked(
                 bytes1(0xff),
                 address(this),
@@ -293,42 +294,42 @@ which only need to be created if there is a dispute.
     }
 
 .. warning::
-    There are some peculiarities in relation to salted creation. A contract can be
-    re-created at the same address after having been destroyed. Yet, it is possible
-    for that newly created contract to have a different deployed bytecode even
-    though the creation bytecode has been the same (which is a requirement because
-    otherwise the address would change). This is due to the fact that the constructor
-    can query external state that might have changed between the two creations
-    and incorporate that into the deployed bytecode before it is stored.
+    Il existe quelques particularités en ce qui concerne la création salée. Un contrat peut être
+    recréé à la même adresse après avoir été détruit. Pourtant, il est possible
+    pour ce contrat nouvellement créé d'avoir un bytecode déployé différent,
+    même si le bytecode de création a été le même (ce qui est une exigence parce que
+    sinon l'adresse changerait). Ceci est dû au fait que le constructeur
+    peut interroger l'état externe qui pourrait avoir changé entre les deux créations
+    et l'incorporer dans le bytecode déployé avant qu'il ne soit stocké.
 
 
-Order of Evaluation of Expressions
+Ordre d'évaluation des expressions
 ==================================
 
-The evaluation order of expressions is not specified (more formally, the order
-in which the children of one node in the expression tree are evaluated is not
-specified, but they are of course evaluated before the node itself). It is only
-guaranteed that statements are executed in order and short-circuiting for
-boolean expressions is done.
+L'ordre d'évaluation des expressions n'est pas spécifié (de manière plus formelle, l'ordre
+dans lequel les enfants d'un noeud de l'arbre des expressions sont évalués n'est pas
+spécifié, mais ils sont bien sûr évalués avant le noeud lui-même). Il est seulement
+garantie que les instructions sont exécutées dans l'ordre et que le court-circuitage des
+expressions booléennes est effectué.
 
 .. index:: ! assignment
 
-Assignment
+Affectation
 ==========
 
 .. index:: ! assignment;destructuring
 
-Destructuring Assignments and Returning Multiple Values
+Déstructurer les affectations et renvoyer des valeurs multiples
 -------------------------------------------------------
 
-Solidity internally allows tuple types, i.e. a list of objects
-of potentially different types whose number is a constant at
-compile-time. Those tuples can be used to return multiple values at the same time.
-These can then either be assigned to newly declared variables
-or to pre-existing variables (or LValues in general).
+Solidity autorise en interne les types tuple, c'est-à-dire une liste
+d'objets potentiellement différents dont le nombre est une constante à la
+constante au moment de la compilation. Ces tuples peuvent être utilisés pour retourner plusieurs valeurs en même temps.
+Celles-ci peuvent alors être affectées à des variables nouvellement déclarées
+soit à des variables préexistantes (ou à des valeurs LV en général).
 
-Tuples are not proper types in Solidity, they can only be used to form syntactic
-groupings of expressions.
+Les tuples ne sont pas des types à proprement parler dans Solidity, ils ne peuvent être utilisés que pour former des
+groupements syntaxiques d'expressions.
 
 .. code-block:: solidity
 
@@ -343,38 +344,39 @@ groupings of expressions.
         }
 
         function g() public {
-            // Variables declared with type and assigned from the returned tuple,
-            // not all elements have to be specified (but the number must match).
+            // Variables déclarées avec le type et assignées à partir du tuple retourné,
+            // il n'est pas nécessaire de spécifier tous les éléments (mais le nombre doit correspondre).
             (uint x, , uint y) = f();
-            // Common trick to swap values -- does not work for non-value storage types.
+            // Truc commun pour échanger des valeurs -- ne fonctionne pas pour les types de stockage sans valeur.
             (x, y) = (y, x);
-            // Components can be left out (also for variable declarations).
+            // Les composants peuvent être laissés de côté (également pour les déclarations de variables).
             (index, , ) = f(); // Sets the index to 7
         }
     }
 
-It is not possible to mix variable declarations and non-declaration assignments,
-i.e. the following is not valid: ``(x, uint y) = (1, 2);``
+Il n'est pas possible de mélanger les déclarations de variables et les affectations non déclarées.
+Par exemple, l'exemple suivant n'est pas valide : ``(x, uint y) = (1, 2);``
 
 .. note::
-    Prior to version 0.5.0 it was possible to assign to tuples of smaller size, either
-    filling up on the left or on the right side (which ever was empty). This is
-    now disallowed, so both sides have to have the same number of components.
+    Avant la version 0.5.0, il était possible d'assigner à des tuples de taille plus petite, soit
+    en remplissant le côté gauche ou le côté droit (celui qui était vide). Ceci est
+    maintenant interdit, donc les deux côtés doivent avoir le même nombre de composants.
 
 .. warning::
-    Be careful when assigning to multiple variables at the same time when
-    reference types are involved, because it could lead to unexpected
-    copying behaviour.
+    Soyez prudent lorsque vous assignez à plusieurs variables en même temps
+    lorsque des types de référence sont impliqués, car cela pourrait conduire à un
+    comportement de copie inattendu.
 
-Complications for Arrays and Structs
+Complications pour les tableaux et les structures
 ------------------------------------
 
-The semantics of assignments are more complicated for non-value types like arrays and structs,
-including ``bytes`` and ``string``, see :ref:`Data location and assignment behaviour <data-location-assignment>` for details.
+La sémantique des affectations est plus compliquée pour les types non-valeurs comme les tableaux et les structs,
+y compris les ``octets`` et les ``chaînes``, voir :ref:`L'emplacement des données et le comportement d'affectation <data-location-assignment>`
+pour plus de détails.
 
-In the example below the call to ``g(x)`` has no effect on ``x`` because it creates
-an independent copy of the storage value in memory. However, ``h(x)`` successfully modifies ``x``
-because only a reference and not a copy is passed.
+Dans l'exemple ci-dessous, l'appel à ``g(x)`` n'a aucun effet sur ``x`` parce qu'il crée
+une copie indépendante de la valeur de stockage en mémoire. Cependant, ``h(x)`` modifie avec succès ``x``
+car seule une référence et non une copie est transmise.
 
 .. code-block:: solidity
 
@@ -402,38 +404,37 @@ because only a reference and not a copy is passed.
 
 .. _default-value:
 
-Scoping and Declarations
+Champ d'application et déclarations
 ========================
 
-A variable which is declared will have an initial default
-value whose byte-representation is all zeros.
-The "default values" of variables are the typical "zero-state"
-of whatever the type is. For example, the default value for a ``bool``
-is ``false``. The default value for the ``uint`` or ``int``
-types is ``0``. For statically-sized arrays and ``bytes1`` to
-``bytes32``, each individual
-element will be initialized to the default value corresponding
-to its type. For dynamically-sized arrays, ``bytes``
-and ``string``, the default value is an empty array or string.
-For the ``enum`` type, the default value is its first member.
+Une variable qui est déclarée aura une valeur initiale par défaut
+dont la représentation en octets est constituée de zéros.
+Les "valeurs par défaut" des variables sont l'"état zéro" typique
+de leur type. Par exemple, la valeur par défaut d'un ``bool`` est ``false``.
+La valeur par défaut des types ``uint`` ou ``int`` est ``0``.
+Pour les tableaux de taille statique et les types ``bytes1`` à
+``bytes32``, chaque élément sera initialisé à la valeur par défaut correspondant à son
+à son type. Pour les tableaux de taille dynamique, les ``octets``
+et ``string``, la valeur par défaut est un tableau ou une chaîne vide.
+Pour le type ``enum``, la valeur par défaut est son premier membre.
 
-Scoping in Solidity follows the widespread scoping rules of C99
-(and many other languages): Variables are visible from the point right after their declaration
-until the end of the smallest ``{ }``-block that contains the declaration.
-As an exception to this rule, variables declared in the
-initialization part of a for-loop are only visible until the end of the for-loop.
+Le scoping dans Solidity suit les règles de scoping répandues de C99
+(et de nombreux autres langages) : Les variables sont visibles à partir du point juste après leur déclaration
+jusqu'à la fin du plus petit bloc ``{ }`` qui contient la déclaration.
+Les variables déclarées dans la partie d'initialisation d'une boucle ``for`` font exception à cette
+partie d'initialisation d'une boucle for ne sont visibles que jusqu'à la fin de la boucle for.
 
-Variables that are parameter-like (function parameters, modifier parameters,
-catch parameters, ...) are visible inside the code block that follows -
-the body of the function/modifier for a function and modifier parameter and the catch block
-for a catch parameter.
+Les variables qui sont des paramètres (paramètres de fonction, paramètres de modificateur,
+paramètres de capture, ...) sont visibles à l'intérieur du bloc de code qui suit -
+le corps de la fonction/modificateur pour un paramètre de fonction et de modificateur et le bloc catch
+pour un paramètre catch.
 
-Variables and other items declared outside of a code block, for example functions, contracts,
-user-defined types, etc., are visible even before they were declared. This means you can
-use state variables before they are declared and call functions recursively.
+Les variables et autres éléments déclarés en dehors d'un bloc de code, par exemple les fonctions, les contrats,
+les types définis par l'utilisateur, etc., sont visibles avant même d'avoir été déclarés. Cela signifie que vous pouvez
+utiliser des variables d'état avant qu'elles ne soient déclarées et appeler des fonctions de manière récursive.
 
-As a consequence, the following examples will compile without warnings, since
-the two variables have the same name but disjoint scopes.
+En conséquence, les exemples suivants compileront sans avertissement, puisque
+les deux variables ont le même nom mais des portées disjointes.
 
 .. code-block:: solidity
 
@@ -453,37 +454,37 @@ the two variables have the same name but disjoint scopes.
         }
     }
 
-As a special example of the C99 scoping rules, note that in the following,
-the first assignment to ``x`` will actually assign the outer and not the inner variable.
-In any case, you will get a warning about the outer variable being shadowed.
+Comme exemple spécial des règles de scoping de C99, notez que dans ce qui suit,
+la première affectation à ``x`` va en fait affecter la variable externe et non la variable interne.
+Dans tous les cas, vous obtiendrez un avertissement sur le fait que la variable externe est cachée.
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.5.0 <0.9.0;
-    // This will report a warning
+    // Ceci signalera un avertissement
     contract C {
         function f() pure public returns (uint) {
             uint x = 1;
             {
-                x = 2; // this will assign to the outer variable
+                x = 2; // ceci sera assigné à la variable externe
                 uint x;
             }
-            return x; // x has value 2
+            return x; // x a la valeur 2
         }
     }
 
 .. warning::
-    Before version 0.5.0 Solidity followed the same scoping rules as
-    JavaScript, that is, a variable declared anywhere within a function would be in scope
-    for the entire function, regardless where it was declared. The following example shows a code snippet that used
-    to compile but leads to an error starting from version 0.5.0.
+    Avant la version 0.5.0, Solidity suivait les mêmes règles de portée que le langage
+    JavaScript, c'est-à-dire qu'une variable déclarée n'importe où dans une fonction avait une portée
+    pour l'ensemble de la fonction, indépendamment de l'endroit où elle était déclarée. L'exemple suivant montre un extrait de code qui utilisait
+    pour compiler mais qui conduit à une erreur à partir de la version 0.5.0.
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.5.0 <0.9.0;
-    // This will not compile
+    // Cela ne compilera pas
     contract C {
         function f() pure public returns (uint) {
             x = 2;
@@ -496,20 +497,20 @@ In any case, you will get a warning about the outer variable being shadowed.
 .. index:: ! safe math, safemath, checked, unchecked
 .. _unchecked:
 
-Checked or Unchecked Arithmetic
+Arithmétique vérifiée ou non vérifiée
 ===============================
 
-An overflow or underflow is the situation where the resulting value of an arithmetic operation,
-when executed on an unrestricted integer, falls outside the range of the result type.
+Un débordement ou un sous-débordement est la situation où la valeur résultante d'une opération arithmétique,
+lorsqu'elle est exécutée sur un entier non limité, tombe en dehors de la plage du type de résultat.
 
-Prior to Solidity 0.8.0, arithmetic operations would always wrap in case of
-under- or overflow leading to widespread use of libraries that introduce
-additional checks.
+Avant la version 0.8.0 de Solidity, les opérations arithmétiques s'emballaient toujours
+en cas de débordement ou de sous-débordement, ce qui a conduit à l'utilisation répandue de bibliothèques qui
+vérifications supplémentaires.
 
-Since Solidity 0.8.0, all arithmetic operations revert on over- and underflow by default,
-thus making the use of these libraries unnecessary.
+Depuis la version 0.8.0 de Solidity, toutes les opérations arithmétiques s'inversent par défaut en cas de dépassement inférieur ou supérieur,
+rendant ainsi inutile l'utilisation de ces bibliothèques.
 
-To obtain the previous behaviour, an ``unchecked`` block can be used:
+Pour obtenir le comportement précédent, un bloc ``unchecked`` peut être utilisé :
 
 .. code-block:: solidity
 
@@ -517,159 +518,158 @@ To obtain the previous behaviour, an ``unchecked`` block can be used:
     pragma solidity ^0.8.0;
     contract C {
         function f(uint a, uint b) pure public returns (uint) {
-            // This subtraction will wrap on underflow.
+            // Cette soustraction se terminera par un dépassement de capacité.
             unchecked { return a - b; }
         }
         function g(uint a, uint b) pure public returns (uint) {
-            // This subtraction will revert on underflow.
+            // Cette soustraction s'inversera en cas de dépassement de capacité.
             return a - b;
         }
     }
 
-The call to ``f(2, 3)`` will return ``2**256-1``, while ``g(2, 3)`` will cause
-a failing assertion.
+L'appel à ``f(2, 3)`` retournera ``2**256-1``, alors que ``g(2, 3)`` provoquera
+une assertion qui échoue.
 
-The ``unchecked`` block can be used everywhere inside a block, but not as a replacement
-for a block. It also cannot be nested.
+Le bloc "non vérifié" peut être utilisé partout à l'intérieur d'un bloc, mais pas en remplacement
+pour un bloc. Il ne peut pas non plus être imbriqué.
 
-The setting only affects the statements that are syntactically inside the block.
-Functions called from within an ``unchecked`` block do not inherit the property.
+Le paramètre n'affecte que les déclarations qui sont syntaxiquement à l'intérieur du bloc.
+Les fonctions appelées à l'intérieur d'un bloc "non vérifié" n'héritent pas de cette propriété.
 
 .. note::
-    To avoid ambiguity, you cannot use ``_;`` inside an ``unchecked`` block.
+    Pour éviter toute ambiguïté, vous ne pouvez pas utiliser ``_;`` à l'intérieur d'un bloc ``non vérifié``.
 
-The following operators will cause a failing assertion on overflow or underflow
-and will wrap without an error if used inside an unchecked block:
+Les opérateurs suivants provoqueront une assertion d'échec en cas de débordement ou de sous-débordement
+et s'enrouleront sans erreur s'ils sont utilisés à l'intérieur d'un bloc non vérifié :
 
-``++``, ``--``, ``+``, binary ``-``, unary ``-``, ``*``, ``/``, ``%``, ``**``
+``++``, ``--``, ``+``, binaire ``-``, unaire ``-``, ``*``, ``/``, ``%``, ``**``
 
 ``+=``, ``-=``, ``*=``, ``/=``, ``%=``
 
 .. warning::
-    It is not possible to disable the check for division by zero
-    or modulo by zero using the ``unchecked`` block.
+    Il n'est pas possible de désactiver la vérification de la division par zéro
+    ou modulo par zéro en utilisant le bloc ``unchecked``.
 
 .. note::
-   Bitwise operators do not perform overflow or underflow checks.
-   This is particularly visible when using bitwise shifts (``<<``, ``>>``, ``<<=``, ``>>=``) in
-   place of integer division and multiplication by a power of 2.
-   For example ``type(uint256).max << 3`` does not revert even though ``type(uint256).max * 8`` would.
+   Les opérateurs binaires n'effectuent pas de vérification de dépassement de capacité ou de sous-dépassement.
+   Ceci est particulièrement visible lors de l'utilisation de décalages binaires (``<<``, ``>>``, ``<=``, ``>=``)
+   à la place de la division d'entiers et de la multiplication par une puissance de 2.
+   Par exemple, ``type(uint256).max << 3`` ne s'inverse pas alors que ``type(uint256).max * 8`` le ferait.
 
 .. note::
-    The second statement in ``int x = type(int).min; -x;`` will result in an overflow
-    because the negative range can hold one more value than the positive range.
+    La deuxième instruction dans ``int x = type(int).min ; -x;`` entraînera un dépassement de capacité
+    car l'intervalle négatif peut contenir une valeur de plus que l'intervalle positif.
 
-Explicit type conversions will always truncate and never cause a failing assertion
-with the exception of a conversion from an integer to an enum type.
+Les conversions de type explicites seront toujours tronquées et ne provoqueront jamais une assertion d'échec
+à l'exception de la conversion d'un entier en un type enum.
 
 .. index:: ! exception, ! throw, ! assert, ! require, ! revert, ! errors
 
 .. _assert-and-require:
 
-Error handling: Assert, Require, Revert and Exceptions
+Gestion des erreurs : Assert, Require, Revert et Exceptions
 ======================================================
 
-Solidity uses state-reverting exceptions to handle errors.
-Such an exception undoes all changes made to the
-state in the current call (and all its sub-calls) and
-flags an error to the caller.
+Solidity utilise des exceptions de retour à l'état initial pour gérer les erreurs.
+Une telle exception annule toutes les modifications apportées à
+l'état dans l'appel actuel (et tous ses sous-appels) et
+signale une erreur à l'appelant.
 
-When exceptions happen in a sub-call, they "bubble up" (i.e.,
-exceptions are rethrown) automatically unless they are caught in
-a ``try/catch`` statement. Exceptions to this rule are ``send``
-and the low-level functions ``call``, ``delegatecall`` and
-``staticcall``: they return ``false`` as their first return value in case
-of an exception instead of "bubbling up".
+Lorsque des exceptions se produisent dans un sous-appel, elles "remontent" (c'est-à-dire que
+les exceptions sont rejetées) automatiquement à moins qu'elles ne soient capturées dans
+dans une instruction ``try/catch``. Les exceptions à cette règle sont ``send``
+et les fonctions de bas niveau ``call``, ``delegatecall`` et
+``staticcall`` : elles retournent `false`` comme première valeur de retour en cas
+d'une exception, au lieu de "bouillonner".
 
 .. warning::
-    The low-level functions ``call``, ``delegatecall`` and
-    ``staticcall`` return ``true`` as their first return value
-    if the account called is non-existent, as part of the design
-    of the EVM. Account existence must be checked prior to calling if needed.
+    Les fonctions de bas niveau ``call``, ``delegatecall`` et
+    ``staticcall`` retournent `true`` comme première valeur de retour
+    si le compte appelé est inexistant, ce qui fait partie de la conception
+    de l'EVM. L'existence du compte doit être vérifiée avant l'appel si nécessaire.
 
-Exceptions can contain error data that is passed back to the caller
-in the form of :ref:`error instances <errors>`.
-The built-in errors ``Error(string)`` and ``Panic(uint256)`` are
-used by special functions, as explained below. ``Error`` is used for "regular" error conditions
-while ``Panic`` is used for errors that should not be present in bug-free code.
+Les exceptions peuvent contenir des données d'erreur qui sont renvoyées à l'appelant
+sous la forme de :ref:`error instances <errors>`.
+Les erreurs intégrées "Erreur(string)" et "Panique(uint256)" sont
+utilisées par des fonctions spéciales, comme expliqué ci-dessous. ``Error`` est utilisé pour les conditions d'erreurs "normales".
+Tandis que ``Panic`` est utilisé pour les erreurs qui ne devraient pas être présentes dans un code sans bogues.
 
-Panic via ``assert`` and Error via ``require``
+Panique via "Assert" et erreur via "Require".
 ----------------------------------------------
 
-The convenience functions ``assert`` and ``require`` can be used to check for conditions and throw an exception
-if the condition is not met.
+Les fonctions pratiques ``assert'' et ``require'' peuvent être utilisées pour vérifier les conditions et lancer une exception
+si la condition n'est pas remplie.
 
-The ``assert`` function creates an error of type ``Panic(uint256)``.
-The same error is created by the compiler in certain situations as listed below.
+La fonction ``assert`` crée une erreur de type ``Panic(uint256)``.
+La même erreur est créée par le compilateur dans certaines situations, comme indiqué ci-dessous.
 
-Assert should only be used to test for internal
-errors, and to check invariants. Properly functioning code should
-never create a Panic, not even on invalid external input.
-If this happens, then there
-is a bug in your contract which you should fix. Language analysis
-tools can evaluate your contract to identify the conditions and
-function calls which will cause a Panic.
+Assert ne doit être utilisée que pour tester les erreurs
+internes et pour vérifier les invariants. Un code qui fonctionne correctement
+ne devrait jamais créer un Panic, même pas sur une entrée externe invalide.
+Si cela se produit, alors il y a
+un bogue dans votre contrat que vous devez corriger. Les outils
+d'analyse du langage peuvent évaluer votre contrat pour identifier les conditions et
+les appels de fonction qui provoquent une panique.
 
-A Panic exception is generated in the following situations.
-The error code supplied with the error data indicates the kind of panic.
+Une exception de panique est générée dans les situations suivantes.
+Le code d'erreur fourni avec les données d'erreur indique le type de panique.
 
-#. 0x00: Used for generic compiler inserted panics.
-#. 0x01: If you call ``assert`` with an argument that evaluates to false.
-#. 0x11: If an arithmetic operation results in underflow or overflow outside of an ``unchecked { ... }`` block.
-#. 0x12; If you divide or modulo by zero (e.g. ``5 / 0`` or ``23 % 0``).
-#. 0x21: If you convert a value that is too big or negative into an enum type.
-#. 0x22: If you access a storage byte array that is incorrectly encoded.
-#. 0x31: If you call ``.pop()`` on an empty array.
-#. 0x32: If you access an array, ``bytesN`` or an array slice at an out-of-bounds or negative index (i.e. ``x[i]`` where ``i >= x.length`` or ``i < 0``).
-#. 0x41: If you allocate too much memory or create an array that is too large.
-#. 0x51: If you call a zero-initialized variable of internal function type.
+#. 0x00 : Utilisé pour les paniques génériques insérées par le compilateur.
+#. 0x01 : Si vous appelez ``assert`` avec un argument qui évalue à false.
+#. 0x11 : Si une opération arithmétique résulte en un débordement ou un sous-débordement en dehors d'un bloc "non vérifié { .... }``.
+#. 0x12 : Si vous divisez ou modulez par zéro (par exemple, ``5 / 0`` ou ``23 % 0``).
+#. 0x21 : Si vous convertissez une valeur trop grande ou négative en un type d'enum.
+#. 0x22 : Si vous accédez à un tableau d'octets de stockage qui est incorrectement codé.
+#. 0x31 : Si vous appelez ``.pop()`` sur un tableau vide.
+#. 0x32 : Si vous accédez à un tableau, à ``bytesN`` ou à une tranche de tableau à un index hors limites ou négatif (c'est-à-dire ``x[i]`` où ``i >= x.length`` ou ``i < 0``).
+#. 0x41 : Si vous allouez trop de mémoire ou créez un tableau trop grand.
+#. 0x51 : Si vous appelez une variable zéro initialisée de type fonction interne.
 
-The ``require`` function either creates an error without any data or
-an error of type ``Error(string)``. It
-should be used to ensure valid conditions
-that cannot be detected until execution time.
-This includes conditions on inputs
-or return values from calls to external contracts.
-
-.. note::
-
-    It is currently not possible to use custom errors in combination
-    with ``require``. Please use ``if (!condition) revert CustomError();`` instead.
-
-An ``Error(string)`` exception (or an exception without data) is generated
-by the compiler
-in the following situations:
-
-#. Calling ``require(x)`` where ``x`` evaluates to ``false``.
-#. If you use ``revert()`` or ``revert("description")``.
-#. If you perform an external function call targeting a contract that contains no code.
-#. If your contract receives Ether via a public function without
-   ``payable`` modifier (including the constructor and the fallback function).
-#. If your contract receives Ether via a public getter function.
-
-For the following cases, the error data from the external call
-(if provided) is forwarded. This means that it can either cause
-an `Error` or a `Panic` (or whatever else was given):
-
-#. If a ``.transfer()`` fails.
-#. If you call a function via a message call but it does not finish
-   properly (i.e., it runs out of gas, has no matching function, or
-   throws an exception itself), except when a low level operation
-   ``call``, ``send``, ``delegatecall``, ``callcode`` or ``staticcall``
-   is used. The low level operations never throw exceptions but
-   indicate failures by returning ``false``.
-#. If you create a contract using the ``new`` keyword but the contract
-   creation :ref:`does not finish properly<creating-contracts>`.
-
-You can optionally provide a message string for ``require``, but not for ``assert``.
+La fonction ``require`` crée soit une erreur sans aucune donnée, soit
+une erreur de type ``Error(string)``. Elle
+doit être utilisée pour garantir des conditions valides
+qui ne peuvent pas être détectées avant le moment de l'exécution.
+Cela inclut les conditions sur les entrées
+ou les valeurs de retour des appels à des contrats externes.a
 
 .. note::
-    If you do not provide a string argument to ``require``, it will revert
-    with empty error data, not even including the error selector.
+
+    Il n'est actuellement pas possible d'utiliser des erreurs personnalisées en combinaison
+    avec ``require``. Veuillez utiliser ``if (!condition) revert CustomError();`` à la place.
+
+Une exception ``Error(string)`` (ou une exception sans données) est générée
+par le compilateur dans les situations suivantes :
+
+#. Appeler ``require(x)`` où ``x`` est évalué à ``false``.
+#. Si vous utilisez ``revert()`` ou ``revert("description")``.
+#. Si vous effectuez un appel de fonction externe ciblant un contrat qui ne contient pas de code.
+#. Si votre contrat reçoit de l'Ether via une fonction publique sans
+   modificateur ``payable`` (y compris le constructeur et la fonction de repli).
+#. Si votre contrat reçoit de l'Ether via une fonction publique getter.
+
+Dans les cas suivants, les données d'erreur de l'appel externe
+(s'il est fourni) sont transférées. Cela signifie qu'il peut soit causer
+une `Error` ou une `Panic` (ou toute autre donnée) :
+
+#. Si un ``.transfer()`` échoue.
+#. Si vous appelez une fonction via un appel de message mais qu'elle
+   ne se termine pas correctement (c'est-à-dire qu'elle tombe en panne sèche, qu'il n'y a pas de
+   lève elle-même une exception), sauf lorsqu'une opération de bas niveau
+   ``call``, ``send``, ``delegatecall``, ``callcode`` ou ``staticcall``
+   est utilisé. Les opérations de bas niveau ne lèvent jamais d'exceptions
+   mais indiquent les échecs en retournant ``false``.
+#. Si vous créez un contrat en utilisant le mot-clé ``new`` mais que le contrat
+   création :ref:`ne se termine pas correctement<creating-contracts>`.
+
+Vous pouvez éventuellement fournir une chaîne de message pour ``require``, mais pas pour ``assert``.
+
+.. note::
+    Si vous ne fournissez pas un argument de type chaîne à ``require``, il se retournera
+    avec des données d'erreur vides, sans même inclure le sélecteur d'erreur.
 
 
-The following example shows how you can use ``require`` to check conditions on inputs
-and ``assert`` for internal error checking.
+L'exemple suivant montre comment vous pouvez utiliser ``require`` pour vérifier les conditions sur les entrées
+et ``assert`` pour vérifier les erreurs internes.
 
 .. code-block:: solidity
     :force:
@@ -682,59 +682,58 @@ and ``assert`` for internal error checking.
             require(msg.value % 2 == 0, "Even value required.");
             uint balanceBeforeTransfer = address(this).balance;
             addr.transfer(msg.value / 2);
-            // Since transfer throws an exception on failure and
-            // cannot call back here, there should be no way for us to
-            // still have half of the money.
+            // Puisque le transfert lève une exception en cas d'échec et que
+            // ne peut pas rappeler ici, il ne devrait pas y avoir de moyen pour nous
+            // d'avoir encore la moitié de l'argent.
             assert(address(this).balance == balanceBeforeTransfer - msg.value / 2);
             return address(this).balance;
         }
     }
 
-Internally, Solidity performs a revert operation (instruction
-``0xfd``). This causes
-the EVM to revert all changes made to the state. The reason for reverting
-is that there is no safe way to continue execution, because an expected effect
-did not occur. Because we want to keep the atomicity of transactions, the
-safest action is to revert all changes and make the whole transaction
-(or at least call) without effect.
+En interne, Solidity effectue une opération de retour en arrière (instruction
+``0xfd``). Cela provoque l'EVM à revenir sur toutes les modifications apportées à l'état.
+La raison de ce retour en arrière est qu'il n'y a pas de moyen sûr de poursuivre l'exécution, parce qu'un effet attendu
+ne s'est pas produit. Parce que nous voulons conserver l'atomicité des transactions,
+l'action la plus sûre est d'annuler tous les changements et de rendre la transaction entière
+(ou au moins l'appel) sans effet.
 
-In both cases, the caller can react on such failures using ``try``/``catch``, but
-the changes in the callee will always be reverted.
+Dans les deux cas, l'appelant peut réagir à de tels échecs en utilisant ``try``/``catch``, mais
+mais les changements dans l'appelant seront toujours annulés.
 
 .. note::
 
-    Panic exceptions used to use the ``invalid`` opcode before Solidity 0.8.0,
-    which consumed all gas available to the call.
-    Exceptions that use ``require`` used to consume all gas until before the Metropolis release.
+    Les exceptions de panique utilisaient l'opcode ``invalid`' avant Solidity 0.8.0,
+    qui consommait tout le gaz disponible pour l'appel.
+    Les exceptions qui utilisent ``require`` consommaient tout le gaz jusqu'à la version Metropolis.
 
 .. _revert-statement:
 
 ``revert``
 ----------
 
-A direct revert can be triggered using the ``revert`` statement and the ``revert`` function.
+Une réversion directe peut être déclenchée à l'aide de l'instruction ``revert`` et de la fonction ``revert``.
 
-The ``revert`` statement takes a custom error as direct argument without parentheses:
+L'instruction ``revert`` prend une erreur personnalisée comme argument direct sans parenthèses :
 
-    revert CustomError(arg1, arg2);
+    revert CustomError(arg1, arg2) ;
 
-For backwards-compatibility reasons, there is also the ``revert()`` function, which uses parentheses
-and accepts a string:
+Pour des raisons de rétrocompatibilité, il existe également la fonction ``revert()``, qui utilise des parenthèses
+et accepte une chaîne de caractères :
 
-    revert();
-    revert("description");
+    revert() ;
+    revert("description") ;
 
-The error data will be passed back to the caller and can be caught there.
-Using ``revert()`` causes a revert without any error data while ``revert("description")``
-will create an ``Error(string)`` error.
+Les données d'erreur seront renvoyées à l'appelant et pourront être capturées à cet endroit.
+L'utilisation de ``revert()`` provoque un revert sans aucune donnée d'erreur alors que ``revert("description")``
+créera une erreur ``Error(string)``.
 
-Using a custom error instance will usually be much cheaper than a string description,
-because you can use the name of the error to describe it, which is encoded in only
-four bytes. A longer description can be supplied via NatSpec which does not incur
-any costs.
+L'utilisation d'une instance d'erreur personnalisée sera généralement beaucoup plus économique qu'une description sous forme de chaîne,
+car vous pouvez utiliser le nom de l'erreur pour la décrire, qui est encodé dans seulement
+quatre octets. Une description plus longue peut être fournie via NatSpec, ce qui n'entraîne
+aucun coût.
 
-The following example shows how to use an error string and a custom error instance
-together with ``revert`` and the equivalent ``require``:
+L'exemple suivant montre comment utiliser une chaîne d'erreur et une instance d'erreur personnalisée
+avec ``revert`` et l'équivalent ``require`` :
 
 .. code-block:: solidity
 
@@ -747,12 +746,12 @@ together with ``revert`` and the equivalent ``require``:
         function buy(uint amount) public payable {
             if (amount > msg.value / 2 ether)
                 revert("Not enough Ether provided.");
-            // Alternative way to do it:
+            // Autre façon de faire :
             require(
                 amount <= msg.value / 2 ether,
                 "Not enough Ether provided."
             );
-            // Perform the purchase.
+            // Effectuer l'achat.
         }
         function withdraw() public {
             if (msg.sender != owner)
@@ -762,31 +761,31 @@ together with ``revert`` and the equivalent ``require``:
         }
     }
 
-The two ways ``if (!condition) revert(...);`` and ``require(condition, ...);`` are
-equivalent as long as the arguments to ``revert`` and ``require`` do not have side-effects,
-for example if they are just strings.
+Les deux façons de faire ``si (!condition) revert(...);`` et ``require(condition, ...);`` sont
+équivalentes tant que les arguments de ``revert`` et ``require`` n'ont pas d'effets secondaires,
+par exemple si ce ne sont que des chaînes de caractères.
 
 .. note::
-    The ``require`` function is evaluated just as any other function.
-    This means that all arguments are evaluated before the function itself is executed.
-    In particular, in ``require(condition, f())`` the function ``f`` is executed even if
-    ``condition`` is true.
+    La fonction ``require`` est évaluée comme n'importe quelle autre fonction.
+    Cela signifie que tous les arguments sont évalués avant que la fonction elle-même ne soit exécutée.
+    En particulier, dans ``require(condition, f())`` la fonction ``f`` est exécutée même si
+    ``condition`` est vraie.
 
-The provided string is :ref:`abi-encoded <ABI>` as if it were a call to a function ``Error(string)``.
-In the above example, ``revert("Not enough Ether provided.");`` returns the following hexadecimal as error return data:
+La chaîne fournie est :ref:`abi-encoded <ABI>` comme s'il s'agissait d'un appel à une fonction ``Error(string)``.
+Dans l'exemple ci-dessus, ``revert("Not enough Ether provided.");`` renvoie l'hexadécimal suivant comme données de retour d'erreur :
 
 .. code::
 
-    0x08c379a0                                                         // Function selector for Error(string)
-    0x0000000000000000000000000000000000000000000000000000000000000020 // Data offset
-    0x000000000000000000000000000000000000000000000000000000000000001a // String length
-    0x4e6f7420656e6f7567682045746865722070726f76696465642e000000000000 // String data
+    0x08c379a0                                                         // Sélecteur de fonction pour Error(string)
+    0x0000000000000000000000000000000000000000000000000000000000000020 // Décalage des données
+    0x000000000000000000000000000000000000000000000000000000000000001a // Longueur de la chaîne
+    0x4e6f7420656e6f7567682045746865722070726f76696465642e000000000000 // Données en chaîne
 
-The provided message can be retrieved by the caller using ``try``/``catch`` as shown below.
+Le message fourni peut être récupéré par l'appelant à l'aide de ``try``/``catch`` comme indiqué ci-dessous.
 
 .. note::
-    There used to be a keyword called ``throw`` with the same semantics as ``revert()`` which
-    was deprecated in version 0.4.13 and removed in version 0.5.0.
+    Il existait auparavant un mot-clé appelé "throw" avec la même sémantique que "reverse()``, qui
+    a été déprécié dans la version 0.4.13 et supprimé dans la version 0.5.0.
 
 
 .. _try-catch:
@@ -794,7 +793,7 @@ The provided message can be retrieved by the caller using ``try``/``catch`` as s
 ``try``/``catch``
 -----------------
 
-A failure in an external call can be caught using a try/catch statement, as follows:
+Il existait auparavant un mot-clé appelé "throw" avec la même sémantique que ``reverse()``.
 
 .. code-block:: solidity
 
@@ -807,94 +806,91 @@ A failure in an external call can be caught using a try/catch statement, as foll
         DataFeed feed;
         uint errorCount;
         function rate(address token) public returns (uint value, bool success) {
-            // Permanently disable the mechanism if there are
-            // more than 10 errors.
+            // Désactiver définitivement le mécanisme s'il y a
+            // plus de 10 erreurs.
             require(errorCount < 10);
             try feed.getData(token) returns (uint v) {
                 return (v, true);
             } catch Error(string memory /*reason*/) {
-                // This is executed in case
-                // revert was called inside getData
-                // and a reason string was provided.
+                // Ceci est exécuté dans le cas où
+                // le revert a été appelé dans getData
+                // et qu'une chaîne de raison a été fournie.
                 errorCount++;
                 return (0, false);
             } catch Panic(uint /*errorCode*/) {
-                // This is executed in case of a panic,
-                // i.e. a serious error like division by zero
-                // or overflow. The error code can be used
-                // to determine the kind of error.
+                // Ceci est exécuté en cas de panique,
+                // c'est-à-dire une erreur grave comme une division par zéro
+                // ou un dépassement de capacité. Le code d'erreur peut être utilisé
+                // pour déterminer le type d'erreur.
                 errorCount++;
                 return (0, false);
             } catch (bytes memory /*lowLevelData*/) {
-                // This is executed in case revert() was used.
+                // Ceci est exécuté au cas où revert() a été utilisé.
                 errorCount++;
                 return (0, false);
             }
         }
     }
 
-The ``try`` keyword has to be followed by an expression representing an external function call
-or a contract creation (``new ContractName()``).
-Errors inside the expression are not caught (for example if it is a complex expression
-that also involves internal function calls), only a revert happening inside the external
-call itself. The ``returns`` part (which is optional) that follows declares return variables
-matching the types returned by the external call. In case there was no error,
-these variables are assigned and the contract's execution continues inside the
-first success block. If the end of the success block is reached, execution continues after the ``catch`` blocks.
+Le mot-clé ``try`` doit être suivi d'une expression représentant un appel de fonction externe
+ou une création de contrat (``new ContractName()``).
+Les erreurs à l'intérieur de l'expression ne sont pas prises en compte (par exemple s'il s'agit d'une expression
+complexe qui implique aussi des appels de fonctions internes), seul un retour en arrière se produisant dans l'appel
+externe lui-même. La partie ``returns`` (qui est optionnelle) qui suit déclare des variables de retour
+correspondant aux types retournés par l'appel externe. Dans le cas où il n'y a pas eu d'erreur
+ces variables sont assignées et l'exécution du contrat continue à l'intérieur du
+premier bloc de succès. Si la fin du bloc de succès est atteinte, l'exécution continue après les blocs ``catch``.
 
-Solidity supports different kinds of catch blocks depending on the
-type of error:
+Solidity prend en charge différents types de blocs catch en fonction du
+type d'erreur :
 
-- ``catch Error(string memory reason) { ... }``: This catch clause is executed if the error was caused by ``revert("reasonString")`` or
-  ``require(false, "reasonString")`` (or an internal error that causes such an
-  exception).
+- ``catch Error(string memory reason) { ... }`` : Cette clause catch est exécutée si l'erreur a été provoquée par ``revert("reasonString")`` ou par
+  ``require(false, "reasonString")`` (ou une erreur interne qui provoque une telle exception).
 
-- ``catch Panic(uint errorCode) { ... }``: If the error was caused by a panic, i.e. by a failing ``assert``, division by zero,
-  invalid array access, arithmetic overflow and others, this catch clause will be run.
+- ``catch Panic(uint errorCode) { ... }`` : Si l'erreur a été causée par une panique, c'est-à-dire par un ``assert`` défaillant, division par zéro,
+  un accès invalide à un tableau, un débordement arithmétique et autres, cette clause catch sera exécutée.
 
-- ``catch (bytes memory lowLevelData) { ... }``: This clause is executed if the error signature
-  does not match any other clause, if there was an error while decoding the error
-  message, or
-  if no error data was provided with the exception.
-  The declared variable provides access to the low-level error data in that case.
+- ``catch (bytes memory lowLevelData) { ... }`` : Cette clause est exécutée si la signature de l'erreur
+  signature d'erreur ne correspond à aucune autre clause, s'il y a eu une erreur lors du décodage du message
+  d'erreur, ou si aucune donnée d'erreur n'a été fournie avec l'exception.
+  La variable déclarée donne accès aux données d'erreur de bas niveau dans ce cas.
 
-- ``catch { ... }``: If you are not interested in the error data, you can just use
-  ``catch { ... }`` (even as the only catch clause) instead of the previous clause.
+- ``catch { ... }`` : Si vous n'êtes pas intéressé par les données d'erreur, vous pouvez simplement utiliser
+  ``catch { ... }`` (même comme seule clause catch) au lieu de la clause précédente.
 
 
-It is planned to support other types of error data in the future.
-The strings ``Error`` and ``Panic`` are currently parsed as is and are not treated as identifiers.
+Il est prévu de supporter d'autres types de données d'erreur dans le futur.
+Les chaînes "Erreur" et "Panique" sont actuellement analysées telles quelles et ne sont pas traitées comme des identifiants.
 
-In order to catch all error cases, you have to have at least the clause
-``catch { ...}`` or the clause ``catch (bytes memory lowLevelData) { ... }``.
+Afin d'attraper tous les cas d'erreur, vous devez avoir au moins la clause suivante
+``catch { ...}`` ou la clause ``catch (bytes memory lowLevelData) { ... }``.
 
-The variables declared in the ``returns`` and the ``catch`` clause are only
-in scope in the block that follows.
+Les variables déclarées dans la clause ``returns`` et la clause ``catch`` sont uniquement
+dans le bloc qui suit.
 
 .. note::
 
-    If an error happens during the decoding of the return data
-    inside a try/catch-statement, this causes an exception in the currently
-    executing contract and because of that, it is not caught in the catch clause.
-    If there is an error during decoding of ``catch Error(string memory reason)``
-    and there is a low-level catch clause, this error is caught there.
+    Si une erreur se produit pendant le décodage des données de retour
+    dans un énoncé try/catch, cela provoque une exception dans le contrat
+    en cours d'exécution et, pour cette raison, elle n'est pas attrapée dans la clause catch.
+    S'il y a une erreur pendant le décodage de ``catch Error(string memory reason)``
+    et qu'il existe une clause catch de bas niveau, cette erreur y est attrapée.
 
 .. note::
 
-    If execution reaches a catch-block, then the state-changing effects of
-    the external call have been reverted. If execution reaches
-    the success block, the effects were not reverted.
-    If the effects have been reverted, then execution either continues
-    in a catch block or the execution of the try/catch statement itself
-    reverts (for example due to decoding failures as noted above or
-    due to not providing a low-level catch clause).
+    Si l'exécution atteint un bloc de capture, alors les effets de changement d'état de
+    l'appel externe ont été annulés. Si l'exécution atteint
+    le bloc de succès, les effets n'ont pas été annulés.
+    Si les effets ont été inversés, alors l'exécution continue soit
+    dans un bloc catch ou bien l'exécution de l'instruction try/catch elle-même
+    s'inverse (par exemple, en raison d'échecs de décodage comme indiqué ci-dessus ou
+    en raison de l'absence d'une clause catch de bas niveau).
 
 .. note::
-    The reason behind a failed call can be manifold. Do not assume that
-    the error message is coming directly from the called contract:
-    The error might have happened deeper down in the call chain and the
-    called contract just forwarded it. Also, it could be due to an
-    out-of-gas situation and not a deliberate error condition:
-    The caller always retains at least 1/64th of the gas in a call and thus
-    even if the called contract goes out of gas, the caller still
-    has some gas left.
+    Les raisons de l'échec d'un appel peuvent être multiples. Ne supposez pas que
+    le message d'erreur provient directement du contrat appelé :
+    L'erreur peut s'être produite plus bas dans la
+    chaîne d'appels et le contrat appelé n'a fait que la transmettre. De même, elle peut être due à une
+    situation de panne sèche et non d'une condition d'erreur délibérée :
+    L'appelant conserve toujours au moins 1/64ème du gaz dans un appel et donc
+    l'appelant a encore du gaz.
