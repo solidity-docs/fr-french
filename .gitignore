@@ -81,5 +81,4 @@ tools/
 .dockerignore
 .editorconfig
 
-CMakeLists.txt
 CODE_OF_CONDUCT.md
