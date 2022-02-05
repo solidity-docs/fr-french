@@ -2,30 +2,30 @@
 
 .. _constants:
 
-**************************************
-Constant and Immutable State Variables
-**************************************
+****************************************
+Variables d'état constantes et immuables
+****************************************
 
-State variables can be declared as ``constant`` or ``immutable``.
-In both cases, the variables cannot be modified after the contract has been constructed.
-For ``constant`` variables, the value has to be fixed at compile-time, while
-for ``immutable``, it can still be assigned at construction time.
+Les variables d'état peuvent être déclarées comme ``constant`` ou ``immutable``.
+Dans les deux cas, les variables ne peuvent pas être modifiées après la construction du contrat.
+Pour les variables ``constant``, la valeur doit être fixée à la compilation, alors que
+pour les variables ``immutables``, elle peut encore être assignée au moment de la construction.
 
-It is also possible to define ``constant`` variables at the file level.
+Il est également possible de définir des variables ``constant`` au niveau du fichier.
 
-The compiler does not reserve a storage slot for these variables, and every occurrence is
-replaced by the respective value.
+Le compilateur ne réserve pas d'emplacement pour ces variables, et chaque occurrence
+est remplacée par la valeur correspondante.
 
-Compared to regular state variables, the gas costs of constant and immutable variables
-are much lower. For a constant variable, the expression assigned to it is copied to
-all the places where it is accessed and also re-evaluated each time. This allows for local
-optimizations. Immutable variables are evaluated once at construction time and their value
-is copied to all the places in the code where they are accessed. For these values,
-32 bytes are reserved, even if they would fit in fewer bytes. Due to this, constant values
-can sometimes be cheaper than immutable values.
+Comparé aux variables d'état régulières, les coûts de gaz des variables constantes et immuables
+sont beaucoup plus faibles. Pour une variable constante, l'expression qui lui est assignée est copiée à
+tous les endroits où elle est accédée et est également réévaluée à chaque fois. Cela permet des
+optimisations locales. Les variables immuables sont évaluées une seule fois au moment de la construction et leur valeur
+est copiée à tous les endroits du code où elles sont accédées. Pour ces valeurs,
+32 octets sont réservés, même si elles pourraient tenir dans moins d'octets. Pour cette raison, les valeurs constantes
+peuvent parfois être moins chères que les valeurs immuables.
 
-Not all types for constants and immutables are implemented at this time. The only supported types are
-:ref:`strings <strings>` (only for constants) and :ref:`value types <value-types>`.
+Tous les types de constantes et d'immuables ne sont pas encore implémentés. Les seuls types supportés sont
+:ref:`strings <strings>` (uniquement pour les constantes) et :ref:`value types <value-types>`.
 
 .. code-block:: solidity
 
@@ -43,7 +43,7 @@ Not all types for constants and immutables are implemented at this time. The onl
 
         constructor(uint _decimals, address _reference) {
             decimals = _decimals;
-            // Assignments to immutables can even access the environment.
+            // Les affectations aux immuables peuvent même accéder à l'environnement.
             maxBalance = _reference.balance;
         }
 
@@ -56,43 +56,41 @@ Not all types for constants and immutables are implemented at this time. The onl
 Constant
 ========
 
-For ``constant`` variables, the value has to be a constant at compile time and it has to be
-assigned where the variable is declared. Any expression
-that accesses storage, blockchain data (e.g. ``block.timestamp``, ``address(this).balance`` or
-``block.number``) or
-execution data (``msg.value`` or ``gasleft()``) or makes calls to external contracts is disallowed. Expressions
-that might have a side-effect on memory allocation are allowed, but those that
-might have a side-effect on other memory objects are not. The built-in functions
-``keccak256``, ``sha256``, ``ripemd160``, ``ecrecover``, ``addmod`` and ``mulmod``
-are allowed (even though, with the exception of ``keccak256``, they do call external contracts).
+Pour les variables ``constant``, la valeur doit être une constante au moment de la compilation et elle doit être
+assignée à l'endroit où la variable est déclarée. Toute expression
+qui accède au stockage, aux données de la blockchain (par exemple, ``block.timestamp``, ``address(this).balance`` ou ``block.number``) ou aux
+données d'exécution (``msg.value`` ou ``gasleft()``) ou fait des appels à des contrats externes est interdit. Les expressions
+qui pourraient avoir un effet secondaire sur l'allocation de mémoire sont autorisées,
+mais celles qui pourraient avoir un effet secondaire sur d'autres objets mémoire ne le sont pas. Les fonctions intégrées
+``keccak256``, ``sha256``, ``ripemd160``, ``ecrecover``, ``addmod`' et ``mulmod``.
+sont autorisées (même si, à l'exception de ``keccak256``, ils appellent des contrats externes).
 
-The reason behind allowing side-effects on the memory allocator is that it
-should be possible to construct complex objects like e.g. lookup-tables.
-This feature is not yet fully usable.
+La raison pour laquelle les effets secondaires sur l'allocateur de mémoire sont autorisés est qu'il
+devrait être possible de construire des objets complexes comme par exemple des tables de consultation.
+Cette fonctionnalité n'est pas encore totalement utilisable.
 
 Immutable
 =========
 
-Variables declared as ``immutable`` are a bit less restricted than those
-declared as ``constant``: Immutable variables can be assigned an arbitrary
-value in the constructor of the contract or at the point of their declaration.
-They can be assigned only once and can, from that point on, be read even during
-construction time.
+Les variables déclarées comme ``immutables`` sont un peu moins restreintes que celles
+déclarées comme ``constant`` : Les variables immuables peuvent se voir attribuer une
+valeur arbitraire dans le constructeur du contrat ou au moment de leur déclaration.
+Elles ne peuvent être assignées qu'une seule fois et peuvent, à partir de ce moment, être lues même pendant
+la construction.
 
-The contract creation code generated by the compiler will modify the
-contract's runtime code before it is returned by replacing all references
-to immutables by the values assigned to the them. This is important if
-you are comparing the
-runtime code generated by the compiler with the one actually stored in the
+Le code de création du contrat généré par le compilateur modifiera
+le code d'exécution du contrat avant qu'il ne soit retourné en remplaçant toutes les références
+aux immutables par les valeurs qui leur sont attribuées. Ceci est important si
+vous comparez le code d'exécution généré par le compilateur avec celui réellement stocké dans la
 blockchain.
 
 .. note::
-  Immutables that are assigned at their declaration are only considered
-  initialized once the constructor of the contract is executing.
-  This means you cannot initialize immutables inline with a value
-  that depends on another immutable. You can do this, however,
-  inside the constructor of the contract.
+  Les immutables qui sont affectés lors de leur déclaration ne sont considérés comme
+  initialisés que lorsque le constructeur du contrat s'exécute.
+  Cela signifie que vous ne pouvez pas initialiser les immutables en ligne avec une valeur
+  qui dépend d'un autre immuable. Vous pouvez cependant le faire
+  à l'intérieur du constructeur du contrat.
 
-  This is a safeguard against different interpretations about the order
-  of state variable initialization and constructor execution, especially
-  with regards to inheritance.
+  Il s'agit d'une protection contre les différentes interprétations concernant l'ordre
+  de l'initialisation des variables d'état et de l'exécution du constructeur, en particulier
+  en ce qui concerne l'héritage.
