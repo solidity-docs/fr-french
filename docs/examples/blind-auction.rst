@@ -38,7 +38,7 @@ Après la fin de la période d'enchères, le contrat doit être appelé manuelle
         // Listes de tous les enrichisseurs pouvant retirer leurs enchères
         mapping(address => uint) pendingReturns;
 
-        // Définit sur "true" à la fin de l'enchère, pour refuser les changements
+        // Définit sur `true` à la fin de l'enchère, pour refuser les changements
         // By default initialized to `false`.
         bool ended;
 
@@ -204,26 +204,26 @@ et c'est voulu (il y a même un drapeau explicite pour placer des offres invalid
         address public highestBidder;
         uint public highestBid;
 
-        // Allowed withdrawals of previous bids
+        // Permettre le retrait des offres précédentes
         mapping(address => uint) pendingReturns;
 
         event AuctionEnded(address winner, uint highestBid);
 
-        // Errors that describe failures.
+        // Erreurs qui décrivent des échecs.
 
-        /// The function has been called too early.
-        /// Try again at `time`.
+        /// La fonction a été appelée trop tôt.
+        /// Essayez à nouveau à `time`.
         error TooEarly(uint time);
-        /// The function has been called too late.
-        /// It cannot be called after `time`.
+        /// La fonction a été appelée trop tard.
+        /// Elle ne peut pas être appelée après `time`.
         error TooLate(uint time);
-        /// The function auctionEnd has already been called.
+        /// La fonction auctionEnd a déjà été appelée.
         error AuctionEndAlreadyCalled();
 
-        // Modifiers are a convenient way to validate inputs to
-        // functions. `onlyBefore` is applied to `bid` below:
-        // The new function body is the modifier's body where
-        // `_` is replaced by the old function body.
+        // Les modificateurs sont un moyen pratique de valider les entrées de
+        // fonctions. `onlyBefore` est appliqué à `bid` ci-dessous :
+        // Le nouveau corps de la fonction est le corps du modificateur où
+        // `_` est remplacé par l'ancien corps de la fonction.
         modifier onlyBefore(uint time) {
             if (block.timestamp >= time) revert TooLate(time);
             _;
@@ -243,15 +243,15 @@ et c'est voulu (il y a même un drapeau explicite pour placer des offres invalid
             revealEnd = biddingEnd + revealTime;
         }
 
-        /// Place a blinded bid with `blindedBid` =
+        /// Placez une enchère aveugle avec `blindedBid` =
         /// keccak256(abi.encodePacked(value, fake, secret)).
-        /// The sent ether is only refunded if the bid is correctly
-        /// revealed in the revealing phase. The bid is valid if the
-        /// ether sent together with the bid is at least "value" and
-        /// "fake" is not true. Setting "fake" to true and sending
-        /// not the exact amount are ways to hide the real bid but
-        /// still make the required deposit. The same address can
-        /// place multiple bids.
+        /// L'éther envoyé n'est remboursé que si l'offre est
+        /// correctement révélée lors de la phase de révélation. L'offre est valide si
+        /// l'éther envoyé avec l'offre est au moins égal à "value" et que
+        /// "fake" n'est pas vrai. Mettre "fake" à true et ne pas envoyer
+        /// le montant exact sont des moyens de cacher la véritable enchère mais
+        /// tout en effectuant le dépôt requis. Une même adresse peut
+        /// placer plusieurs enchères.
         function bid(bytes32 blindedBid)
             external
             payable
@@ -263,9 +263,9 @@ et c'est voulu (il y a même un drapeau explicite pour placer des offres invalid
             }));
         }
 
-        /// Reveal your blinded bids. You will get a refund for all
-        /// correctly blinded invalid bids and for all bids except for
-        /// the totally highest.
+        /// Révélez vos enchères aveugles. Vous obtiendrez un remboursement pour toutes
+        /// les offres invalides correctement masquées et pour toutes les offres sauf pour
+        /// l'enchère la plus élevée.
         function reveal(
             uint[] calldata values,
             bool[] calldata fakes,
@@ -286,8 +286,8 @@ et c'est voulu (il y a même un drapeau explicite pour placer des offres invalid
                 (uint value, bool fake, bytes32 secret) =
                         (values[i], fakes[i], secrets[i]);
                 if (bidToCheck.blindedBid != keccak256(abi.encodePacked(value, fake, secret))) {
-                    // Bid was not actually revealed.
-                    // Do not refund deposit.
+                    // L'enchère n'a pas été réellement révélée.
+                    // Ne pas rembourser le dépôt.
                     continue;
                 }
                 refund += bidToCheck.deposit;
@@ -295,29 +295,29 @@ et c'est voulu (il y a même un drapeau explicite pour placer des offres invalid
                     if (placeBid(msg.sender, value))
                         refund -= value;
                 }
-                // Make it impossible for the sender to re-claim
-                // the same deposit.
+                // Rendre impossible pour l'expéditeur de réclamer à nouveau
+                // le même dépôt.
                 bidToCheck.blindedBid = bytes32(0);
             }
             payable(msg.sender).transfer(refund);
         }
 
-        /// Withdraw a bid that was overbid.
+        /// Retirer une offre qui a été surenchérie.
         function withdraw() external {
             uint amount = pendingReturns[msg.sender];
             if (amount > 0) {
-                // It is important to set this to zero because the recipient
-                // can call this function again as part of the receiving call
-                // before `transfer` returns (see the remark above about
-                // conditions -> effects -> interaction).
+                // Il est important de mettre cette valeur à zéro car le destinataire
+                // peut appeler cette fonction à nouveau dans le cadre de l'appel de réception
+                // avant que `transfer` ne revienne (voir la remarque ci-dessus à propos des
+                // conditions -> effets -> interaction).
                 pendingReturns[msg.sender] = 0;
 
                 payable(msg.sender).transfer(amount);
             }
         }
 
-        /// End the auction and send the highest bid
-        /// to the beneficiary.
+        /// Mettre fin à l'enchère et envoyer l'offre la plus élevée
+        /// au bénéficiaire.
         function auctionEnd()
             external
             onlyAfter(revealEnd)
@@ -328,9 +328,9 @@ et c'est voulu (il y a même un drapeau explicite pour placer des offres invalid
             beneficiary.transfer(highestBid);
         }
 
-        // This is an "internal" function which means that it
-        // can only be called from the contract itself (or from
-        // derived contracts).
+        // Il s'agit d'une fonction "interne", ce qui signifie qu'elle
+        // ne peut être appelée qu'à partir du contrat lui-même (ou à partir de
+        // contrats dérivés).
         function placeBid(address bidder, uint value) internal
                 returns (bool success)
         {
