@@ -1,21 +1,21 @@
 .. index:: contract;modular, modular contract
 
 *****************
-Modular Contracts
+Contrats modulaires (Librairie)
 *****************
 
-A modular approach to building your contracts helps you reduce the complexity
-and improve the readability which will help to identify bugs and vulnerabilities
-during development and code review.
-If you specify and control the behaviour or each module in isolation, the
-interactions you have to consider are only those between the module specifications
-and not every other moving part of the contract.
-In the example below, the contract uses the ``move`` method
-of the ``Balances`` :ref:`library <libraries>` to check that balances sent between
-addresses match what you expect. In this way, the ``Balances`` library
-provides an isolated component that properly tracks balances of accounts.
-It is easy to verify that the ``Balances`` library never produces negative balances or overflows
-and the sum of all balances is an invariant across the lifetime of the contract.
+Une approche modulaire de la construction de vos contrats vous aide à réduire la complexité
+et améliorer la lisibilité ce qui aidera à identifier les bugs et les vulnérabilités
+pendant le développement et la relecture de code.
+Si vous spécifiez et contrôlez le comportement de chaque module,
+les interactions que vous devrez prendre en compte sont uniquement celles entre les spécifications du module
+et non toutes les autres parties mobiles du contrat.
+Dans l'exemple ci-dessous, le contrat utilise la méthode ``move``
+des ``Balances`` (`library`) pour vérifier que les soldes envoyés entre
+les adresses correspondent à ce que vous attendez. Ainsi, la `library` ``Balances``
+fournit un composant isolé des contrats qui suit correctement les soldes des comptes.
+Il est facile de vérifier que la `library` ``Balances`` ne produise jamais de soldes négatifs ou de débordements grâce au terme ``require()``
+De ce faites, la somme de tous les soldes est un invariant sur la durée de vie du contrat.
 
 .. code-block:: solidity
 
