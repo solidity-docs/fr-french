@@ -2,27 +2,26 @@
 
 .. _errors:
 
-*******************************
-Errors and the Revert Statement
-*******************************
+**************************************************
+Les erreurs et la déclaration de retour en arrière
+**************************************************
 
-Errors in Solidity provide a convenient and gas-efficient way to explain to the
-user why an operation failed. They can be defined inside and outside of contracts (including interfaces and libraries).
+Les erreurs dans Solidity fournissent un moyen pratique et efficace d'expliquer à
+l'utilisateur pourquoi une opération a échoué. Elles peuvent être définies à l'intérieur
+et à l'extérieur des contrats (y compris les interfaces et les bibliothèques).
 
-They have to be used together with the :ref:`revert statement <revert-statement>`
-which causes
-all changes in the current call to be reverted and passes the error data back to the
-caller.
+Elles doivent être utilisées conjointement avec l'instruction :ref:`revert <revert-statement>`
+qui provoque toutes les modifications de l'appel en cours et renvoie les données d'erreur à l'appelant.
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity ^0.8.4;
 
-    /// Insufficient balance for transfer. Needed `required` but only
-    /// `available` available.
-    /// @param available balance available.
-    /// @param required requested amount to transfer.
+    /// Solde insuffisant pour le transfert. Nécessaire `required` mais seulement
+    /// `available` disponible.
+    /// @param available disponible disponible.
+    /// @param required montant demandé pour le transfert.
     error InsufficientBalance(uint256 available, uint256 required);
 
     contract TestToken {
@@ -39,44 +38,44 @@ caller.
         // ...
     }
 
-Errors cannot be overloaded or overridden but are inherited.
-The same error can be defined in multiple places as long as the scopes are distinct.
-Instances of errors can only be created using ``revert`` statements.
+Les erreurs ne peuvent pas être surchargées ou remplacées mais sont héritées.
+La même erreur peut être définie à plusieurs endroits, à condition que les champs d'application soient distincts.
+Les instances d'erreurs ne peuvent être créées qu'en utilisant les instructions ``revert``.
 
-The error creates data that is then passed to the caller with the revert operation
-to either return to the off-chain component or catch it in a :ref:`try/catch statement <try-catch>`.
-Note that an error can only be caught when coming from an external call,
-reverts happening in internal calls or inside the same function cannot be caught.
+L'erreur crée des données qui sont ensuite transmises à l'appelant avec l'opération ``revert``,
+afin de retourner au composant hors chaîne ou de l'attraper dans une instruction :ref:`try/catch <try-catch>`.
+Notez qu'une erreur ne peut être attrapée que si elle provient d'un appel externe,
+les retours se produisant dans des appels internes ou à l'intérieur de la même fonction ne peuvent pas être attrapés.
 
-If you do not provide any parameters, the error only needs four bytes of
-data and you can use :ref:`NatSpec <natspec>` as above
-to further explain the reasons behind the error, which is not stored on chain.
-This makes this a very cheap and convenient error-reporting feature at the same time.
+Si vous ne fournissez pas de paramètres, l'erreur ne nécessite que quatre octets de
+données et vous pouvez utiliser :ref:`NatSpec <natspec>` comme ci-dessus
+pour expliquer plus en détail les raisons de l'erreur, qui ne sont pas stockées dans la chaîne.
+Cela en fait une fonctionnalité de signalement d'erreur très bon marché et pratique à la fois.
 
-More specifically, an error instance is ABI-encoded in the same way as
-a function call to a function of the same name and types would be
-and then used as the return data in the ``revert`` opcode.
-This means that the data consists of a 4-byte selector followed by :ref:`ABI-encoded<abi>` data.
-The selector consists of the first four bytes of the keccak256-hash of the signature of the error type.
+Plus précisément, une instance d'erreur est codée par ABI de la même manière que
+un appel à une fonction du même nom et du même type le serait
+et est ensuite utilisé comme données de retour dans l'opcode ``revert``.
+Cela signifie que les données consistent en un sélecteur de 4 octets suivi de données :ref:`ABI-encodées<abi>`.
+Le sélecteur est constitué des quatre premiers octets du keccak256-hash de la signature du type d'erreur.
 
 .. note::
-    It is possible for a contract to revert
-    with different errors of the same name or even with errors defined in different places
-    that are indistinguishable by the caller. For the outside, i.e. the ABI,
-    only the name of the error is relevant, not the contract or file where it is defined.
+    Il est possible qu'un contrat soit révoqué
+    avec des erreurs différentes du même nom ou même avec des erreurs définies à des endroits différents
+    qui sont indiscernables par l'appelant. Pour l'extérieur, c'est-à-dire l'ABI,
+    seul le nom de l'erreur est pertinent, pas le contrat ou le fichier où elle est définie.
 
-The statement ``require(condition, "description");`` would be equivalent to
-``if (!condition) revert Error("description")`` if you could define
+L'instruction ``require(condition, "description");`` serait équivalente à
+``if (!condition) revert Error("description")`` si vous pouviez définir
 ``error Error(string)``.
-Note, however, that ``Error`` is a built-in type and cannot be defined in user-supplied code.
+Notez cependant que ``Error`` est un type intégré et ne peut être défini dans un code fourni par l'utilisateur.
 
-Similarly, a failing ``assert`` or similar conditions will revert with an error
-of the built-in type ``Panic(uint256)``.
+De même, un échec de ``assert`` ou des conditions similaires se retourneront avec une erreur
+du type intégré ``Panic(uint256)``.
 
 .. note::
-    Error data should only be used to give an indication of failure, but
-    not as a means for control-flow. The reason is that the revert data
-    of inner calls is propagated back through the chain of external calls
-    by default. This means that an inner call
-    can "forge" revert data that looks like it could have come from the
-    contract that called it.
+    Les données d'erreur ne doivent être utilisées que pour donner une indication de l'échec, mais
+    pas comme un moyen pour le flux de contrôle. La raison en est que les données de retour
+    des appels internes sont propagées en retour dans la chaîne des appels externes
+    par défaut. Cela signifie qu'un appel interne
+    peut "forger" des données de retour qui semblent pouvoir provenir du
+    contrat qui l'a appelé.
