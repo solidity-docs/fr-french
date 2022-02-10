@@ -514,7 +514,7 @@ fonctions visibles de l'extérieur diffèrent par leurs types Solidity mais pas 
     }
 
 
-Les deux surcharges de fonction ``f`'' ci-dessus finissent par accepter le type d'adresse pour l'ABI bien qu'ils
+Les deux surcharges de fonction ``f`` ci-dessus finissent par accepter le type d'adresse pour l'ABI bien qu'ils
 ils sont considérés comme différents dans Solidity.
 
 Résolution des surcharges et correspondance des arguments
