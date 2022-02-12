@@ -2,54 +2,52 @@
 
 .. _libraries:
 
-*********
-Libraries
-*********
+*************
+Bibliothèques
+*************
 
-Libraries are similar to contracts, but their purpose is that they are deployed
-only once at a specific address and their code is reused using the ``DELEGATECALL``
-(``CALLCODE`` until Homestead)
-feature of the EVM. This means that if library functions are called, their code
-is executed in the context of the calling contract, i.e. ``this`` points to the
-calling contract, and especially the storage from the calling contract can be
-accessed. As a library is an isolated piece of source code, it can only access
-state variables of the calling contract if they are explicitly supplied (it
-would have no way to name them, otherwise). Library functions can only be
-called directly (i.e. without the use of ``DELEGATECALL``) if they do not modify
-the state (i.e. if they are ``view`` or ``pure`` functions),
-because libraries are assumed to be stateless. In particular, it is
-not possible to destroy a library.
-
-.. note::
-    Until version 0.4.20, it was possible to destroy libraries by
-    circumventing Solidity's type system. Starting from that version,
-    libraries contain a :ref:`mechanism<call-protection>` that
-    disallows state-modifying functions
-    to be called directly (i.e. without ``DELEGATECALL``).
-
-Libraries can be seen as implicit base contracts of the contracts that use them.
-They will not be explicitly visible in the inheritance hierarchy, but calls
-to library functions look just like calls to functions of explicit base
-contracts (using qualified access like ``L.f()``).
-Of course, calls to internal functions
-use the internal calling convention, which means that all internal types
-can be passed and types :ref:`stored in memory <data-location>` will be passed by reference and not copied.
-To realize this in the EVM, the code of internal library functions
-that are called from a contract
-and all functions called from therein will at compile time be included in the calling
-contract, and a regular ``JUMP`` call will be used instead of a ``DELEGATECALL``.
+Les bibliothèques sont similaires aux contrats, mais leur but est d'être déployées
+une seule fois à une adresse spécifique et leur code est réutilisé en utilisant le ``DELEGATECALL`` (``CALLCODE`` jusqu'à Homestead)
+de l'EVM. Cela signifie que si des fonctions de bibliothèque sont appelées, leur
+code est exécuté dans le contexte du contrat d'appel, c'est-à-dire que ``this`` pointe vers le
+contrat appelant, et surtout le stockage du contrat appelant est accessible.
+Comme une bibliothèque est un morceau de code source isolé, elle ne peut accéder aux variables
+d'état du contrat d'appel que si elles sont explicitement fournies (elle
+n'aurait aucun moyen de les nommer, sinon). Les fonctions des bibliothèques ne peuvent
+être appelées directement (c'est-à-dire sans l'utilisation de ``DELEGATECALL``) que si elles ne modifient pas
+l'état (c'est-à-dire si ce sont des fonctions ``view`` ou ``pure``),
+parce que les bibliothèques sont supposées être sans état. En particulier, il n'est
+possible de détruire une bibliothèque.
 
 .. note::
-    The inheritance analogy breaks down when it comes to public functions.
-    Calling a public library function with ``L.f()`` results in an external call (``DELEGATECALL``
-    to be precise).
-    In contrast, ``A.f()`` is an internal call when ``A`` is a base contract of the current contract.
+    Jusqu'à la version 0.4.20, il était possible de détruire des bibliothèques en
+    contournant le système de types de Solidity. A partir de cette version,
+    les librairies contiennent un :ref:`mécanisme<call-protection>` qui
+    empêche les fonctions modifiant l'état
+    d'être appelées directement (c'est-à-dire sans ``DELEGATECALL``).
+
+Les bibliothèques peuvent être vues comme des contrats de base implicites des contrats qui les utilisent.
+Elles ne seront pas explicitement visibles dans la hiérarchie de l'héritage,
+mais les appels aux fonctions des bibliothèques ressemblent aux appels aux fonctions des
+contrats de base explicites (en utilisant un accès qualifié comme ``L.f()``).
+Bien sûr, les appels aux fonctions internes utilisent la convention d'appel interne, ce qui signifie que tous les types internes
+peuvent être passés et les types :ref:`stockés en mémoire <data-location>` seront passés par référence et non copiés.
+Pour réaliser cela dans l'EVM, le code des fonctions de bibliothèques internes
+qui sont appelées à partir d'un contrat ainsi que toutes les fonctions appelées
+à partir de celui-ci seront incluses dans le contrat
+et un appel régulier ``JUMP`` sera utilisé au lieu d'un ``DELEGATECALL``.
+
+.. note::
+    L'analogie avec l'héritage s'effondre lorsqu'il s'agit de fonctions publiques.
+    L'appel d'une fonction de bibliothèque publique avec ``L.f()`` entraîne un appel externe (``DELEGATECALL``
+    pour être précis).
+    En revanche, ``A.f()`` est un appel interne lorsque ``A`` est un contrat de base du contrat actuel.
 
 .. index:: using for, set
 
-The following example illustrates how to use libraries (but using a manual method,
-be sure to check out :ref:`using for <using-for>` for a
-more advanced example to implement a set).
+L'exemple suivant illustre comment utiliser les bibliothèques (mais en utilisant une méthode manuelle,
+ne manquez pas de consulter :ref:`utiliser for<using-for>` pour un
+exemple plus avancé pour implémenter un ensemble).
 
 .. code-block:: solidity
 
@@ -57,25 +55,25 @@ more advanced example to implement a set).
     pragma solidity >=0.6.0 <0.9.0;
 
 
-    // We define a new struct datatype that will be used to
-    // hold its data in the calling contract.
+    // Nous définissons un nouveau type de données struct qui sera utilisé pour
+    // contenir ses données dans le contrat d'appel.
     struct Data {
         mapping(uint => bool) flags;
     }
 
     library Set {
-        // Note that the first parameter is of type "storage
-        // reference" and thus only its storage address and not
-        // its contents is passed as part of the call.  This is a
-        // special feature of library functions.  It is idiomatic
-        // to call the first parameter `self`, if the function can
-        // be seen as a method of that object.
+        // Notez que le premier paramètre est de type
+        // "référence de stockage" et donc seulement son adresse de stockage et pas
+        // son contenu est transmis dans le cadre de l'appel. Il s'agit d'une
+        // particularité des fonctions de bibliothèque. Il est idiomatique
+        // d'appeler le premier paramètre `self` si la fonction peut
+        // être vue comme une méthode de cet objet.
         function insert(Data storage self, uint value)
             public
             returns (bool)
         {
             if (self.flags[value])
-                return false; // already there
+                return false; // déjà là
             self.flags[value] = true;
             return true;
         }
@@ -85,7 +83,7 @@ more advanced example to implement a set).
             returns (bool)
         {
             if (!self.flags[value])
-                return false; // not there
+                return false; // pas là
             self.flags[value] = false;
             return true;
         }
@@ -104,31 +102,31 @@ more advanced example to implement a set).
         Data knownValues;
 
         function register(uint value) public {
-            // The library functions can be called without a
-            // specific instance of the library, since the
-            // "instance" will be the current contract.
+            // Les fonctions de la bibliothèque peuvent être appelées sans une
+            // instance spécifique de la bibliothèque, puisque
+            // l'"instance" sera le contrat en cours.
             require(Set.insert(knownValues, value));
         }
         // In this contract, we can also directly access knownValues.flags, if we want.
     }
 
-Of course, you do not have to follow this way to use
-libraries: they can also be used without defining struct
-data types. Functions also work without any storage
-reference parameters, and they can have multiple storage reference
-parameters and in any position.
+Bien sûr, vous n'êtes pas obligé de suivre cette voie pour utiliser des
+bibliothèques : elles peuvent aussi être utilisées sans définir de type
+de données struct. Les fonctions fonctionnent également sans paramètres de
+de référence de stockage, et elles peuvent avoir plusieurs paramètres de référence
+et dans n'importe quelle position.
 
-The calls to ``Set.contains``, ``Set.insert`` and ``Set.remove``
-are all compiled as calls (``DELEGATECALL``) to an external
-contract/library. If you use libraries, be aware that an
-actual external function call is performed.
-``msg.sender``, ``msg.value`` and ``this`` will retain their values
-in this call, though (prior to Homestead, because of the use of ``CALLCODE``, ``msg.sender`` and
-``msg.value`` changed, though).
+Les appels à ``Set.contains``, ``Set.insert`` et ``Set.remove``
+sont tous compilés en tant qu'appels (``DELEGATECALL``) à un
+contrat/librairie externe. Si vous utilisez des bibliothèques, soyez conscient qu'un
+appel à une fonction externe réelle est effectué.
+``msg.sender``, ``msg.value`` et ``this`` garderont leurs valeurs dans cet appel.
+(avant Homestead, à cause de l'utilisation de ``CALLCODE``, ``msg.sender`` et
+``msg.value`` changeaient, cependant).
 
-The following example shows how to use :ref:`types stored in memory <data-location>` and
-internal functions in libraries in order to implement
-custom types without the overhead of external function calls:
+L'exemple suivant montre comment utiliser les :ref:`types stockés dans la mémoire <data-location>`
+et les fonctions internes des bibliothèques afin d'implémenter des types
+personnalisés sans la surcharge des appels de fonctions externes :
 
 .. code-block:: solidity
     :force:
@@ -162,7 +160,7 @@ custom types without the overhead of external function calls:
                 }
             }
             if (carry > 0) {
-                // too bad, we have to add a limb
+                // dommage, nous devons ajouter un membre
                 uint[] memory newLimbs = new uint[](r.limbs.length + 1);
                 uint i;
                 for (i = 0; i < r.limbs.length; ++i)
@@ -192,56 +190,56 @@ custom types without the overhead of external function calls:
         }
     }
 
-It is possible to obtain the address of a library by converting
-the library type to the ``address`` type, i.e. using ``address(LibraryName)``.
+Il est possible d'obtenir l'adresse d'une bibliothèque en convertissant
+le type de la bibliothèque en type ``adress``, c'est-à-dire en utilisant ``address(LibraryName)``.
 
-As the compiler does not know the address where the library will be deployed, the compiled hex code
-will contain placeholders of the form ``__$30bbc0abd4d6364515865950d3e0d10953$__``. The placeholder
-is a 34 character prefix of the hex encoding of the keccak256 hash of the fully qualified library
-name, which would be for example ``libraries/bigint.sol:BigInt`` if the library was stored in a file
-called ``bigint.sol`` in a ``libraries/`` directory. Such bytecode is incomplete and should not be
-deployed. Placeholders need to be replaced with actual addresses. You can do that by either passing
-them to the compiler when the library is being compiled or by using the linker to update an already
-compiled binary. See :ref:`library-linking` for information on how to use the commandline compiler
-for linking.
+Comme le compilateur ne connaît pas l'adresse à laquelle la bibliothèque sera déployée, le code hexadécimal
+compilé contiendra des caractères de remplacement de la forme ``__$30bbc0abd4d6364515865950d3e0d10953$__``. Le caractère de remplacement
+est un préfixe de 34 caractères de l'encodage hexadécimal du hachage keccak256 du nom de bibliothèque pleinement qualifié,
+qui serait par exemple ``libraries/bigint.sol:BigInt`` si la bibliothèque était stockée dans un fichier
+appelé ``bigint.sol`` dans un répertoire ``libraries/``. Un tel bytecode est incomplet et ne devrait pas être
+déployé. Les placeholders doivent être remplacés par des adresses réelles. Vous pouvez le faire soit en passant
+au compilateur lors de la compilation de la bibliothèque ou en utilisant l'éditeur de liens pour mettre à jour un
+binaire déjà compilé. Voir :ref:`library-linking` pour des informations sur la façon d'utiliser le compilateur en ligne de commande
+pour la liaison.
 
-In comparison to contracts, libraries are restricted in the following ways:
+Par rapport aux contrats, les bibliothèques sont limitées de la manière suivante :
 
-- they cannot have state variables
-- they cannot inherit nor be inherited
-- they cannot receive Ether
-- they cannot be destroyed
+- elles ne peuvent pas avoir de variables d'état
+- elles ne peuvent ni hériter ni être héritées
+- elles ne peuvent pas recevoir d'éther
+- elles ne peuvent pas être détruites
 
-(These might be lifted at a later point.)
+(Ces restrictions pourraient être levées ultérieurement).
 
 .. _library-selectors:
 .. index:: selector
 
-Function Signatures and Selectors in Libraries
-==============================================
+Signatures de fonction et sélecteurs dans les bibliothèques
+===========================================================
 
-While external calls to public or external library functions are possible, the calling convention for such calls
-is considered to be internal to Solidity and not the same as specified for the regular :ref:`contract ABI<ABI>`.
-External library functions support more argument types than external contract functions, for example recursive structs
-and storage pointers. For that reason, the function signatures used to compute the 4-byte selector are computed
-following an internal naming schema and arguments of types not supported in the contract ABI use an internal encoding.
+Bien que les appels externes à des fonctions de bibliothèques publiques ou externes soient possibles, la convention d'appel pour de tels appels
+est considérée comme interne à Solidity et n'est pas la même que celle spécifiée pour la fonction ordinaire du :ref:`contrat ABI<ABI>`.
+Les fonctions de bibliothèque externes supportent plus de types d'arguments que les fonctions de contrat externes, par exemple les structs récursifs
+et les pointeurs de stockage. Pour cette raison, les signatures de fonctions utilisées pour calculer le sélecteur à 4 octets sont calculées
+selon un schéma de dénomination interne et les arguments de types non pris en charge par l'ABI du contrat utilisent un encodage interne.
 
-The following identifiers are used for the types in the signatures:
+Les identifiants suivants sont utilisés pour les types dans les signatures :
 
-- Value types, non-storage ``string`` and non-storage ``bytes`` use the same identifiers as in the contract ABI.
-- Non-storage array types follow the same convention as in the contract ABI, i.e. ``<type>[]`` for dynamic arrays and
-  ``<type>[M]`` for fixed-size arrays of ``M`` elements.
-- Non-storage structs are referred to by their fully qualified name, i.e. ``C.S`` for ``contract C { struct S { ... } }``.
-- Storage pointer mappings use ``mapping(<keyType> => <valueType>) storage`` where ``<keyType>`` and ``<valueType>`` are
-  the identifiers for the key and value types of the mapping, respectively.
-- Other storage pointer types use the type identifier of their corresponding non-storage type, but append a single space
-  followed by ``storage`` to it.
+- Les types de valeurs, les ``string`` non stockées et les ``bytes`` non stockés utilisent les mêmes identifiants que dans l'ABI du contrat.
+- Les types de tableaux non stockés suivent la même convention que dans l'ABI du contrat, c'est-à-dire ``<type>[]`` pour les tableaux dynamiques et
+  ``<type>[M]`` pour les tableaux de taille fixe de ``M`` éléments.
+- Les structures non stockées sont désignées par leur nom complet, c'est-à-dire ``C.S`` pour ``contrat C { struct S { ... } }``.
+- Les mappages de pointeurs de stockage utilisent ``mapping(<keyType> => <valueType>) storage`` où ``<keyType>`` et ``<valueType>`` sont
+  sont les identificateurs des types de clé et de valeur du mappage, respectivement.
+- Les autres types de pointeurs de stockage utilisent l'identificateur de type de leur type non stocké correspondant, mais ajoutent un espace unique
+  suivi de ``storage``.
 
-The argument encoding is the same as for the regular contract ABI, except for storage pointers, which are encoded as a
-``uint256`` value referring to the storage slot to which they point.
+Le codage des arguments est le même que pour l'ABI des contrats ordinaires, sauf pour les pointeurs de stockage, qui sont codés en tant que
+``uint256`` faisant référence à l'emplacement de stockage vers lequel ils pointent.
 
-Similarly to the contract ABI, the selector consists of the first four bytes of the Keccak256-hash of the signature.
-Its value can be obtained from Solidity using the ``.selector`` member as follows:
+Comme pour l'ABI du contrat, le sélecteur est constitué des quatre premiers octets du Keccak256-hash de la signature.
+Sa valeur peut être obtenue à partir de Solidity en utilisant le membre ``.selector`` comme suit :
 
 .. code-block:: solidity
 
@@ -262,30 +260,30 @@ Its value can be obtained from Solidity using the ``.selector`` member as follow
 
 .. _call-protection:
 
-Call Protection For Libraries
-=============================
+Protection d'appel pour les bibliothèques
+=========================================
 
-As mentioned in the introduction, if a library's code is executed
-using a ``CALL`` instead of a ``DELEGATECALL`` or ``CALLCODE``,
-it will revert unless a ``view`` or ``pure`` function is called.
+Comme mentionné dans l'introduction, si le code d'une bibliothèque est exécuté
+en utilisant un ``CALL`` au lieu d'un ``DELEGATECALL`` ou ``CALLCODE``,
+il se réverbère sauf si une fonction ``view`` ou ``pure`` est appelée.
 
-The EVM does not provide a direct way for a contract to detect
-whether it was called using ``CALL`` or not, but a contract
-can use the ``ADDRESS`` opcode to find out "where" it is
-currently running. The generated code compares this address
-to the address used at construction time to determine the mode
-of calling.
+L'EVM ne fournit pas de moyen direct pour qu'un contrat puisse
+détecter s'il a été appelé en utilisant ``CALL`` ou non, mais un contrat
+mais un contrat peut utiliser l'opcode ``ADDRESS`` pour savoir "où" il est
+actuellement en cours d'exécution. Le code généré compare cette adresse
+à l'adresse utilisée au moment de la construction pour déterminer le mode
+d'appel.
 
-More specifically, the runtime code of a library always starts
-with a push instruction, which is a zero of 20 bytes at
-compilation time. When the deploy code runs, this constant
-is replaced in memory by the current address and this
-modified code is stored in the contract. At runtime,
-this causes the deploy time address to be the first
-constant to be pushed onto the stack and the dispatcher
-code compares the current address against this constant
-for any non-view and non-pure function.
+Plus spécifiquement, le code d'exécution d'une bibliothèque commence toujours
+par une instruction push, qui est un zéro de 20 octets au
+moment de la compilation. Lorsque le code déployé s'exécute, cette constante
+est remplacée en mémoire par l'adresse actuelle et ce
+code modifié est stocké dans le contrat. Au moment de l'exécution,
+cela fait en sorte que l'adresse du moment du déploiement soit la
+première constante à être poussée sur la pile et le code du distributeur
+compare l'adresse actuelle à cette constante
+pour toute fonction non-visible et non pure.
 
-This means that the actual code stored on chain for a library
-is different from the code reported by the compiler as
+Cela signifie que le code réel stocké sur la chaîne pour une bibliothèque
+est différent du code rapporté par le compilateur en tant que
 ``deployedBytecode``.
