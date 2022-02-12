@@ -2,17 +2,16 @@
 
 .. _modifiers:
 
-******************
-Function Modifiers
-******************
+*************************
+Modificateurs de fonction
+*************************
 
-Modifiers can be used to change the behaviour of functions in a declarative way.
-For example,
-you can use a modifier to automatically check a condition prior to executing the function.
+Les modificateurs peuvent être utilisés pour changer le comportement des fonctions de manière déclarative.
+Par exemple, vous pouvez utiliser un modificateur pour vérifier automatiquement
+une condition avant d'exécuter la fonction.
 
-Modifiers are
-inheritable properties of contracts and may be overridden by derived contracts, but only
-if they are marked ``virtual``. For details, please see
+Les modificateurs sont des propriétés héritables des contrats et peuvent être remplacées par des contrats dérivés, mais uniquement
+s'ils sont marqués ``virtual``. Pour plus de détails, veuillez consulter
 :ref:`Modifier Overriding <modifier-overriding>`.
 
 .. code-block:: solidity
@@ -24,34 +23,34 @@ if they are marked ``virtual``. For details, please see
         constructor() { owner = payable(msg.sender); }
         address payable owner;
 
-        // This contract only defines a modifier but does not use
-        // it: it will be used in derived contracts.
-        // The function body is inserted where the special symbol
-        // `_;` in the definition of a modifier appears.
-        // This means that if the owner calls this function, the
-        // function is executed and otherwise, an exception is
-        // thrown.
+        // Ce contrat définit uniquement un modificateur mais ne l'utilise pas.
+        // mais ne l'utilise pas : il sera utilisé dans les contrats dérivés.
+        // Le corps de la fonction est inséré là où apparaît le symbole spécial
+        // `_;` dans la définition d'un modificateur.
+        // Cela signifie que si le propriétaire appelle cette fonction,
+        // la fonction est exécutée et sinon, une exception est
+        // levée.
         modifier onlyOwner {
             require(
                 msg.sender == owner,
-                "Only owner can call this function."
+                "Seul le propriétaire peut appeler cette fonction."
             );
             _;
         }
     }
 
     contract destructible is owned {
-        // This contract inherits the `onlyOwner` modifier from
-        // `owned` and applies it to the `destroy` function, which
-        // causes that calls to `destroy` only have an effect if
-        // they are made by the stored owner.
+        // Ce contrat hérite du modificateur `onlyOwner` de la fonction
+        // `owned` et l'applique à la fonction `destroy`, qui
+        // fait que les appels à `destroy` n'ont d'effet que si
+        // ils sont effectués par le propriétaire stocké.
         function destroy() public onlyOwner {
             selfdestruct(owner);
         }
     }
 
     contract priced {
-        // Modifiers can receive arguments:
+        // Les modificateurs peuvent recevoir des arguments :
         modifier costs(uint price) {
             if (msg.value >= price) {
                 _;
@@ -65,9 +64,9 @@ if they are marked ``virtual``. For details, please see
 
         constructor(uint initialPrice) { price = initialPrice; }
 
-        // It is important to also provide the
-        // `payable` keyword here, otherwise the function will
-        // automatically reject all Ether sent to it.
+        // Il est important de fournir également
+        // le mot-clé `payable` ici, sinon la fonction
+        // rejetera automatiquement tout l'Ether qui lui sera envoyé.
         function register() public payable costs(price) {
             registeredAddresses[msg.sender] = true;
         }
@@ -89,10 +88,10 @@ if they are marked ``virtual``. For details, please see
             locked = false;
         }
 
-        /// This function is protected by a mutex, which means that
-        /// reentrant calls from within `msg.sender.call` cannot call `f` again.
-        /// The `return 7` statement assigns 7 to the return value but still
-        /// executes the statement `locked = false` in the modifier.
+        /// Cette fonction est protégée par un mutex, ce qui signifie que
+        /// les appels réentrants provenant de `msg.sender.call` ne peuvent pas appeler `f` à nouveau.
+        /// L'instruction `return 7` attribue 7 à la valeur de retour mais
+        /// exécute l'instruction `locked = false` dans le modificateur.
         function f() public noReentrancy returns (uint) {
             (bool success,) = msg.sender.call("");
             require(success);
@@ -100,34 +99,33 @@ if they are marked ``virtual``. For details, please see
         }
     }
 
-If you want to access a modifier ``m`` defined in a contract ``C``, you can use ``C.m`` to
-reference it without virtual lookup. It is only possible to use modifiers defined in the current
-contract or its base contracts. Modifiers can also be defined in libraries but their use is
-limited to functions of the same library.
+Si vous voulez accéder à un modificateur ``m`` défini dans un contrat ``C``, vous pouvez utiliser ``C.m`` pour le
+le référencer sans recherche virtuelle. Il est seulement possible d'utiliser les modificateurs définis dans le contrat
+actuel ou ses contrats de base. Les modificateurs peuvent aussi être définis dans des bibliothèques,
+mais leur utilisation est limitée aux fonctions de la même bibliothèque.
 
-Multiple modifiers are applied to a function by specifying them in a
-whitespace-separated list and are evaluated in the order presented.
+Plusieurs modificateurs sont appliqués à une fonction en les spécifiant dans une
+séparée par des espaces et sont évaluées dans l'ordre présenté.
 
-Modifiers cannot implicitly access or change the arguments and return values of functions they modify.
-Their values can only be passed to them explicitly at the point of invocation.
+Les modificateurs ne peuvent pas accéder ou modifier implicitement les arguments et les valeurs de retour des fonctions qu'ils modifient.
+Leurs valeurs ne peuvent leur être transmises que de manière explicite au moment de l'invocation.
 
-Explicit returns from a modifier or function body only leave the current
-modifier or function body. Return variables are assigned and
-control flow continues after the ``_`` in the preceding modifier.
+Les retours explicites d'un modificateur ou d'un corps de fonction ne quittent que le
+modificateur ou du corps de la fonction actuelle. Les variables de retour sont assignées et
+le flux de contrôle continue après le ``_`` du modificateur précédent.
 
 .. warning::
-    In an earlier version of Solidity, ``return`` statements in functions
-    having modifiers behaved differently.
+    Dans une version antérieure de Solidity, les instructions ``return`` dans les fonctions
+    ayant des modificateurs se comportaient différemment.
 
-An explicit return from a modifier with ``return;`` does not affect the values returned by the function.
-The modifier can, however, choose not to execute the function body at all and in that case the return
-variables are set to their :ref:`default values<default-value>` just as if the function had an empty
-body.
+Un retour explicite d'un modificateur avec ``return;`` n'affecte pas les valeurs retournées par la fonction.
+Le modificateur peut toutefois choisir de ne pas exécuter du tout le corps de la fonction et, dans ce cas, les variables ``return``
+sont placées à leur :ref:`valeur par défaut<valeur par défaut>` comme si la fonction avait un corps vide.
 
-The ``_`` symbol can appear in the modifier multiple times. Each occurrence is replaced with
-the function body.
+Le symbole ``_`` peut apparaître plusieurs fois dans le modificateur. Chaque occurrence est remplacée par
+le corps de la fonction.
 
-Arbitrary expressions are allowed for modifier arguments and in this context,
-all symbols visible from the function are visible in the modifier. Symbols
-introduced in the modifier are not visible in the function (as they might
-change by overriding).
+Les expressions arbitraires sont autorisées pour les arguments du modificateur et dans ce contexte,
+tous les symboles visibles de la fonction sont visibles dans le modificateur. Les symboles
+introduits dans le modificateur ne sont pas visibles dans la
+fonction (car ils pourraient être modifiés par la surcharge).

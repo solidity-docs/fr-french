@@ -1,36 +1,36 @@
 .. index:: ! contract;creation, constructor
 
-******************
-Creating Contracts
-******************
+********************
+Création de contrats
+********************
 
-Contracts can be created "from outside" via Ethereum transactions or from within Solidity contracts.
+Les contrats peuvent être créés "de l'extérieur" via des transactions Ethereum ou à partir de contrats Solidity.
 
-IDEs, such as `Remix <https://remix.ethereum.org/>`_, make the creation process seamless using UI elements.
+Des IDE, tels que `Remix <https://remix.ethereum.org/>`_, rendent le processus de création transparent à l'aide d'éléments d'interface utilisateur.
 
-One way to create contracts programmatically on Ethereum is via the JavaScript API `web3.js <https://github.com/ethereum/web3.js>`_.
-It has a function called `web3.eth.Contract <https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#new-contract>`_
-to facilitate contract creation.
+Une façon de créer des contrats de façon programmatique sur Ethereum est via l'API JavaScript `web3.js <https://github.com/ethereum/web3.js>`_.
+Elle dispose d'une fonction appelée `web3.eth.Contract <https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#new-contract>`_
+pour faciliter la création de contrats.
 
-When a contract is created, its :ref:`constructor <constructor>` (a function declared with
-the ``constructor`` keyword) is executed once.
+Lorsqu'un contrat est créé, son :ref:`constructeur <constructor>` (une fonction déclarée avec la fonction
+le mot-clé ``constructor``) est exécutée une fois.
 
-A constructor is optional. Only one constructor is allowed, which means
-overloading is not supported.
+Un constructeur est facultatif. Un seul constructeur est autorisé, ce qui signifie que
+la surcharge n'est pas supportée.
 
-After the constructor has executed, the final code of the contract is stored on the
-blockchain. This code includes all public and external functions and all functions
-that are reachable from there through function calls. The deployed code does not
-include the constructor code or internal functions only called from the constructor.
+Après l'exécution du constructeur, le code final du contrat est stocké sur la
+blockchain. Ce code comprend toutes les fonctions publiques et externes ainsi que toutes les fonctions
+qui sont accessibles à partir de là par des appels de fonction. Le code déployé n'inclut pas
+le code du constructeur ou les fonctions internes appelées uniquement depuis le constructeur.
 
 .. index:: constructor;arguments
 
-Internally, constructor arguments are passed :ref:`ABI encoded <ABI>` after the code of
-the contract itself, but you do not have to care about this if you use ``web3.js``.
+En interne, les arguments des constructeurs sont passés :ref:`ABI encodé <ABI>` après le code du
+contrat lui-même, mais vous n'avez pas à vous en soucier si vous utilisez ``web3.js``.
 
-If a contract wants to create another contract, the source code
-(and the binary) of the created contract has to be known to the creator.
-This means that cyclic creation dependencies are impossible.
+Si un contrat souhaite créer un autre contrat, le code source
+(et le binaire) du contrat créé doit être connu du créateur.
+Cela signifie que les dépendances cycliques de création sont impossibles.
 
 .. code-block:: solidity
 
@@ -39,53 +39,53 @@ This means that cyclic creation dependencies are impossible.
 
 
     contract OwnedToken {
-        // `TokenCreator` is a contract type that is defined below.
-        // It is fine to reference it as long as it is not used
-        // to create a new contract.
+        // `TokenCreator` est un type de contrat qui est défini ci-dessous.
+        // Il est possible d'y faire référence tant qu'il n'est pas utilisé
+        // pour créer un nouveau contrat.
         TokenCreator creator;
         address owner;
         bytes32 name;
 
-        // This is the constructor which registers the
-        // creator and the assigned name.
+        // Il s'agit du constructeur qui enregistre le
+        // créateur et le nom attribué.
         constructor(bytes32 _name) {
-            // State variables are accessed via their name
-            // and not via e.g. `this.owner`. Functions can
-            // be accessed directly or through `this.f`,
-            // but the latter provides an external view
-            // to the function. Especially in the constructor,
-            // you should not access functions externally,
-            // because the function does not exist yet.
-            // See the next section for details.
+            // Les variables d'état sont accessibles via leur nom
+            // et non pas via, par exemple, `this.owner`. Les fonctions peuvent
+            // être accédées directement ou via `this.f`,
+            // mais ce dernier fournit une vue externe
+            // à la fonction. En particulier dans le constructeur,
+            // vous ne devriez pas accéder aux fonctions de manière externe,
+            // car la fonction n'existe pas encore.
+            // Voir la section suivante pour plus de détails.
             owner = msg.sender;
 
-            // We perform an explicit type conversion from `address`
-            // to `TokenCreator` and assume that the type of
-            // the calling contract is `TokenCreator`, there is
-            // no real way to verify that.
-            // This does not create a new contract.
+            // Nous effectuons une conversion de type explicite de `address`
+            // vers `TokenCreator` et nous supposons que le type de
+            // contrat appelant est `TokenCreator`, mais il n'existe
+            // aucun moyen réel de le vérifier.
+            // Cette opération ne crée pas de nouveau contrat.
             creator = TokenCreator(msg.sender);
             name = _name;
         }
 
         function changeName(bytes32 newName) public {
-            // Only the creator can alter the name.
-            // We compare the contract based on its
-            // address which can be retrieved by
-            // explicit conversion to address.
+            // Seul le créateur peut modifier le nom.
+            // Nous comparons le contrat en fonction de son
+            // adresse qui peut être récupérée par
+            // conversion explicite en adresse.
             if (msg.sender == address(creator))
                 name = newName;
         }
 
         function transfer(address newOwner) public {
-            // Only the current owner can transfer the token.
+            // Seul le propriétaire actuel peut transférer le jeton.
             if (msg.sender != owner) return;
 
-            // We ask the creator contract if the transfer
-            // should proceed by using a function of the
-            // `TokenCreator` contract defined below. If
-            // the call fails (e.g. due to out-of-gas),
-            // the execution also fails here.
+            // Nous demandons au contrat de création si le transfert
+            // doit avoir lieu en utilisant une fonction du
+            // contrat `TokenCreator` défini ci-dessous. Si
+            // l'appel échoue (par exemple à cause d'une panne sèche),
+            // l'exécution échoue également ici.
             if (creator.isTokenTransferOK(owner, newOwner))
                 owner = newOwner;
         }
@@ -97,27 +97,27 @@ This means that cyclic creation dependencies are impossible.
             public
             returns (OwnedToken tokenAddress)
         {
-            // Create a new `Token` contract and return its address.
-            // From the JavaScript side, the return type
-            // of this function is `address`, as this is
-            // the closest type available in the ABI.
+            // Crée un nouveau contrat `Token` et retourne son adresse.
+            // Du côté de JavaScript, le type de retour
+            // de cette fonction est `address`, puisque c'est
+            // le type le plus proche disponible dans l'ABI.
             return new OwnedToken(name);
         }
 
         function changeName(OwnedToken tokenAddress, bytes32 name) public {
-            // Again, the external type of `tokenAddress` is
-            // simply `address`.
+            // Encore une fois, le type externe de `tokenAddress` est
+            // simplement `address`.
             tokenAddress.changeName(name);
         }
 
-        // Perform checks to determine if transferring a token to the
-        // `OwnedToken` contract should proceed
+        // Effectuer des vérifications pour déterminer si le transfert d'un jeton vers
+        // le contrat `OwnedToken` doit être effectué.
         function isTokenTransferOK(address currentOwner, address newOwner)
             public
             pure
             returns (bool ok)
         {
-            // Check an arbitrary condition to see if transfer should proceed
+            // Vérifier une condition arbitraire pour voir si le transfert doit avoir lieu.
             return keccak256(abi.encodePacked(currentOwner, newOwner))[0] == 0x7f;
         }
     }
