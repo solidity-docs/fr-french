@@ -2,32 +2,32 @@
 
 .. _using-for:
 
-*********
-Using For
-*********
+************
+Utiliser For
+************
 
-The directive ``using A for B;`` can be used to attach library
-functions (from the library ``A``) to any type (``B``)
-in the context of a contract.
-These functions will receive the object they are called on
-as their first parameter (like the ``self`` variable in Python).
+La directive ``using A for B;`` peut être utilisée pour attacher des fonctions
+(de la bibliothèque ``A``) à n'importe quel type (``B``)
+dans le contexte d'un contrat.
+Ces fonctions recevront l'objet sur lequel elles sont appelées
+comme premier paramètre (comme la variable ``self`` en Python).
 
-The effect of ``using A for *;`` is that the functions from
-the library ``A`` are attached to *any* type.
+L'effet de ``using A for *;`` est que les fonctions
+de la bibliothèque ``A`` sont attachées à *tout* type.
 
-In both situations, *all* functions in the library are attached,
-even those where the type of the first parameter does not
-match the type of the object. The type is checked at the
-point the function is called and function overload
-resolution is performed.
+Dans les deux cas, *toutes* les fonctions de la bibliothèque sont attachées,
+même celles pour lesquelles le type du premier paramètre
+ne correspond pas au type de l'objet. Le type est vérifié au moment où la
+fonction est appelée et la résolution de surcharge de fonction
+est effectuée.
 
-The ``using A for B;`` directive is active only within the current
-contract, including within all of its functions, and has no effect
-outside of the contract in which it is used. The directive
-may only be used inside a contract, not inside any of its functions.
+La directive ``using A pour B;`` n'est active que dans le 
+contrat actuel, y compris au sein de toutes ses fonctions, et n'a aucun effet
+en dehors du contrat dans lequel elle est utilisée. La directive
+ne peut être utilisée qu'à l'intérieur d'un contrat, et non à l'intérieur de l'une de ses fonctions.
 
-Let us rewrite the set example from the
-:ref:`libraries` in this way:
+Réécrivons l'exemple de l'ensemble à partir de la directive
+:ref:`libraries` de cette manière :
 
 .. code-block:: solidity
 
@@ -35,7 +35,7 @@ Let us rewrite the set example from the
     pragma solidity >=0.6.0 <0.9.0;
 
 
-    // This is the same code as before, just without comments
+    // Il s'agit du même code que précédemment, mais sans commentaires.
     struct Data { mapping(uint => bool) flags; }
 
     library Set {
@@ -44,7 +44,7 @@ Let us rewrite the set example from the
             returns (bool)
         {
             if (self.flags[value])
-                return false; // already there
+                return false; // déjà là
             self.flags[value] = true;
             return true;
         }
@@ -54,7 +54,7 @@ Let us rewrite the set example from the
             returns (bool)
         {
             if (!self.flags[value])
-                return false; // not there
+                return false; // pas là
             self.flags[value] = false;
             return true;
         }
@@ -70,19 +70,19 @@ Let us rewrite the set example from the
 
 
     contract C {
-        using Set for Data; // this is the crucial change
+        using Set for Data; // c'est le changement crucial
         Data knownValues;
 
         function register(uint value) public {
-            // Here, all variables of type Data have
-            // corresponding member functions.
-            // The following function call is identical to
+            // Ici, toutes les variables de type Data ont
+            // des fonctions membres correspondantes.
+            // L'appel de fonction suivant est identique à
             // `Set.insert(knownValues, value)`
             require(knownValues.insert(value));
         }
     }
 
-It is also possible to extend elementary types in that way:
+Il est également possible d'étendre les types élémentaires de cette manière :
 
 .. code-block:: solidity
 
@@ -110,7 +110,7 @@ It is also possible to extend elementary types in that way:
         }
 
         function replace(uint _old, uint _new) public {
-            // This performs the library function call
+            // Cette opération effectue l'appel de la fonction de bibliothèque
             uint index = data.indexOf(_old);
             if (index == type(uint).max)
                 data.push(_new);
@@ -119,8 +119,8 @@ It is also possible to extend elementary types in that way:
         }
     }
 
-Note that all external library calls are actual EVM function calls. This means that
-if you pass memory or value types, a copy will be performed, even of the
-``self`` variable. The only situation where no copy will be performed
-is when storage reference variables are used or when internal library
-functions are called.
+Notez que tous les appels de bibliothèque externes sont des appels de fonction EVM réels. Cela signifie que
+si vous passez des types de mémoire ou de valeur, une copie sera effectuée, même
+de la variable ``self``. La seule situation où aucune copie ne sera effectuée
+est l'utilisation de variables de référence de stockage ou l'appel de fonctions de bibliothèque internes
+sont appelées.
