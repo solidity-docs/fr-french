@@ -1,52 +1,54 @@
 .. index: variable cleanup
 
 *********************
-Cleaning Up Variables
+Nettoyer les variables
 *********************
 
-When a value is shorter than 256 bit, in some cases the remaining bits
-must be cleaned.
-The Solidity compiler is designed to clean such remaining bits before any operations
-that might be adversely affected by the potential garbage in the remaining bits.
-For example, before writing a value to  memory, the remaining bits need
-to be cleared because the memory contents can be used for computing
-hashes or sent as the data of a message call.  Similarly, before
-storing a value in the storage, the remaining bits need to be cleaned
-because otherwise the garbled value can be observed.
+Lorsqu'une valeur est inférieure à 256 bits, dans certains cas, les bits restants
+doivent être nettoyé.
+Le compilateur Solidity est conçu pour nettoyer ces bits restants avant toute opération
+qui pourraient être affectés par les déchets potentiels dans les bits restants.
+Par exemple, avant d'écrire une valeur en mémoire, les bits restants doivent
+être effacés car le contenu de la mémoire peut être utilisé pour le calcul
+hachages ou être envoyés en tant que données d'un appel de fonction. De même, avant de
+stocker une valeur dans le stockage, les bits restants doivent être nettoyés
+car sinon des valeurs brouillées peuvent être observées.
 
-Note that access via inline assembly is not considered such an operation:
-If you use inline assembly to access Solidity variables
-shorter than 256 bits, the compiler does not guarantee that
-the value is properly cleaned up.
+Notez que l'accès via assembly dans le code Solidity n'est pas considéré comme une telle opération :
+Si vous utilisez assembly dans votre code pour accéder aux variables Solidity
+plus court que 256 bits, le compilateur ne garantit pas que
+la valeur est correctement nettoyée.
 
-Moreover, we do not clean the bits if the immediately
-following operation is not affected.  For instance, since any non-zero
-value is considered ``true`` by ``JUMPI`` instruction, we do not clean
-the boolean values before they are used as the condition for
+De plus, nous ne nettoyons pas les bits si l'opération suivante
+n'est pas affectée par l'opération actuelle. Par exemple, puisque tout valeurs non nul
+est considérée comme ``true`` par l'instruction ``JUMPI``, nous ne nettoyons pas
+les valeurs booléennes avant qu'elles ne soient utilisées comme condition pour
 ``JUMPI``.
 
-In addition to the design principle above, the Solidity compiler
-cleans input data when it is loaded onto the stack.
+En plus du principe ci-dessus, le compilateur Solidity
+nettoie les données d'entrée lorsqu'elles sont chargées sur la stack.
 
-Different types have different rules for cleaning up invalid values:
+Différents types ont des règles différentes pour nettoyer les valeurs non valides :
 
-+---------------+---------------+-------------------+
-|Type           |Valid Values   |Invalid Values Mean|
-+===============+===============+===================+
-|enum of n      |0 until n - 1  |exception          |
-|members        |               |                   |
-+---------------+---------------+-------------------+
-|bool           |0 or 1         |1                  |
-+---------------+---------------+-------------------+
-|signed integers|sign-extended  |currently silently |
-|               |word           |wraps; in the      |
-|               |               |future exceptions  |
-|               |               |will be thrown     |
-|               |               |                   |
-|               |               |                   |
-+---------------+---------------+-------------------+
-|unsigned       |higher bits    |currently silently |
-|integers       |zeroed         |wraps; in the      |
-|               |               |future exceptions  |
-|               |               |will be thrown     |
-+---------------+---------------+-------------------+
++---------------+---------------+-----------------------------+
+|Type           |Valeurs valides|Valeurs invalides            |
++===============+===============+=============================+
+|enum of n      |0 until n - 1  |exception                    |
+|members        |               |                             |
++---------------+---------------+-----------------------------+
+|bool           |0 or 1         |1                            |
++---------------+---------------+-----------------------------+
+|signed integers|sign-extended  |currently silently           |
+|               |word           |wraps; in the                |
+|               |               |future exceptions            |
+|               |               |will be thrown*              |
+|               |               |                             |
+|               |               |                             |
++---------------+---------------+-----------------------------+
+|unsigned       |higher bits    |currently silently           |
+|integers       |zeroed         |wraps; in the                |
+|               |               |future exceptions            |
+|               |               |will be thrown*              |
++---------------+---------------+-----------------------------+
+
+* enveloppe actuellement silencieusement ; à l'avenir, des exceptions seront levées
