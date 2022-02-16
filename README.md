@@ -24,7 +24,7 @@ Soyez rapide avec vos traductions ! Si vous constatez que vous ne pouvez plus v
 
 > Quiconque souhaite contribuer à la documentation officiel Solidity French est libre de participer.
 
-# Règles de traduction
+## Règles de traduction
 
 Lors de la traduction, veuillez suivre ces règles :
 
