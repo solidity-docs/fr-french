@@ -3,7 +3,7 @@ import docutils  # pragma pylint: disable=import-error
 
 from sphinx.util import logging  # pragma pylint: disable=import-error
 
-# NOTE: 2000 should generally be safe for all browsers, while 8000 for most of them.
+# NOTE: 2000 devrait généralement être sûr pour tous les navigateurs, tandis que 8000 pour la plupart d'entre eux.
 MAX_SAFE_URL_LENGTH = 10000
 
 logger = logging.getLogger(__name__)
@@ -19,8 +19,7 @@ def insert_node_before(child, new_sibling):
 
 
 def remix_code_url(source_code, language, solidity_version):
-    # NOTE: base64 encoded data may contain +, = and / characters. Remix seems to handle them just
-    # fine without any escaping.
+    # NOTE: Les données encodées en base64 peuvent contenir les caractères +, = et /. Remix semble bien les gérer sans erreurs
     base64_encoded_source = base64.b64encode(source_code.encode('utf-8')).decode('ascii')
     return f"https://remix.ethereum.org/?language={language}&version={solidity_version}&code={base64_encoded_source}"
 
@@ -68,7 +67,7 @@ def insert_remix_link(app, doctree, solidity_version):
 
 
 def setup(app):
-    # NOTE: Need to access _raw_config here because setup() runs before app.config is ready.
+    # NOTE: Besoin d'accéder à _raw_config ici car setup() s'exécute avant que app.config ne soit prêt.
     solidity_version = app.config._raw_config['version']  # pylint: disable=protected-access
 
     app.connect(
