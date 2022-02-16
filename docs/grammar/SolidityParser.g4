@@ -1,13 +1,14 @@
 /**
- * Solidity is a statically typed, contract-oriented, high-level language for implementing smart contracts on the Ethereum platform.
+ * Solidity est un langage de haut niveau statiquement typé, orienté
+ * vers les contrats et destiné à la mise en œuvre de contrats intelligents sur la plateforme Ethereum.
  */
 parser grammar SolidityParser;
 
 options { tokenVocab=SolidityLexer; }
 
 /**
- * On top level, Solidity allows pragmas, import directives, and
- * definitions of contracts, interfaces, libraries, structs, enums and constants.
+ * Au niveau le plus élevé, Solidity permet les pragmas, les directives d'importation et
+ * les définitions de contrats, d'interfaces, de bibliothèques, de structs, d'enums et de constantes.
  */
 sourceUnit: (
 	pragmaDirective
@@ -27,7 +28,7 @@ sourceUnit: (
 pragmaDirective: Pragma PragmaToken+ PragmaSemicolon;
 
 /**
- * Import directives import identifiers from different files.
+ * Les directives d'importation importent les identifiants de différents fichiers.
  */
 importDirective:
 	Import (
@@ -39,30 +40,30 @@ importDirective:
 //@doc:name aliases
 importAliases: symbol=identifier (As alias=identifier)?;
 /**
- * Path of a file to be imported.
+ * Chemin d'un fichier à importer.
  */
 path: NonEmptyStringLiteral;
 /**
- * List of aliases for symbols to be imported.
+ * Liste d'alias pour les symboles à importer.
  */
 symbolAliases: LBrace aliases+=importAliases (Comma aliases+=importAliases)* RBrace;
 
 /**
- * Top-level definition of a contract.
+ * Définition de haut niveau d'un contrat.
  */
 contractDefinition:
 	Abstract? Contract name=identifier
 	inheritanceSpecifierList?
 	LBrace contractBodyElement* RBrace;
 /**
- * Top-level definition of an interface.
+ * Définition de haut niveau d'une interface.
  */
 interfaceDefinition:
 	Interface name=identifier
 	inheritanceSpecifierList?
 	LBrace contractBodyElement* RBrace;
 /**
- * Top-level definition of a library.
+ * Définition de haut niveau d'une bibliothèque.
  */
 libraryDefinition: Library name=identifier LBrace contractBodyElement* RBrace;
 
@@ -71,16 +72,16 @@ inheritanceSpecifierList:
 	Is inheritanceSpecifiers+=inheritanceSpecifier
 	(Comma inheritanceSpecifiers+=inheritanceSpecifier)*?;
 /**
- * Inheritance specifier for contracts and interfaces.
- * Can optionally supply base constructor arguments.
+ * Spécification de l'héritage pour les contrats et les interfaces.
+ * Peut optionnellement fournir les arguments du constructeur de base.
  */
 inheritanceSpecifier: name=identifierPath arguments=callArgumentList?;
 
 /**
- * Declarations that can be used in contracts, interfaces and libraries.
+ * Déclarations pouvant être utilisées dans les contrats, les interfaces et les bibliothèques.
  *
- * Note that interfaces and libraries may not contain constructors, interfaces may not contain state variables
- * and libraries may not contain fallback, receive functions nor non-constant state variables.
+ * Les interfaces et les bibliothèques ne peuvent pas contenir de constructeurs, les interfaces ne peuvent pas contenir de variables d'état,
+ * et les bibliothèques ne peuvent pas contenir de fonctions de repli, de réception ou de variables d'état non constantes.
  */
 contractBodyElement:
 	constructorDefinition
@@ -98,34 +99,34 @@ contractBodyElement:
 //@doc:inline
 namedArgument: name=identifier Colon value=expression;
 /**
- * Arguments when calling a function or a similar callable object.
- * The arguments are either given as comma separated list or as map of named arguments.
+ * Arguments lors de l'appel d'une fonction ou d'un objet appelable similaire.
+ * Les arguments sont donnés soit sous forme de liste séparée par des virgules, soit sous forme de carte d'arguments nommés.
  */
 callArgumentList: LParen ((expression (Comma expression)*)? | LBrace (namedArgument (Comma namedArgument)*)? RBrace) RParen;
 /**
- * Qualified name.
+ * Nom qualifié.
  */
 identifierPath: identifier (Period identifier)*;
 
 /**
- * Call to a modifier. If the modifier takes no arguments, the argument list can be skipped entirely
- * (including opening and closing parentheses).
+ * Appel à un modificateur. Si le modificateur ne prend pas d'arguments, la liste des arguments peut être entièrement ignorée.
+ * (y compris les parenthèses ouvrantes et fermantes).
  */
 modifierInvocation: identifierPath callArgumentList?;
 /**
- * Visibility for functions and function types.
+ * Visibilité des fonctions et des types de fonctions.
  */
 visibility: Internal | External | Private | Public;
 /**
- * A list of parameters, such as function arguments or return values.
+ * Une liste de paramètres, tels que les arguments de la fonction ou les valeurs de retour.
  */
 parameterList: parameters+=parameterDeclaration (Comma parameters+=parameterDeclaration)*;
 //@doc:inline
 parameterDeclaration: type=typeName location=dataLocation? name=identifier?;
 /**
- * Definition of a constructor.
- * Must always supply an implementation.
- * Note that specifying internal or public visibility is deprecated.
+ * Définition d'un constructeur.
+ * Doit toujours fournir une implémentation.
+ * Notez que la spécification de la visibilité interne ou publique est dépréciée.
  */
 constructorDefinition
 locals[boolean payableSet = false, boolean visibilitySet = false]
@@ -140,20 +141,20 @@ locals[boolean payableSet = false, boolean visibilitySet = false]
 	body=block;
 
 /**
- * State mutability for function types.
- * The default mutability 'non-payable' is assumed if no mutability is specified.
+ * Indiquer la mutabilité pour les types de fonctions.
+ * La mutabilité par défaut 'non-payable' est supposée si aucune mutabilité n'est spécifiée.
  */
 stateMutability: Pure | View | Payable;
 /**
- * An override specifier used for functions, modifiers or state variables.
- * In cases where there are ambiguous declarations in several base contracts being overridden,
- * a complete list of base contracts has to be given.
+ * Un spécificateur de surcharge utilisé pour les fonctions, les modificateurs ou les variables d'état.
+ * Dans les cas où il y a des déclarations ambiguës dans plusieurs contrats de base qui sont remplacés,
+ * une liste complète des contrats de base doit être donnée.
  */
 overrideSpecifier: Override (LParen overrides+=identifierPath (Comma overrides+=identifierPath)* RParen)?;
 /**
- * The definition of contract, library and interface functions.
- * Depending on the context in which the function is defined, further restrictions may apply,
- * e.g. functions in interfaces have to be unimplemented, i.e. may not contain a body block.
+ * La définition des fonctions de contrat, de bibliothèque et d'interface.
+ * Selon le contexte dans lequel la fonction est définie, d'autres restrictions peuvent s'appliquer.
+ * Par exemple, les fonctions des interfaces doivent être non implémentées, c'est-à-dire qu'elles ne peuvent pas contenir de bloc de corps.
  */
 functionDefinition
 locals[
@@ -175,9 +176,9 @@ locals[
 	(Returns LParen returnParameters=parameterList RParen)?
 	(Semicolon | body=block);
 /**
- * The definition of a modifier.
- * Note that within the body block of a modifier, the underscore cannot be used as identifier,
- * but is used as placeholder statement for the body of a function to which the modifier is applied.
+ * La définition d'un modificateur.
+ * Notez que dans le corps d'un modificateur, l'underscore ne peut pas être utilisé comme identifiant,
+ * mais est utilisé comme déclaration de remplacement pour le corps d'une fonction à laquelle le modificateur est appliqué.
  */
 modifierDefinition
 locals[
@@ -194,7 +195,7 @@ locals[
 	(Semicolon | body=block);
 
 /**
- * Definition of the special fallback function.
+ * Définition de la fonction spéciale de repli.
  */
 fallbackFunctionDefinition
 locals[
@@ -217,7 +218,7 @@ locals[
 	(Semicolon | body=block);
 
 /**
- * Definition of the special receive function.
+ * Définition de la fonction de réception spéciale.
  */
 receiveFunctionDefinition
 locals[
@@ -238,25 +239,26 @@ locals[
 	(Semicolon | body=block);
 
 /**
- * Definition of a struct. Can occur at top-level within a source unit or within a contract, library or interface.
+ * Définition d'une structure. Peut se trouver au niveau supérieur dans une unité source ou dans un contrat, une bibliothèque ou une interface.
  */
 structDefinition: Struct name=identifier LBrace members=structMember+ RBrace;
 /**
- * The declaration of a named struct member.
+ * La déclaration d'un membre de structure nommé.
  */
 structMember: type=typeName name=identifier Semicolon;
 /**
- * Definition of an enum. Can occur at top-level within a source unit or within a contract, library or interface.
+ * Définition d'un enum. Peut se produire au niveau supérieur dans une unité source ou dans un contrat, une bibliothèque ou une interface.
  */
 enumDefinition:	Enum name=identifier LBrace enumValues+=identifier (Comma enumValues+=identifier)* RBrace;
 /**
- * Definition of a user defined value type. Can occur at top-level within a source unit or within a contract, library or interface.
+ * Définition d'un type de valeur défini par l'utilisateur. Peut se produire au niveau supérieur
+ * dans une unité source ou dans un contrat, une bibliothèque ou une interface.
  */
 userDefinedValueTypeDefinition:
 	Type name=identifier Is elementaryTypeName[true] Semicolon;
 
 /**
- * The declaration of a state variable.
+ * La déclaration d'une variable d'état.
  */
 stateVariableDeclaration
 locals [boolean constantnessSet = false, boolean visibilitySet = false, boolean overrideSpecifierSet = false]
@@ -275,7 +277,7 @@ locals [boolean constantnessSet = false, boolean visibilitySet = false, boolean 
 	Semicolon;
 
 /**
- * The declaration of a constant variable.
+ * La déclaration d'une variable constante.
  */
 constantVariableDeclaration
 :
@@ -286,11 +288,11 @@ constantVariableDeclaration
 	Semicolon;
 
 /**
- * Parameter of an event.
+ * Paramètre d'un événement.
  */
 eventParameter: type=typeName Indexed? name=identifier?;
 /**
- * Definition of an event. Can occur in contracts, libraries or interfaces.
+ * Définition d'un événement. Peut se produire dans les contrats, les bibliothèques ou les interfaces.
  */
 eventDefinition:
 	Event name=identifier
@@ -299,11 +301,11 @@ eventDefinition:
 	Semicolon;
 
 /**
- * Parameter of an error.
+ * Paramètre d'une erreur.
  */
 errorParameter: type=typeName name=identifier?;
 /**
- * Definition of an error.
+ * Définition d'une erreur.
  */
 errorDefinition:
 	Error name=identifier
@@ -311,13 +313,13 @@ errorDefinition:
 	Semicolon;
 
 /**
- * Using directive to bind library functions to types.
- * Can occur within contracts and libraries.
+ * Utilisation de directives pour lier des fonctions de bibliothèques à des types.
+ * Peut se produire dans les contrats et les bibliothèques.
  */
 usingDirective: Using identifierPath For (Mul | typeName) Semicolon;
 /**
- * A type name can be an elementary type, a function type, a mapping type, a user-defined type
- * (e.g. a contract or struct) or an array type.
+ * Un nom de type peut être un type élémentaire, un type de fonction, un type de mappage, un type défini par l'utilisateur
+ * (par exemple, un contrat ou un struct) ou un type de tableau.
  */
 typeName: elementaryTypeName[true] | functionTypeName | mappingType | identifierPath | typeName LBrack expression? RBrack;
 elementaryTypeName[boolean allowAddressPayable]: Address | {$allowAddressPayable}? Address Payable | Bool | String | Bytes | SignedIntegerType | UnsignedIntegerType | FixedBytes | Fixed | Ufixed;
@@ -332,17 +334,17 @@ locals [boolean visibilitySet = false, boolean mutabilitySet = false]
 	(Returns LParen returnParameters=parameterList RParen)?;
 
 /**
- * The declaration of a single variable.
+ * La déclaration d'une seule variable.
  */
 variableDeclaration: type=typeName location=dataLocation? name=identifier;
 dataLocation: Memory | Storage | Calldata;
 
 /**
- * Complex expression.
- * Can be an index access, an index range access, a member access, a function call (with optional function call options),
- * a type conversion, an unary or binary expression, a comparison or assignment, a ternary expression,
- * a new-expression (i.e. a contract creation or the allocation of a dynamic memory array),
- * a tuple, an inline array or a primary expression (i.e. an identifier, literal or type name).
+ * Expression complexe.
+ * Peut être un accès à un index, un accès à une plage d'index, un accès à un membre, un appel de fonction (avec des options d'appel de fonction facultatives),
+ * une conversion de type, une expression unaire ou binaire, une comparaison ou une affectation, une expression ternaire,
+ * une nouvelle expression (c'est-à-dire la création d'un contrat ou l'allocation d'un tableau de mémoire dynamique),
+ * un tuple, un tableau en ligne ou une expression primaire (c'est-à-dire un identifiant, un littéral ou un nom de type).
  */
 expression:
 	expression LBrack index=expression? RBrack # IndexAccess
@@ -381,36 +383,36 @@ expression:
 assignOp: Assign | AssignBitOr | AssignBitXor | AssignBitAnd | AssignShl | AssignSar | AssignShr | AssignAdd | AssignSub | AssignMul | AssignDiv | AssignMod;
 tupleExpression: LParen (expression? ( Comma expression?)* ) RParen;
 /**
- * An inline array expression denotes a statically sized array of the common type of the contained expressions.
+ * Une expression de tableau en ligne désigne un tableau de taille statique du type commun des expressions contenues.
  */
 inlineArrayExpression: LBrack (expression ( Comma expression)* ) RBrack;
 
 /**
- * Besides regular non-keyword Identifiers, some keywords like 'from' and 'error' can also be used as identifiers.
+ * Outre les identificateurs ordinaires sans mot-clé, certains mots-clés comme "from" et "error" peuvent également être utilisés comme identificateurs.
  */
 identifier: Identifier | From | Error | Revert;
 
 literal: stringLiteral | numberLiteral | booleanLiteral | hexStringLiteral | unicodeStringLiteral;
 booleanLiteral: True | False;
 /**
- * A full string literal consists of either one or several consecutive quoted strings.
+ * Une chaîne de caractères complète est constituée d'une ou plusieurs chaînes de caractères consécutives entre guillemets.
  */
 stringLiteral: (NonEmptyStringLiteral | EmptyStringLiteral)+;
 /**
- * A full hex string literal that consists of either one or several consecutive hex strings.
+ * Un littéral de chaîne hexagonale complète qui consiste en une ou plusieurs chaînes hexagonales consécutives.
  */
 hexStringLiteral: HexString+;
 /**
- * A full unicode string literal that consists of either one or several consecutive unicode strings.
+ * Un littéral de chaîne unicode complet qui consiste en une ou plusieurs chaînes unicode consécutives.
  */
 unicodeStringLiteral: UnicodeStringLiteral+;
 
 /**
- * Number literals can be decimal or hexadecimal numbers with an optional unit.
+ * Les littéraux numériques peuvent être des nombres décimaux ou hexadécimaux avec une unité optionnelle.
  */
 numberLiteral: (DecimalNumber | HexNumber) NumberUnit?;
 /**
- * A curly-braced block of statements. Opens its own scope.
+ * Un bloc d'instructions avec des accolades. Ouvre sa propre portée.
  */
 block:
 	LBrace ( statement | uncheckedBlock )* RBrace;
@@ -436,53 +438,53 @@ statement:
 //@doc:inline
 simpleStatement: variableDeclarationStatement | expressionStatement;
 /**
- * If statement with optional else part.
+ * Déclaration If avec partie else facultative.
  */
 ifStatement: If LParen expression RParen statement (Else statement)?;
 /**
- * For statement with optional init, condition and post-loop part.
+ * Instruction For avec une partie facultative init, condition et post-boucle.
  */
 forStatement: For LParen (simpleStatement | Semicolon) (expressionStatement | Semicolon) expression? RParen statement;
 whileStatement: While LParen expression RParen statement;
 doWhileStatement: Do statement While LParen expression RParen Semicolon;
 /**
- * A continue statement. Only allowed inside for, while or do-while loops.
+ * Une instruction continue. Uniquement autorisé dans les boucles for, while ou do-while.
  */
 continueStatement: Continue Semicolon;
 /**
- * A break statement. Only allowed inside for, while or do-while loops.
+ * Une instruction break. Uniquement autorisé dans les boucles for, while ou do-while.
  */
 breakStatement: Break Semicolon;
 /**
- * A try statement. The contained expression needs to be an external function call or a contract creation.
+ * Une instruction try. L'expression contenue doit être un appel de fonction externe ou une création de contrat.
  */
 tryStatement: Try expression (Returns LParen returnParameters=parameterList RParen)? block catchClause+;
 /**
- * The catch clause of a try statement.
+ * La clause catch d'une déclaration try.
  */
 catchClause: Catch (identifier? LParen (arguments=parameterList) RParen)? block;
 
 returnStatement: Return expression? Semicolon;
 /**
- * An emit statement. The contained expression needs to refer to an event.
+ * Une instruction emit. L'expression contenue doit faire référence à un événement.
  */
 emitStatement: Emit expression callArgumentList Semicolon;
 /**
- * A revert statement. The contained expression needs to refer to an error.
+ * Une déclaration de retour en arrière. L'expression contenue doit faire référence à une erreur.
  */
 revertStatement: Revert expression callArgumentList Semicolon;
 /**
- * An inline assembly block.
- * The contents of an inline assembly block use a separate scanner/lexer, i.e. the set of keywords and
- * allowed identifiers is different inside an inline assembly block.
+ * Un bloc d'assemblage en ligne.
+ * Le contenu d'un bloc d'assemblage en ligne utilise un analyseur/lexeur séparé, c'est-à-dire que l'ensemble des mots-clés et
+ * d'identificateurs autorisés est différent à l'intérieur d'un bloc d'assemblage en ligne.
  */
 assemblyStatement: Assembly AssemblyDialect? AssemblyLBrace yulStatement* YulRBrace;
 
 //@doc:inline
 variableDeclarationList: variableDeclarations+=variableDeclaration (Comma variableDeclarations+=variableDeclaration)*;
 /**
- * A tuple of variable names to be used in variable declarations.
- * May contain empty fields.
+ * Un tuple de noms de variables à utiliser dans les déclarations de variables.
+ * Peut contenir des champs vides.
  */
 variableDeclarationTuple:
 	LParen
@@ -490,23 +492,23 @@ variableDeclarationTuple:
 		(Comma (variableDeclarations+=variableDeclaration)?)*
 	RParen;
 /**
- * A variable declaration statement.
- * A single variable may be declared without initial value, whereas a tuple of variables can only be
- * declared with initial value.
+ * Une déclaration de variable.
+ * Une seule variable peut être déclarée sans valeur initiale, alors qu'un tuple de variables ne peut être
+ * déclaré avec une valeur initiale.
  */
 variableDeclarationStatement: ((variableDeclaration (Assign expression)?) | (variableDeclarationTuple Assign expression)) Semicolon;
 expressionStatement: expression Semicolon;
 
 mappingType: Mapping LParen key=mappingKeyType DoubleArrow value=typeName RParen;
 /**
- * Only elementary types or user defined types are viable as mapping keys.
+ * Seuls les types élémentaires ou les types définis par l'utilisateur sont viables comme clés de mappage.
  */
 mappingKeyType: elementaryTypeName[false] | identifierPath;
 
 /**
- * A Yul statement within an inline assembly block.
- * continue and break statements are only valid within for loops.
- * leave statements are only valid within function bodies.
+ * Une instruction Yul dans un bloc d'assemblage en ligne.
+ * Les instructions continue et break ne sont valables que dans les boucles for.
+ * Les instructions leave ne sont valables que dans les corps de fonctions.
  */
 yulStatement:
 	yulBlock
@@ -524,16 +526,16 @@ yulStatement:
 yulBlock: YulLBrace yulStatement* YulRBrace;
 
 /**
- * The declaration of one or more Yul variables with optional initial value.
- * If multiple variables are declared, only a function call is a valid initial value.
+ * La déclaration d'une ou plusieurs variables Yul avec une valeur initiale facultative.
+ * Si plusieurs variables sont déclarées, seul un appel de fonction constitue une valeur initiale valide.
  */
 yulVariableDeclaration:
 	(YulLet variables+=YulIdentifier (YulAssign yulExpression)?)
 	| (YulLet variables+=YulIdentifier (YulComma variables+=YulIdentifier)* (YulAssign yulFunctionCall)?);
 
 /**
- * Any expression can be assigned to a single Yul variable, whereas
- * multi-assignments require a function call on the right-hand side.
+ * Toute expression peut être assignée à une seule variable Yul, alors que
+ * les affectations multiples nécessitent un appel de fonction sur le côté droit.
  */
 yulAssignment: yulPath YulAssign yulExpression | (yulPath (YulComma yulPath)+) YulAssign yulFunctionCall;
 
@@ -544,8 +546,8 @@ yulForStatement: YulFor init=yulBlock cond=yulExpression post=yulBlock body=yulB
 //@doc:inline
 yulSwitchCase: YulCase yulLiteral yulBlock;
 /**
- * A Yul switch statement can consist of only a default-case (deprecated) or
- * one or more non-default cases optionally followed by a default-case.
+ * Une déclaration Yul switch peut consister uniquement en un cas par défaut (déprécié) ou en
+ * un ou plusieurs cas non-définis par défaut, éventuellement suivis d'un cas-défini par défaut.
  */
 yulSwitchStatement:
 	YulSwitch yulExpression
@@ -561,13 +563,13 @@ yulFunctionDefinition:
 	body=yulBlock;
 
 /**
- * While only identifiers without dots can be declared within inline assembly,
- * paths containing dots can refer to declarations outside the inline assembly block.
+ * Alors que seuls les identifiants sans points peuvent être déclarés dans un bloc d'assemblage en ligne,
+ * les chemins contenant des points peuvent faire référence à des déclarations en dehors du bloc d'assemblage en ligne.
  */
 yulPath: YulIdentifier (YulPeriod YulIdentifier)*;
 /**
- * A call to a function with return values can only occur as right-hand side of an assignment or
- * a variable declaration.
+ * Un appel à une fonction avec des valeurs de retour ne peut se produire qu'à droite d'une affectation ou
+ * d'une déclaration de variable.
  */
 yulFunctionCall: (YulIdentifier | YulEVMBuiltin) YulLParen (yulExpression (YulComma yulExpression)*)? YulRParen;
 yulBoolean: YulTrue | YulFalse;
