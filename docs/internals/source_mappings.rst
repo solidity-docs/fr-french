@@ -1,70 +1,69 @@
 .. index:: source mappings
 
 ***************
-Source Mappings
+Source Mappings (SourceMap de Compilation)
 ***************
 
-As part of the AST output, the compiler provides the range of the source
-code that is represented by the respective node in the AST. This can be
-used for various purposes ranging from static analysis tools that report
-errors based on the AST and debugging tools that highlight local variables
-and their uses.
+Dans le cadre de l'output AST, le compilateur fournit une plage du source
+code qui est représenté par le nœud respectif dans l'AST. Cela peut être
+utilisé à diverses fins allant des outils d'analyse statique qui rapportent les
+erreurs basées sur l'AST et les outils de débogage qui mettent en évidence les variables locales
+et leurs usages.
 
-Furthermore, the compiler can also generate a mapping from the bytecode
-to the range in the source code that generated the instruction. This is again
-important for static analysis tools that operate on bytecode level and
-for displaying the current position in the source code inside a debugger
-or for breakpoint handling. This mapping also contains other information,
-like the jump type and the modifier depth (see below).
+De plus, le compilateur peut également générer un mappage à partir du bytecode
+à la plage du code source qui a généré l'instruction.
+C'est important pour les outils d'analyse statique qui fonctionnent au niveau du bytecode et
+pour afficher la position actuelle dans le code source à l'intérieur d'un débogueur
+ou pour la gestion des points d'arrêt. Cette cartographie contient également d'autres informations,
+comme le type de saut et la profondeur du modificateur (voir ci-dessous).
 
-Both kinds of source mappings use integer identifiers to refer to source files.
-The identifier of a source file is stored in
-``output['sources'][sourceName]['id']`` where ``output`` is the output of the
-standard-json compiler interface parsed as JSON.
-For some utility routines, the compiler generates "internal" source files
-that are not part of the original input but are referenced from the source
-mappings. These source files together with their identifiers can be
-obtained via ``output['contracts'][sourceName][contractName]['evm']['bytecode']['generatedSources']``.
+Les deux types de SourceMap utilisent des identificateurs entiers pour faire référence aux fichiers source.
+L'identifiant d'un fichier source est stocké dans
+``output['sources'][sourceName]['id']`` où ``output`` est la sortie de
+l'interface de compilation standard-json analysée en tant que JSON.
+Pour certaines routines utilitaires, le compilateur génère des fichiers source "internes"
+qui ne font pas partie de l'entrée d'origine mais sont référencés à partir de la SourceMap.
+Ces fichiers sources ainsi que leurs identifiants peuvent être
+obtenu via ``output['contracts'][sourceName][contractName]['evm']['bytecode']['generatedSources']``.
 
 .. note ::
-    In the case of instructions that are not associated with any particular source file,
-    the source mapping assigns an integer identifier of ``-1``. This may happen for
-    bytecode sections stemming from compiler-generated inline assembly statements.
+    Dans le cas d'instructions qui ne sont associées à aucun fichier source particulier,
+    le mappage source attribue un identifiant entier de ``-1``. Cela peut arriver pour
+    sections de bytecode issues d'instructions d'assemblage en ligne générées par le compilateur.
 
-The source mappings inside the AST use the following
-notation:
+Les SourceMap à l'intérieur de l'AST utilisent la notation suivantes
 
 ``s:l:f``
 
-Where ``s`` is the byte-offset to the start of the range in the source file,
-``l`` is the length of the source range in bytes and ``f`` is the source
-index mentioned above.
+Où ``s`` est le décalage d'octet au début de la plage dans le fichier source,
+``l`` est la longueur de la plage source en octets et ``f`` est la source
+indice mentionné ci-dessus.
 
-The encoding in the source mapping for the bytecode is more complicated:
-It is a list of ``s:l:f:j:m`` separated by ``;``. Each of these
-elements corresponds to an instruction, i.e. you cannot use the byte offset
-but have to use the instruction offset (push instructions are longer than a single byte).
-The fields ``s``, ``l`` and ``f`` are as above. ``j`` can be either
-``i``, ``o`` or ``-`` signifying whether a jump instruction goes into a
-function, returns from a function or is a regular jump as part of e.g. a loop.
-The last field, ``m``, is an integer that denotes the "modifier depth". This depth
-is increased whenever the placeholder statement (``_``) is entered in a modifier
-and decreased when it is left again. This allows debuggers to track tricky cases
-like the same modifier being used twice or multiple placeholder statements being
-used in a single modifier.
+L'encodage dans le mappage source pour le bytecode est plus compliqué :
+C'est une liste de ``s:l:f:j:m`` séparés par ``;``. Chacun de ces
+correspond à une instruction, c'est-à-dire que vous ne pouvez pas utiliser le décalage d'octet
+mais vous devez utiliser l'offset d'instruction (les instructions push sont plus longues qu'un seul octet).
+Les champs ``s``, ``l`` et ``f`` sont comme ci-dessus. ``j`` peut être soit
+``i``, ``o`` ou ``-`` signifiant si une instruction de saut va dans une
+fonction, return depuis une fonction ou est un saut régulier dans le cadre de par ex. une boucle.
+Le dernier champ, ``m``, est un entier qui indique la "profondeur du modificateur". Cette profondeur
+est augmenté chaque fois que l'instruction d'espace réservé (``_``) est entrée dans un modificateur
+et diminué quand il est à nouveau laissé. Cela permet aux débogueurs de suivre les cas délicats
+comme quand le même modificateur est utilisé deux fois ou bien que plusieurs déclarations d'espace réservé ont été
+utilisé dans un seul modificateur.
 
-In order to compress these source mappings especially for bytecode, the
-following rules are used:
+Afin de compresser ces SourceMap pour le bytecode,
+les règles suivantes sont utilisées :
 
-- If a field is empty, the value of the preceding element is used.
-- If a ``:`` is missing, all following fields are considered empty.
+- Si un champ est vide, la valeur de l'élément précédent est utilisée.
+- S'il manque un ``:``, tous les champs suivants sont considérés comme vides.
 
-This means the following source mappings represent the same information:
+Cela signifie que les SourceMap suivants représentent les mêmes informations :
 
 ``1:2:1;1:9:1;2:1:2;2:1:2;2:1:2``
 
 ``1:2:1;:9;2:1:2;;``
 
-Important to note is that when the :ref:`verbatim <yul-verbatim>` builtin is used,
-the source mappings will be invalid: The builtin is considered a single
-instruction instead of potentially multiple.
+Il est important de noter que lorsque la commande interne :ref:`verbatim <yul-verbatim>` est utilisée,
+les SourceMap seront invalides : la fonction intégrée est considérée comme un seul
+instruction au lieu de potentiellement multiples.
