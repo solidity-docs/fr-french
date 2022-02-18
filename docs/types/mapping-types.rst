@@ -123,7 +123,6 @@ bibliothèque ``IterableMapping`` que le contrat ``User`` ajoute également des 
 la fonction ``sum`` effectue une itération pour additionner toutes les valeurs.
 
 .. code-block:: solidity
-    :force:
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.8 <0.9.0;
