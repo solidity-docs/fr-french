@@ -1,44 +1,44 @@
 .. index:: !mapping
 .. _mapping-types:
 
-Mapping Types
+Type Mapping
 =============
 
-Mapping types use the syntax ``mapping(_KeyType => _ValueType)`` and variables
-of mapping type are declared using the syntax ``mapping(_KeyType => _ValueType) _VariableName``.
-The ``_KeyType`` can be any
-built-in value type, ``bytes``, ``string``, or any contract or enum type. Other user-defined
-or complex types, such as mappings, structs or array types are not allowed.
-``_ValueType`` can be any type, including mappings, arrays and structs.
+Les types de mappage utilisent la syntaxe ``mapping(_KeyType => _ValueType)`` et des variables
+de type mapping sont déclarés en utilisant la syntaxe ``mapping(_KeyType => _ValueType) _VariableName``.
+Le ``_KeyType`` peut être n'importe quel
+type de valeur intégré, ``bytes``, ``string``, ou tout type de contrat ou d'énumération. Autre défini par l'utilisateur
+ou les types complexes, tels que les mappages, les structures ou les types de tableau ne sont pas autorisés.
+``_ValueType`` peut être n'importe quel type, y compris les mappages, les tableaux et les structures.
 
-You can think of mappings as `hash tables <https://en.wikipedia.org/wiki/Hash_table>`_, which are virtually initialised
-such that every possible key exists and is mapped to a value whose
-byte-representation is all zeros, a type's :ref:`default value <default-value>`.
-The similarity ends there, the key data is not stored in a
-mapping, only its ``keccak256`` hash is used to look up the value.
+Vous pouvez considérer les mappages comme des `tables de hachage <https://en.wikipedia.org/wiki/Hash_table>`_, qui sont virtuellement initialisées
+telle que chaque clé possible existe et est mappée à une valeur dont
+byte-representation n'est que des zéros, la :ref:`default value <default-value>` d'un type.
+La similitude s'arrête là, les données clés ne sont pas stockées dans un
+mappage, seul son hachage ``keccak256`` est utilisé pour rechercher la valeur.
 
-Because of this, mappings do not have a length or a concept of a key or
-value being set, and therefore cannot be erased without extra information
-regarding the assigned keys (see :ref:`clearing-mappings`).
+Pour cette raison, les mappages n'ont pas de longueur ou de concept de clé ou
+valeur définie et ne peut donc pas être effacée sans informations supplémentaires
+concernant les clés attribuées (voir :ref:`clearing-mappings`).
 
-Mappings can only have a data location of ``storage`` and thus
-are allowed for state variables, as storage reference types
-in functions, or as parameters for library functions.
-They cannot be used as parameters or return parameters
-of contract functions that are publicly visible.
-These restrictions are also true for arrays and structs that contain mappings.
+Les mappages ne peuvent avoir qu'un emplacement de données: le ``storage`` et donc
+sont autorisés que pour les variables d'état (State), en tant que types de référence de stockage (storage)
+dans les fonctions ou comme paramètres pour les fonctions de la bibliothèque.
+Ils ne peuvent pas être utilisés comme paramètres ou paramètres de retour (return)
+des fonctions contractuelles qui sont publiquement visibles.
+Ces restrictions s'appliquent également aux tableaux et structures contenant des mappages.
 
-You can mark state variables of mapping type as ``public`` and Solidity creates a
-:ref:`getter <visibility-and-getters>` for you. The ``_KeyType`` becomes a parameter for the getter.
-If ``_ValueType`` is a value type or a struct, the getter returns ``_ValueType``.
-If ``_ValueType`` is an array or a mapping, the getter has one parameter for
-each ``_KeyType``, recursively.
+Vous pouvez marquer les variables d'état de type mappage comme ``public`` et Solidity crée un
+:ref:`getter <visibility-and-getters>` pour vous. Le ``_KeyType`` devient un paramètre pour le getter.
+Si ``_ValueType`` est un type valeur ou une structure, le getter renvoie ``_ValueType``.
+Si ``_ValueType`` est un tableau ou un mappage, le getter a un paramètre pour
+chaque ``_KeyType``, récursivement.
 
-In the example below, the ``MappingExample`` contract defines a public ``balances``
-mapping, with the key type an ``address``, and a value type a ``uint``, mapping
-an Ethereum address to an unsigned integer value. As ``uint`` is a value type, the getter
-returns a value that matches the type, which you can see in the ``MappingUser``
-contract that returns the value at the specified address.
+Dans l'exemple ci-dessous, le contrat ``MappingExample`` définit un ``balances`` public
+mappage, avec le type de clé une ``adresse``, et un type de valeur un ``uint``, map
+une adresse Ethereum à une valeur entière non signée. Comme ``uint`` est un type valeur, le getter
+renvoie une valeur qui correspond au type, que vous pouvez voir dans le ``MappingUser``
+contrat qui renvoie la valeur à l'adresse spécifiée.
 
 .. code-block:: solidity
 
@@ -61,10 +61,10 @@ contract that returns the value at the specified address.
         }
     }
 
-The example below is a simplified version of an
-`ERC20 token <https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol>`_.
-``_allowances`` is an example of a mapping type inside another mapping type.
-The example below uses ``_allowances`` to record the amount someone else is allowed to withdraw from your account.
+L'exemple ci-dessous est une version simplifiée d'un
+`Jeton ERC20 <https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol>`_.
+``_allowances`` est un exemple de type de mappage à l'intérieur d'un autre type de mappage.
+L'exemple ci-dessous utilise ``_allowances`` pour enregistrer le montant que quelqu'un d'autre est autorisé à retirer de votre compte.
 
 .. code-block:: solidity
 
@@ -113,17 +113,16 @@ The example below uses ``_allowances`` to record the amount someone else is allo
 .. index:: !iterable mappings
 .. _iterable-mappings:
 
-Iterable Mappings
+Mapping itérables
 -----------------
 
-You cannot iterate over mappings, i.e. you cannot enumerate their keys.
-It is possible, though, to implement a data structure on
-top of them and iterate over that. For example, the code below implements an
-``IterableMapping`` library that the ``User`` contract then adds data too, and
-the ``sum`` function iterates over to sum all the values.
+Vous ne pouvez pas itérer les mappages, c'est-à-dire que vous ne pouvez pas énumérer leurs clés.
+Il est cependant possible d'implémenter une structure de données par
+dessus d'eux et itérer dessus. Par exemple, le code ci-dessous implémente un
+bibliothèque ``IterableMapping`` que le contrat ``User`` ajoute également des données, et
+la fonction ``sum`` effectue une itération pour additionner toutes les valeurs.
 
 .. code-block:: solidity
-    :force:
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.8 <0.9.0;
@@ -187,23 +186,23 @@ the ``sum`` function iterates over to sum all the values.
         }
     }
 
-    // How to use it
+    // Comme l'utiliser
     contract User {
-        // Just a struct holding our data.
+        // Juste un struct contenant nos données
         itmap data;
-        // Apply library functions to the data type.
+        // Appliquez les fonctions de la bibliothèque au type de données.
         using IterableMapping for itmap;
 
-        // Insert something
+        // Ajouter quelque chose
         function insert(uint k, uint v) public returns (uint size) {
-            // This calls IterableMapping.insert(data, k, v)
+            // Appel IterableMapping.insert(data, k, v)
             data.insert(k, v);
-            // We can still access members of the struct,
-            // but we should take care not to mess with them.
+            // Nous pouvons toujours accéder aux membres de la struct,
+            // mais nous devons faire attention de ne pas jouer avec eux.
             return data.size;
         }
 
-        // Computes the sum of all stored data.
+        // Calcule la somme de toutes les données stockées.
         function sum() public view returns (uint s) {
             for (
                 uint i = data.iterate_start();

@@ -1,102 +1,102 @@
 .. index:: storage, state variable, mapping
 
-************************************
-Layout of State Variables in Storage
-************************************
+*************************************************
+Disposition des variables d'état dans le stockage
+*************************************************
 
 .. _storage-inplace-encoding:
 
-State variables of contracts are stored in storage in a compact way such
-that multiple values sometimes use the same storage slot.
-Except for dynamically-sized arrays and mappings (see below), data is stored
-contiguously item after item starting with the first state variable,
-which is stored in slot ``0``. For each variable,
-a size in bytes is determined according to its type.
-Multiple, contiguous items that need less than 32 bytes are packed into a single
-storage slot if possible, according to the following rules:
+Les variables d'état des contrats sont stockées dans le stockage d'une manière compacte telle
+que plusieurs valeurs utilisent parfois le même emplacement de stockage.
+À l'exception des tableaux de taille dynamique et des mappings (voir ci-dessous), les données sont stockées
+contiguës, élément après élément, en commençant par la première variable d'état,
+qui est stockée dans l'emplacement ``0``. Pour chaque variable
+une taille en octets est déterminée en fonction de son type.
+Les éléments multiples et contigus qui nécessitent moins de 32 octets sont regroupés
+dans un seul emplacement de stockage si possible, selon les règles suivantes :
 
-- The first item in a storage slot is stored lower-order aligned.
-- Value types use only as many bytes as are necessary to store them.
-- If a value type does not fit the remaining part of a storage slot, it is stored in the next storage slot.
-- Structs and array data always start a new slot and their items are packed tightly according to these rules.
-- Items following struct or array data always start a new storage slot.
+- Le premier élément d'un emplacement de stockage est stocké avec un alignement d'ordre inférieur.
+- Les types de valeurs n'utilisent que le nombre d'octets nécessaires à leur stockage.
+- Si un type de valeur ne tient pas dans la partie restante d'un emplacement de stockage, il est stocké dans l'emplacement de stockage suivant.
+- Les structures et les tableaux de données commencent toujours par un nouvel emplacement et leurs éléments sont serrés selon ces règles.
+- Les éléments qui suivent les données de structure ou de tableau commencent toujours par un nouvel emplacement de stockage.
 
-For contracts that use inheritance, the ordering of state variables is determined by the
-C3-linearized order of contracts starting with the most base-ward contract. If allowed
-by the above rules, state variables from different contracts do share the same storage slot.
+Pour les contrats qui utilisent l'héritage, l'ordre des variables d'état est déterminé par
+l'ordre linéaire C3 des contrats, en commençant par le contrat le plus basique.
+Si les règles ci-dessus le permettent, les variables d'état de différents
+contrats partagent le même emplacement de stockage.
 
-The elements of structs and arrays are stored after each other, just as if they were given
-as individual values.
+Les éléments des structs et des arrays sont stockés les uns après les autres,
+comme des valeurs individuelles.
 
 .. warning::
-    When using elements that are smaller than 32 bytes, your contract's gas usage may be higher.
-    This is because the EVM operates on 32 bytes at a time. Therefore, if the element is smaller
-    than that, the EVM must use more operations in order to reduce the size of the element from 32
-    bytes to the desired size.
+    Lorsque vous utilisez des éléments qui sont plus petits que 32 octets, la consommation de gaz de votre contrat peut être plus élevée.
+    Cela est dû au fait que l'EVM fonctionne sur 32 octets à la fois. Par conséquent, si
+    l'élément est plus petit que cela, l'EVM doit utiliser plus d'opérations pour réduire la taille de l'élément de 32
+    octets à la taille souhaitée.
 
-    It might be beneficial to use reduced-size types if you are dealing with storage values
-    because the compiler will pack multiple elements into one storage slot, and thus, combine
-    multiple reads or writes into a single operation.
-    If you are not reading or writing all the values in a slot at the same time, this can
-    have the opposite effect, though: When one value is written to a multi-value storage
-    slot, the storage slot has to be read first and then
-    combined with the new value such that other data in the same slot is not destroyed.
+    Il peut être avantageux d'utiliser des types de taille réduite si vous traitez des valeurs de stockage
+    car le compilateur regroupera plusieurs éléments dans un emplacement de stockage et combinera ainsi
+    plusieurs lectures ou écritures en une seule opération.
+    Si vous ne lisez pas ou n'écrivez pas toutes les valeurs d'un slot en même temps, cela peut
+    avoir l'effet inverse : Lorsqu'une valeur est écrite dans un emplacement de stockage à valeurs multiples,
+    l'emplacement de stockage doit être lu en premier et ensuite combinée avec la nouvelle valeur,
+    de sorte que les autres données du même emplacement ne soient pas détruites.
 
-    When dealing with function arguments or memory
-    values, there is no inherent benefit because the compiler does not pack these values.
+    Lorsqu'il s'agit d'arguments de fonction ou de valeurs,
+    il n'y a pas d'avantage inhérent car le compilateur n'empaquette pas ces valeurs.
 
-    Finally, in order to allow the EVM to optimize for this, ensure that you try to order your
-    storage variables and ``struct`` members such that they can be packed tightly. For example,
-    declaring your storage variables in the order of ``uint128, uint128, uint256`` instead of
-    ``uint128, uint256, uint128``, as the former will only take up two slots of storage whereas the
-    latter will take up three.
+    Enfin, pour permettre à l'EVM d'optimiser cela, assurez-vous d'essayer d'ordonner vos
+    variables de stockage et les membres de ``struct``, de manière à ce qu'ils puissent être empaquetés de façon serrée. Par exemple,
+    déclarer vos variables de stockage dans l'ordre suivant : ``uint128, uint128, uint256`` au lieu de
+    ``uint128, uint256, uint128``, car la première n'occupera que deux emplacements de stockage, alors que
+    l'autre en occupera trois.
 
 .. note::
-     The layout of state variables in storage is considered to be part of the external interface
-     of Solidity due to the fact that storage pointers can be passed to libraries. This means that
-     any change to the rules outlined in this section is considered a breaking change
-     of the language and due to its critical nature should be considered very carefully before
-     being executed.
+     La disposition des variables d'état dans le stockage est considérée comme faisant partie de l'interface externe
+     de Solidity, en raison du fait que les pointeurs de stockage peuvent être transmis aux bibliothèques. Cela signifie que
+     tout changement des règles décrites dans cette section est considéré comme un changement de rupture
+     du langage et, en raison de sa nature critique, doit être considéré très attentivement avant
+     d'être exécutée.
 
 
-Mappings and Dynamic Arrays
-===========================
+Mappings et tableaux dynamiques
+===============================
 
 .. _storage-hashed-encoding:
 
-Due to their unpredictable size, mappings and dynamically-sized array types cannot be stored
-"in between" the state variables preceding and following them.
-Instead, they are considered to occupy only 32 bytes with regards to the
-:ref:`rules above <storage-inplace-encoding>` and the elements they contain are stored starting at a different
-storage slot that is computed using a Keccak-256 hash.
+En raison de leur taille imprévisible, les mappings et les types de tableaux de taille dynamique ne peuvent être stockés
+qu'"entre" les variables d'état qui les précèdent et les suivent.
+Au lieu de cela, ils sont considérés comme n'occupant que 32 octets au regard des :ref:`règles ci-dessus <storage-inplace-encoding>`
+et les éléments qu'ils contiennent sont stockés à partir d'un différent
+emplacement de stockage qui est calculé à l'aide d'un hachage Keccak-256.
 
-Assume the storage location of the mapping or array ends up being a slot ``p``
-after applying :ref:`the storage layout rules <storage-inplace-encoding>`.
-For dynamic arrays,
-this slot stores the number of elements in the array (byte arrays and
-strings are an exception, see :ref:`below <bytes-and-string>`).
-For mappings, the slot stays empty, but it is still needed to ensure that even if there are
-two mappings next to each other, their content ends up at different storage locations.
+Supposons que l'emplacement de stockage du mappage ou du tableau finisse par être un slot ``p``
+après avoir appliqué :ref:`les règles de disposition du stockage <storage-inplace-encoding>`.
+Pour les tableaux dynamiques, ce slot stocke le nombre d'éléments
+dans le tableau (les tableaux d'octets et les chaînes de caractères sont une exception, voir :ref:`ci-dessous <bytes-and-string>`).
+Pour les mappings, le slot reste vide, mais il est toujours nécessaire pour garantir que même s'il y a
+deux mappings l'un à côté de l'autre, leur contenu se retrouve à des emplacements de stockage différents.
 
-Array data is located starting at ``keccak256(p)`` and it is laid out in the same way as
-statically-sized array data would: One element after the other, potentially sharing
-storage slots if the elements are not longer than 16 bytes. Dynamic arrays of dynamic arrays apply this
-rule recursively. The location of element ``x[i][j]``, where the type of ``x`` is ``uint24[][]``, is
-computed as follows (again, assuming ``x`` itself is stored at slot ``p``):
-The slot is ``keccak256(keccak256(p) + i) + floor(j / floor(256 / 24))`` and
-the element can be obtained from the slot data ``v`` using ``(v >> ((j % floor(256 / 24)) * 24)) & type(uint24).max``.
+Les données du tableau sont situées à partir de ``keccak256(p)`` et sont disposées de la même manière que les
+données de tableau de taille statique : Un élément après l'autre, partageant potentiellement
+des emplacements de stockage si les éléments ne dépassent pas 16 octets. Les tableaux dynamiques de tableaux dynamiques appliquent cette
+cette règle de manière récursive. L'emplacement de l'élément ``x[i][j]``, où le type de ``x`` est ``uint24[][]``,
+est calculé comme suit (en supposant à nouveau que ``x`` est lui-même stocké dans l'emplacement ``p``) :
+L'emplacement est ``keccak256(keccak256(p) + i) + floor(j / floor(256 / 24))`` et
+l'élément peut être obtenu à partir des données de l'emplacement ``v`` en utilisant ``(v >> ((j % floor(256 / 24))) * 24)) & type(uint24).max``.
 
-The value corresponding to a mapping key ``k`` is located at ``keccak256(h(k) . p)``
-where ``.`` is concatenation and ``h`` is a function that is applied to the key depending on its type:
+La valeur correspondant à une clé de mappage ``k`` est située à ``keccak256(h(k) . p)``
+où ``.`` est la concaténation et ``h`` est une fonction qui est appliquée à la clé en fonction de son type :
 
-- for value types, ``h`` pads the value to 32 bytes in the same way as when storing the value in memory.
-- for strings and byte arrays, ``h`` computes the ``keccak256`` hash of the unpadded data.
+- pour les types de valeurs, ``h`` compacte la valeur à 32 octets de la même manière que lors du stockage de la valeur en mémoire.
+- pour les chaînes de caractères et les tableaux d'octets, ``h`` calcule le hachage ``keccak256`` des données non paginées.
 
-If the mapping value is a
-non-value type, the computed slot marks the start of the data. If the value is of struct type,
-for example, you have to add an offset corresponding to the struct member to reach the member.
+Si la valeur du mappage est un type non-valeur,
+l'emplacement calculé marque le début des données. Si la valeur est de type struct,
+par exemple, vous devez ajouter un offset correspondant au membre struct pour atteindre le membre.
 
-As an example, consider the following contract:
+À titre d'exemple, considérons le contrat suivant :
 
 .. code-block:: solidity
 
@@ -110,47 +110,47 @@ As an example, consider the following contract:
         mapping(uint => mapping(uint => S)) data;
     }
 
-Let us compute the storage location of ``data[4][9].c``.
-The position of the mapping itself is ``1`` (the variable ``x`` with 32 bytes precedes it).
-This means ``data[4]`` is stored at ``keccak256(uint256(4) . uint256(1))``. The type of ``data[4]`` is
-again a mapping and the data for ``data[4][9]`` starts at slot
+Calculons l'emplacement de stockage de ``data[4][9].c``.
+La position de la cartographie elle-même est ``1`` (la variable ``x`` de 32 octets la précède).
+Cela signifie que ``data[4]`` est stocké à ``keccak256(uint256(4) . uint256(1))``. Le type des ``données[4]``
+est à nouveau un mappage et les données de ``data[4][9]`` commencent à l'emplacement
 ``keccak256(uint256(9) . keccak256(uint256(4) . uint256(1)))``.
-The slot offset of the member ``c`` inside the struct ``S`` is ``1`` because ``a`` and ``b`` are packed
-in a single slot. This means the slot for
-``data[4][9].c`` is ``keccak256(uint256(9) . keccak256(uint256(4) . uint256(1))) + 1``.
-The type of the value is ``uint256``, so it uses a single slot.
+Le décalage de l'emplacement du membre ``c`` dans la structure ``S`` est ``1`` parce que ``a`` et ``b`` sont emballés
+dans un seul slot. Cela signifie que l'emplacement de ``data[4][9].c``
+est ``keccak256(uint256(9) . keccak256(uint256(4) . uint256(1)))) + 1``.
+Le type de la valeur est ``uint256``, elle utilise donc un seul slot.
 
 
 .. _bytes-and-string:
 
-``bytes`` and ``string``
-------------------------
+``bytes`` et ``string``
+-----------------------
 
-``bytes`` and ``string`` are encoded identically.
-In general, the encoding is similar to ``bytes1[]``, in the sense that there is a slot for the array itself and
-a data area that is computed using a ``keccak256`` hash of that slot's position.
-However, for short values (shorter than 32 bytes) the array elements are stored together with the length in the same slot.
+``bytes`` et ``string`` sont encodés de manière identique.
+En général, le codage est similaire à celui de ``bytes1[]``, dans le sens où il y a un slot pour le tableau lui-même et
+une zone de données qui est calculée en utilisant un hachage ``keccak256`` de la position de ce slot.
+Cependant, pour les valeurs courtes (inférieures à 32 octets), les éléments du tableau sont stockés avec la longueur dans le même slot.
 
-In particular: if the data is at most ``31`` bytes long, the elements are stored
-in the higher-order bytes (left aligned) and the lowest-order byte stores the value ``length * 2``.
-For byte arrays that store data which is ``32`` or more bytes long, the main slot ``p`` stores ``length * 2 + 1`` and the data is
-stored as usual in ``keccak256(p)``. This means that you can distinguish a short array from a long array
-by checking if the lowest bit is set: short (not set) and long (set).
+En particulier, si les données ont une longueur maximale de 31 octets, les éléments sont stockés
+dans les octets d'ordre supérieur (alignés à gauche) et l'octet d'ordre inférieur stocke la valeur ``longueur * 2``.
+Pour les tableaux d'octets qui stockent des données d'une longueur de 32 octets ou plus, l'emplacement principal ``p`` stocke la valeur ``length * 2 + 1``
+et les données sont stockées comme d'habitude dans ``keccak256(p)``. Cela signifie que vous pouvez distinguer un tableau court d'un tableau long
+en vérifiant si le bit le plus bas est activé : court (non activé) et long (activé).
 
 .. note::
-  Handling invalidly encoded slots is currently not supported but may be added in the future.
-  If you are compiling via the experimental IR-based compiler pipeline, reading an invalidly encoded
-  slot results in a ``Panic(0x22)`` error.
+  La gestion des slots codés de manière invalide n'est actuellement pas prise en charge mais pourrait être ajoutée à l'avenir.
+  Si vous compilez via le pipeline expérimental du compilateur basé sur l'IR, la lecture d'un slot non codé
+  invalide entraîne une erreur ``Panic(0x22)``.
 
-JSON Output
+Sortie JSON
 ===========
 
 .. _storage-layout-top-level:
 
-The storage layout of a contract can be requested via
-the :ref:`standard JSON interface <compiler-api>`.  The output is a JSON object containing two keys,
-``storage`` and ``types``.  The ``storage`` object is an array where each
-element has the following form:
+La disposition de stockage d'un contrat peut être demandée via
+l'interface :ref:`standard JSON <compiler-api>`. La sortie est un objet JSON contenant deux clés,
+``storage`` et ``types``.  L'objet ``storage`` est un tableau où chaque
+élément a la forme suivante :
 
 
 .. code::
@@ -165,20 +165,19 @@ element has the following form:
         "type": "t_uint256"
     }
 
-The example above is the storage layout of ``contract A { uint x; }`` from source unit ``fileA``
-and
+L'exemple ci-dessus est la disposition de stockage du ``contrat A { uint x ; }`` de l'unité source ``fileA`` et :
 
-- ``astId`` is the id of the AST node of the state variable's declaration
-- ``contract`` is the name of the contract including its path as prefix
-- ``label`` is the name of the state variable
-- ``offset`` is the offset in bytes within the storage slot according to the encoding
-- ``slot`` is the storage slot where the state variable resides or starts. This
-  number may be very large and therefore its JSON value is represented as a
-  string.
-- ``type`` is an identifier used as key to the variable's type information (described in the following)
+- ``astId`` est l'identifiant du noeud AST de la déclaration de la variable d'état.
+- ``contract`` est le nom du contrat, y compris son chemin d'accès comme préfixe
+- ``label`` est le nom de la variable d'état
+- ``offset`` est le décalage en octets dans le slot de stockage selon l'encodage
+- ``slot`` est l'emplacement de stockage où la variable d'état réside ou commence. Cette adresse
+  nombre peut être très grand, c'est pourquoi sa valeur JSON est représentée sous forme de
+  chaîne de caractères.
+- ``type`` est un identifiant utilisé comme clé pour les informations sur le type de la variable (décrit dans ce qui suit).
 
-The given ``type``, in this case ``t_uint256`` represents an element in
-``types``, which has the form:
+Le ``type`` donné, dans ce cas ``t_uint256``, représente un élément de la liste des
+``types``, qui a la forme :
 
 
 .. code::
@@ -189,31 +188,30 @@ The given ``type``, in this case ``t_uint256`` represents an element in
         "numberOfBytes": "32",
     }
 
-where
+où :
 
-- ``encoding`` how the data is encoded in storage, where the possible values are:
+- ``encoding`` : comment les données sont codées dans le stockage, où les valeurs possibles sont :
 
-  - ``inplace``: data is laid out contiguously in storage (see :ref:`above <storage-inplace-encoding>`).
-  - ``mapping``: Keccak-256 hash-based method (see :ref:`above <storage-hashed-encoding>`).
-  - ``dynamic_array``: Keccak-256 hash-based method (see :ref:`above <storage-hashed-encoding>`).
-  - ``bytes``: single slot or Keccak-256 hash-based depending on the data size (see :ref:`above <bytes-and-string>`).
+  - ``inplace`` : les données sont disposées de manière contiguë dans le stockage (voir :ref:`ci-dessus <storage-inplace-encoding>`).
+  - ``mapping`` : Méthode basée sur le hachage Keccak-256 (voir :ref:`ci-dessus <storage-hashed-encoding>`).
+  - ``dynamic_array`` : Méthode basée sur le hachage Keccak-256 (voir :ref:`ci-dessus <storage-hashed-encoding>`).
+  - ``bytes`` : slot unique ou méthode basée sur le hachage Keccak-256 selon la taille des données (voir :ref:`ci-dessus <bytes-and-string>`).
 
-- ``label`` is the canonical type name.
-- ``numberOfBytes`` is the number of used bytes (as a decimal string).
-  Note that if ``numberOfBytes > 32`` this means that more than one slot is used.
+- ``label`` est le nom canonique du type.
+- ``numberOfBytes`` est le nombre d'octets utilisés (sous forme de chaîne décimale).
+  Notez que si ``numberOfBytes > 32``, cela signifie que plus d'un slot est utilisé.
 
-Some types have extra information besides the four above. Mappings contain
-its ``key`` and ``value`` types (again referencing an entry in this mapping
-of types), arrays have its ``base`` type, and structs list their ``members`` in
-the same format as the top-level ``storage`` (see :ref:`above
-<storage-layout-top-level>`).
+Certains types ont des informations supplémentaires en plus des quatre ci-dessus. Les mappings contiennent
+leurs types ``key`` et ``value`` (encore une fois en faisant référence à une entrée dans ce mappage
+des types), les tableaux ont leur type ``base``, et les structures listent leurs ``membres`` dans
+le même format que le ``stockage`` de premier niveau (voir :ref:`ci-dessus <storage-layout-top-level>`).
 
-.. note ::
-  The JSON output format of a contract's storage layout is still considered experimental
-  and is subject to change in non-breaking releases of Solidity.
+.. note::
+  Le format de sortie JSON de la disposition de stockage d'un contrat est encore considéré comme expérimental,
+  et est susceptible d'être modifié dans les versions de Solidity qui ne sont pas en rupture.
 
-The following example shows a contract and its storage layout, containing
-value and reference types, types that are encoded packed, and nested types.
+L'exemple suivant montre un contrat et sa disposition de stockage, contenant
+des types de valeur et de référence, des types codés emballés et des types imbriqués.
 
 
 .. code-block:: solidity
