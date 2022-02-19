@@ -1,44 +1,44 @@
 .. index:: ! operator
 
-Operators
+Les opérateurs (arithmetique)
 =========
 
-Arithmetic and bit operators can be applied even if the two operands do not have the same type.
-For example, you can compute ``y = x + z``, where ``x`` is a ``uint8`` and ``z`` has
-the type ``int32``. In these cases, the following mechanism will be used to determine
-the type in which the operation is computed (this is important in case of overflow)
-and the type of the operator's result:
+Les opérateurs arithmétiques et binaires peuvent être appliqués même si les deux opérandes n'ont pas le même type.
+Par exemple, vous pouvez calculer ``y = x + z``, où ``x`` est un ``uint8`` et ``z`` a
+le type ``int32``. Dans ces cas, le mécanisme suivant sera utilisé pour déterminer
+le type dans lequel l'opération est calculée (c'est important en cas de débordement)
+et le type du résultat de l'opérateur :
 
-1. If the type of the right operand can be implicitly converted to the type of the left
-   operand, use the type of the left operand,
-2. if the type of the left operand can be implicitly converted to the type of the right
-   operand, use the type of the right operand,
-3. otherwise, the operation is not allowed.
+1. Si le type de l'opérande droit peut être implicitement converti en type de l'opérande gauche
+   utilisez le type de l'opérande de gauche,
+2. Si le type de l'opérande gauche peut être implicitement converti en type de l'opérande droite
+   utilisez le type de l'opérande de droite,
+3. Sinon, l'opération n'est pas autorisée.
 
-In case one of the operands is a :ref:`literal number <rational_literals>` it is first converted to its
-"mobile type", which is the smallest type that can hold the value
-(unsigned types of the same bit-width are considered "smaller" than the signed types).
-If both are literal numbers, the operation is computed with arbitrary precision.
+Dans le cas où l'un des opérandes est un :ref:`literal number <rational_literals>` il est d'abord converti en son
+"type mobile", qui est le plus petit type pouvant contenir la valeur
+(les types non signés de même largeur de bit sont considérés comme "plus petits" que les types signés).
+Si les deux sont des nombres littéraux, l'opération est calculée avec une précision arbitraire.
 
-The operator's result type is the same as the type the operation is performed in,
-except for comparison operators where the result is always ``bool``.
+Le type de résultat de l'opérateur est le même que le type dans lequel l'opération est effectuée,
+sauf pour les opérateurs de comparaison où le résultat est toujours ``bool``.
 
-The operators ``**`` (exponentiation), ``<<``  and ``>>`` use the type of the
-left operand for the operation and the result.
+Les opérateurs ``**`` (exponentiation), ``<<`` and ``>>`` utilisent le type du
+opérande de gauche pour l'opération et le résultat.
 
 .. index:: assignment, lvalue, ! compound operators
 
-Compound and Increment/Decrement Operators
+Opérateurs composés et d'incrémentation/décrémentation
 ------------------------------------------
 
-If ``a`` is an LValue (i.e. a variable or something that can be assigned to), the
-following operators are available as shorthands:
+Si ``a`` est une LValue (c'est-à-dire une variable ou quelque chose qui peut être assignée),
+les opérateurs suivants sont disponibles comme raccourcis :
 
-``a += e`` is equivalent to ``a = a + e``. The operators ``-=``, ``*=``, ``/=``, ``%=``,
-``|=``, ``&=``, ``^=``, ``<<=`` and ``>>=`` are defined accordingly. ``a++`` and ``a--`` are equivalent
-to ``a += 1`` / ``a -= 1`` but the expression itself still has the previous value
-of ``a``. In contrast, ``--a`` and ``++a`` have the same effect on ``a`` but
-return the value after the change.
+``a += e`` est équivalent à ``a = a + e``. Les opérations ``-=``, ``*=``, ``/=``, ``%=``,
+``|=``, ``&=``, ``^=``, ``<<=`` and ``>>=`` sont définis en conséquence. ``a++`` and ``a--`` est équivalent
+à ``a += 1`` / ``a -= 1`` mais l'expression elle-même a toujours la valeur précédente
+de ``a``. En revanche, ``--a`` et ``++a`` ont le même effet sur ``a`` main
+retourne la valeur après le changement.
 
 .. index:: !delete
 
@@ -47,28 +47,28 @@ return the value after the change.
 delete
 ------
 
-``delete a`` assigns the initial value for the type to ``a``. I.e. for integers it is
-equivalent to ``a = 0``, but it can also be used on arrays, where it assigns a dynamic
-array of length zero or a static array of the same length with all elements set to their
-initial value. ``delete a[x]`` deletes the item at index ``x`` of the array and leaves
-all other elements and the length of the array untouched. This especially means that it leaves
-a gap in the array. If you plan to remove items, a :ref:`mapping <mapping-types>` is probably a better choice.
+``delete a`` affecte la valeur initiale du type à ``a``. C'est à dire. pour les entiers c'est
+équivalent à ``a = 0``, mais il peut aussi être utilisé sur des tableaux, où il assigne une dynamique
+tableau de longueur zéro ou un tableau statique de même longueur avec tous les éléments mis à leur
+valeur initiale. ``delete a[x]`` supprime l'élément à l'index ``x`` du tableau et laisse
+tous les autres éléments et la longueur du tableau intacts. Cela signifie surtout qu'il laisse
+une lacune dans le tableau. Si vous envisagez de supprimer des éléments, un :ref:`mapping <mapping-types>` est probablement un meilleur choix.
 
-For structs, it assigns a struct with all members reset. In other words,
-the value of ``a`` after ``delete a`` is the same as if ``a`` would be declared
-without assignment, with the following caveat:
+Pour les structures, il attribue une structure avec tous les membres réinitialisés. Autrement dit,
+la valeur de ``a`` après ``delete a`` est la même que si ``a`` était déclaré
+sans affectation, avec la mise en garde suivante :
 
-``delete`` has no effect on mappings (as the keys of mappings may be arbitrary and
-are generally unknown). So if you delete a struct, it will reset all members that
-are not mappings and also recurse into the members unless they are mappings.
-However, individual keys and what they map to can be deleted: If ``a`` is a
-mapping, then ``delete a[x]`` will delete the value stored at ``x``.
+``delete`` n'a aucun effet sur les mapping (car les clés des mappages peuvent être arbitraires et
+sont généralement inconnus). Donc, si vous supprimez une structure, elle réinitialisera tous les membres qui
+ne sont pas des mapping et se récursent également dans les membres à moins qu'il ne s'agisse de mapping.
+Cependant, les clés individuelles et ce à quoi elles correspondent peuvent être supprimées : si ``a`` est un
+mapping, alors ``delete a[x]`` supprimera la valeur stockée à ``x``.
 
-It is important to note that ``delete a`` really behaves like an
-assignment to ``a``, i.e. it stores a new object in ``a``.
-This distinction is visible when ``a`` is reference variable: It
-will only reset ``a`` itself, not the
-value it referred to previously.
+Il est important de noter que ``delete a`` se comporte vraiment comme un
+affectation à ``a``, c'est-à-dire qu'il stocke un nouvel objet dans ``a``.
+Cette distinction est visible lorsque ``a`` est une variable de référence :
+ne réinitialisera que ``a`` lui-même, pas le
+valeur à laquelle il se référait précédemment.
 
 .. code-block:: solidity
 
@@ -81,13 +81,13 @@ value it referred to previously.
 
         function f() public {
             uint x = data;
-            delete x; // sets x to 0, does not affect data
-            delete data; // sets data to 0, does not affect x
+            delete x; // définit x sur 0, n'affecte pas les données
+            delete data; // définit les données sur 0, n'affecte pas x
             uint[] storage y = dataArray;
-            delete dataArray; // this sets dataArray.length to zero, but as uint[] is a complex object, also
-            // y is affected which is an alias to the storage object
-            // On the other hand: "delete y" is not valid, as assignments to local variables
-            // referencing storage objects can only be made from existing storage objects.
+            delete dataArray; // cela définit dataArray.length à zéro, mais comme uint[] est un objet complexe, aussi
+            // il est affecté qui est un alias de l'objet de stockage
+            // Par contre : "delete y" n'est pas valide, car les affectations aux variables locales
+            // les objets de stockage de référence ne peuvent être créés qu'à partir d'objets de stockage existants.
             assert(y.length == 0);
         }
     }

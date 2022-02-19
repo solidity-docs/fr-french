@@ -1,7 +1,7 @@
 lexer grammar SolidityLexer;
 
 /**
- * Keywords reserved for future use in Solidity.
+ * Mots-clés réservés pour une utilisation future dans Solidity.
  */
 ReservedKeywords:
 	'after' | 'alias' | 'apply' | 'auto' | 'byte' | 'case' | 'copyof' | 'default' | 'define' | 'final'
@@ -29,16 +29,16 @@ Do: 'do';
 Else: 'else';
 Emit: 'emit';
 Enum: 'enum';
-Error: 'error'; // not a real keyword
-Revert: 'revert'; // not a real keyword
+Error: 'error'; // pas un vrai mot-clé
+Revert: 'revert'; // pas un vrai mot-clé
 Event: 'event';
 External: 'external';
 Fallback: 'fallback';
 False: 'false';
 Fixed: 'fixed' | ('fixed' [1-9][0-9]* 'x' [1-9][0-9]*);
-From: 'from'; // not a real keyword
+From: 'from'; // pas un vrai mot-clé
 /**
- * Bytes types of fixed length.
+ * Types d'octets de longueur fixe.
  */
 FixedBytes:
 	'bytes1' | 'bytes2' | 'bytes3' | 'bytes4' | 'bytes5' | 'bytes6' | 'bytes7' | 'bytes8' |
@@ -61,7 +61,7 @@ Memory: 'memory';
 Modifier: 'modifier';
 New: 'new';
 /**
- * Unit denomination for numbers.
+ * Dénomination unitaire pour les nombres.
  */
 NumberUnit: 'wei' | 'gwei' | 'ether' | 'seconds' | 'minutes' | 'hours' | 'days' | 'weeks' | 'years';
 Override: 'override';
@@ -73,8 +73,8 @@ Receive: 'receive';
 Return: 'return';
 Returns: 'returns';
 /**
- * Sized signed integer types.
- * int is an alias of int256.
+ * Types d'entiers signés dimensionnés.
+ * int est un alias de int256.
  */
 SignedIntegerType:
 	'int' | 'int8' | 'int16' | 'int24' | 'int32' | 'int40' | 'int48' | 'int56' | 'int64' |
@@ -90,8 +90,8 @@ Type: 'type';
 Ufixed: 'ufixed' | ('ufixed' [1-9][0-9]+ 'x' [1-9][0-9]+);
 Unchecked: 'unchecked';
 /**
- * Sized unsigned integer types.
- * uint is an alias of uint256.
+ * Types d'entiers non signés dimensionnés.
+ * uint est un alias de uint256.
  */
 UnsignedIntegerType:
 	'uint' | 'uint8' | 'uint16' | 'uint24' | 'uint32' | 'uint40' | 'uint48' | 'uint56' | 'uint64' |
@@ -161,32 +161,33 @@ DoubleQuote: '"';
 SingleQuote: '\'';
 
 /**
- * A non-empty quoted string literal restricted to printable characters.
+ * Une chaîne de caractères non vide, entre guillemets, limitée aux caractères imprimables.
  */
 NonEmptyStringLiteral: '"' DoubleQuotedStringCharacter+ '"' | '\'' SingleQuotedStringCharacter+ '\'';
 /**
- * An empty string literal
+ * Une chaîne littérale vide
  */
 EmptyStringLiteral: '"' '"' | '\'' '\'';
 
-// Note that this will also be used for Yul string literals.
+// Notez que cela sera également utilisé pour les chaînes littérales Yul.
 //@doc:inline
 fragment DoubleQuotedStringCharacter: DoubleQuotedPrintable | EscapeSequence;
-// Note that this will also be used for Yul string literals.
+// Notez que cela sera également utilisé pour les chaînes littérales Yul.
 //@doc:inline
 fragment SingleQuotedStringCharacter: SingleQuotedPrintable | EscapeSequence;
 /**
- * Any printable character except single quote or back slash.
+ * Tout caractère imprimable, sauf le guillemet simple ou la barre oblique inversée.
  */
 fragment SingleQuotedPrintable: [\u0020-\u0026\u0028-\u005B\u005D-\u007E];
 /**
- * Any printable character except double quote or back slash.
+ * Tout caractère imprimable, sauf le guillemet double ou la barre oblique inversée.
  */
 fragment DoubleQuotedPrintable: [\u0020-\u0021\u0023-\u005B\u005D-\u007E];
 /**
-  * Escape sequence.
-  * Apart from common single character escape sequences, line breaks can be escaped
-  * as well as four hex digit unicode escapes \\uXXXX and two digit hex escape sequences \\xXX are allowed.
+  * Séquence d'échappement.
+  * Outre les séquences d'échappement à un seul caractère, il est possible d'échapper aux sauts de ligne
+  * ainsi que les séquences d'échappement unicode à quatre chiffres hexagonaux (\uXXXX) et
+  * les séquences d'échappement hexagonales à deux chiffres (\xXX) sont autorisées.
   */
 fragment EscapeSequence:
 	'\\' (
@@ -195,7 +196,7 @@ fragment EscapeSequence:
 		| 'x' HexCharacter HexCharacter
 	);
 /**
- * A single quoted string literal allowing arbitrary unicode characters.
+ * Un littéral de chaîne de caractères entre guillemets permettant des caractères unicodes arbitraires.
  */
 UnicodeStringLiteral:
 	'unicode"' DoubleQuotedUnicodeStringCharacter* '"'
@@ -205,13 +206,15 @@ fragment DoubleQuotedUnicodeStringCharacter: ~["\r\n\\] | EscapeSequence;
 //@doc:inline
 fragment SingleQuotedUnicodeStringCharacter: ~['\r\n\\] | EscapeSequence;
 
-// Note that this will also be used for Yul hex string literals.
+// Notez que cela sera également utilisé pour les chaînes de caractères hexagonales Yul.
 /**
- * Hex strings need to consist of an even number of hex digits that may be grouped using underscores.
+ * Les chaînes hexadécimales doivent être composées d'un nombre pair de chiffres hexadécimaux
+ * qui peuvent être groupés à l'aide de caractères de soulignement.
  */
 HexString: 'hex' (('"' EvenHexDigits? '"') | ('\'' EvenHexDigits? '\''));
 /**
- * Hex numbers consist of a prefix and an arbitrary number of hex digits that may be delimited by underscores.
+ * Les nombres hexadécimaux se composent d'un préfixe et d'un nombre arbitraire de chiffres hexadécimaux
+ * qui peuvent être délimités par des traits de soulignement.
  */
 HexNumber: '0' 'x' HexDigits;
 //@doc:inline
@@ -222,9 +225,9 @@ fragment EvenHexDigits: HexCharacter HexCharacter ('_'? HexCharacter HexCharacte
 fragment HexCharacter: [0-9A-Fa-f];
 
 /**
- * A decimal number literal consists of decimal digits that may be delimited by underscores and
- * an optional positive or negative exponent.
- * If the digits contain a decimal point, the literal has fixed point type.
+ * Un littéral de nombre décimal est constitué de chiffres décimaux qui peuvent être délimités par des traits de soulignement et
+ * un exposant positif ou négatif facultatif.
+ * Si les chiffres contiennent un point décimal, le littéral est de type à virgule fixe.
  */
 DecimalNumber: (DecimalDigits | (DecimalDigits? '.' DecimalDigits)) ([eE] '-'? DecimalDigits)?;
 //@doc:inline
@@ -232,8 +235,8 @@ fragment DecimalDigits: [0-9] ('_'? [0-9])* ;
 
 
 /**
- * An identifier in solidity has to start with a letter, a dollar-sign or an underscore and
- * may additionally contain numbers after the first symbol.
+ * Un identifiant dans solidity doit commencer par une lettre, un symbole dollar ou un trait de soulignement et
+ * peut en outre contenir des chiffres après le premier symbole.
  */
 Identifier: IdentifierStart IdentifierPart*;
 //@doc:inline
@@ -272,7 +275,7 @@ YulTrue: 'true';
 YulHex: 'hex';
 
 /**
- * Builtin functions in the EVM Yul dialect.
+ * Fonctions intégrées dans le dialecte EVM Yul.
  */
 YulEVMBuiltin:
 	'stop' | 'add' | 'sub' | 'mul' | 'div' | 'sdiv' | 'mod' | 'smod' | 'exp' | 'not'
@@ -297,9 +300,10 @@ YulComma: ',';
 YulArrow: '->';
 
 /**
- * Yul identifiers consist of letters, dollar signs, underscores and numbers, but may not start with a number.
- * In inline assembly there cannot be dots in user-defined identifiers. Instead see yulPath for expressions
- * consisting of identifiers with dots.
+ * Les identifiants définis par l'utilisateur sont constitués de lettres, de signes de dollar, d'underscores et de chiffres,
+ * mais ne peuvent pas commencer par un chiffre.
+ * Dans l'assemblage en ligne, il ne peut y avoir de points dans les identificateurs définis par l'utilisateur.
+ * Voir plutôt yulPath pour les expressions consistant en des identificateurs avec des points.
  */
 YulIdentifier: YulIdentifierStart YulIdentifierPart*;
 //@doc:inline
@@ -307,17 +311,17 @@ fragment YulIdentifierStart: [a-zA-Z$_];
 //@doc:inline
 fragment YulIdentifierPart: [a-zA-Z0-9$_];
 /**
- * Hex literals in Yul consist of a prefix and one or more hexadecimal digits.
+ * Les littéraux hexadécimaux dans Yul consistent en un préfixe et un ou plusieurs chiffres hexadécimaux.
  */
 YulHexNumber: '0' 'x' [0-9a-fA-F]+;
 /**
- * Decimal literals in Yul may be zero or any sequence of decimal digits without leading zeroes.
+ * Les littéraux décimaux dans Yul peuvent être zéro ou toute séquence de chiffres décimaux sans zéros de tête.
  */
 YulDecimalNumber: '0' | ([1-9] [0-9]*);
 /**
- * String literals in Yul consist of one or more double-quoted or single-quoted strings
- * that may contain escape sequences and printable characters except unescaped line breaks or
- * unescaped double-quotes or single-quotes, respectively.
+ * Les chaînes de caractères dans Yul consistent en une ou plusieurs chaînes de caractères entre guillemets ou entre guillemets simples
+ * qui peuvent contenir des séquences d'échappement et des caractères imprimables, à l'exception des sauts de ligne non encodés ou des
+ * des guillemets doubles ou simples non masqués, respectivement.
  */
 YulStringLiteral:
 	'"' DoubleQuotedStringCharacter* '"'
@@ -332,8 +336,8 @@ YulLINE_COMMENT: '//' ~[\r\n]* -> channel(HIDDEN) ;
 mode PragmaMode;
 
 /**
- * Pragma token. Can contain any kind of symbol except a semicolon.
- * Note that currently the solidity parser only allows a subset of this.
+ * Jeton de pragmatisme. Peut contenir n'importe quel type de symbole sauf un point-virgule.
+ * Notez qu'actuellement l'analyseur de Solidity ne permet qu'un sous-ensemble de ceci.
  */
 //@doc:name pragma-token
 //@doc:no-diagram
