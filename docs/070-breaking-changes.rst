@@ -1,5 +1,5 @@
 ********************************
-Solidity v0.7.0 Changements de dernière minute
+Solidity v0.7.0 Changements de rupture
 ********************************
 
 Cette section met en évidence les principaux changements de rupture introduits dans Solidity
