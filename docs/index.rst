@@ -108,7 +108,7 @@ La version anglaise est une référence.
    au `guide de traduction <https://github.com/solidity-docs/translation-guide>`_
    pour obtenir des informations sur la manière de contribuer aux traductions communautaires en cours.
 
-* `Français <https://solidity-fr.readthedocs.io>`_ (en cours)
+* `Français <https://docs.soliditylang.org/fr/latest/>`_
 * `Italien <https://github.com/damianoazzolini/solidity>`_ (en cours)
 * `Japonais <https://solidity-jp.readthedocs.io>`_
 * `Coréen <https://solidity-kr.readthedocs.io>`_ (en cours)
