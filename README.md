@@ -1,10 +1,10 @@
 # Documentation officiel Français de Solidity
 
-Bienvenue dans la documentation française officielle de Solidity! Veuillez noter qu'il a été créé très récemment et qu'il est en cours de traduction, il est donc susceptible d'être modifié de temps à autre.
+Bienvenue dans la documentation officielle française de Solidity! Veuillez noter qu'elle a été créé très récemment et qu'elle est en cours de traduction, elle est donc susceptible d'être modifié de temps à autre.
 
 ## Documentation
 
-Dès que toutes les traductions seront terminées, le Français sera ajouté au menu déroulant de la documenttation officiel et le contenu de ce référentiel sera disponible pour consultation. 
+Dès que toutes les traductions seront terminées, la version Française sera ajoutée au menu déroulant de la documentation officielle et le contenu de ce référentiel sera disponible pour consultation.
 Cependant, jusque-là, la traduction française sera temporairement disponible sur **https://fr-solidity.readthedocs.io/fr/latest/**.
 
 ## Modérateur et Contributeur
@@ -22,7 +22,7 @@ Avant de contribuer, lisez le glossaire et le guide de style (liens ici s'ils ex
 
 Soyez rapide avec vos traductions ! Si vous constatez que vous ne pouvez plus vous engager, faites-le savoir aux responsables afin qu'ils puissent attribuer la page à quelqu'un d'autre.
 
-> Quiconque souhaite contribuer à la documentation officiel Solidity French est libre de participer.
+> Quiconque souhaite contribuer à la documentation officielle Solidity Française est libre de participer.
 
 ## Règles de traduction
 
