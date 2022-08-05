@@ -108,9 +108,14 @@ de suffrages.
         function delegate(address to) external {
             // attribue une référence
             Voter storage sender = voters[msg.sender];
+<<<<<<< HEAD
             
             require(!sender.voted, "Vous avez déjà voté.");
             require(to != msg.sender, "L'autodélégation est interdite.");
+=======
+            require(sender.weight != 0, "You have no right to vote");
+            require(!sender.voted, "You already voted.");
+>>>>>>> 19ad8b115e3fc2241d7db4f821c663adfdf0459c
 
             // Transférer la délégation tant que
             // `to` également délégué.
@@ -127,11 +132,21 @@ de suffrages.
                 require(to != msg.sender, "Found loop in delegation.");
             }
 
+<<<<<<< HEAD
             // Puisque `sender` est une référence, cela
             // modifie `voters[msg.sender].voted`
+=======
+            Voter storage delegate_ = voters[to];
+
+            // Voters cannot delegate to accounts that cannot vote.
+            require(delegate_.weight >= 1);
+
+            // Since `sender` is a reference, this
+            // modifies `voters[msg.sender]`.
+>>>>>>> 19ad8b115e3fc2241d7db4f821c663adfdf0459c
             sender.voted = true;
             sender.delegate = to;
-            Voter storage delegate_ = voters[to];
+
             if (delegate_.voted) {
                 // Si le délégué a déjà voté,
                 // ajouter directement au nombre de votes
