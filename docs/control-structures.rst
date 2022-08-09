@@ -284,7 +284,7 @@ qui n'ont besoin d'être créés que s'il y a un différend.
                 salt,
                 keccak256(abi.encodePacked(
                     type(D).creationCode,
-                    arg
+                    abi.encode(arg)
                 ))
             )))));
 

@@ -19,7 +19,7 @@ Nous supposons que tous les contrats auront les définitions d'interface de tous
 Cette spécification ne concerne pas les contrats dont l'interface est dynamique ou connue uniquement au moment de l'exécution.
 
 .. _abi_function_selector:
-.. index:: selector
+.. index:: ! selector; of a function
 
 Sélecteur de fonctions
 =================
@@ -309,8 +309,13 @@ Au total :
 Utilisation des types dynamiques
 ====================
 
+<<<<<<< HEAD
 Un appel à une fonction dont la signature est ``f(uint,uint32[],bytes10,bytes)`` avec les valeurs suivantes
 ``(0x123, [0x456, 0x789], "1234567890", "Hello, world !")`` est codé de la manière suivante :
+=======
+A call to a function with the signature ``f(uint256,uint32[],bytes10,bytes)`` with values
+``(0x123, [0x456, 0x789], "1234567890", "Hello, world!")`` is encoded in the following way:
+>>>>>>> 6a42da8d3579dc4b49fdd8679d7b1663658d70d0
 
 Nous prenons les quatre premiers octets de ``sha3("f(uint256,uint32[],bytes10,bytes)")``, c'est-à-dire ``0x8be65246``.
 Ensuite, nous encodons les parties de tête des quatre arguments. Pour les types statiques ``uint256`` et ``bytes10``,
@@ -349,8 +354,13 @@ Au total, le codage est le suivant (nouvelle ligne après le sélecteur de fonct
       000000000000000000000000000000000000000000000000000000000000000d
       48656c6c6f2c20776f726c642100000000000000000000000000000000000000
 
+<<<<<<< HEAD
 Appliquons le même principe pour encoder les données d'une fonction de signature ``g(uint[][],string[])``
 avec les valeurs ``([1, 2], [3]], ["un", "deux", "trois"])`` mais commençons par les parties les plus atomiques de l'encodage :
+=======
+Let us apply the same principle to encode the data for a function with a signature ``g(uint256[][],string[])``
+with values ``([[1, 2], [3]], ["one", "two", "three"])`` but start from the most atomic parts of the encoding:
+>>>>>>> 6a42da8d3579dc4b49fdd8679d7b1663658d70d0
 
 D'abord, nous encodons la longueur et les données du premier tableau dynamique intégré ``[1, 2]`` du premier tableau racine ``[[1, 2], [3]]`` :
 
@@ -417,8 +427,13 @@ Le décalage ``e`` pointe vers le début du contenu de la chaîne ``"trois"`` qu
 donc ``e = 0x00000000000000000000000000000000000000000000000000000000000000e0``.
 
 
+<<<<<<< HEAD
 Notez que les encodages des éléments intégrés des tableaux racines ne sont pas dépendants les uns des autres
 et ont les mêmes encodages pour une fonction avec une signature ``g(string[],uint[][])``.
+=======
+Note that the encodings of the embedded elements of the root arrays are not dependent on each other
+and have the same encodings for a function with a signature ``g(string[],uint256[][])``.
+>>>>>>> 6a42da8d3579dc4b49fdd8679d7b1663658d70d0
 
 Ensuite, nous encodons la longueur du premier tableau racine :
 
@@ -504,6 +519,7 @@ recherche efficace et la lisibilité arbitraire en définissant des événements
 indexés, l'autre non - destinés à contenir la même valeur.
 
 .. _abi_errors:
+.. index:: error, selector; of an error
 
 Erreurs
 ======
