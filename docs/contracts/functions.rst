@@ -17,29 +17,45 @@ qui les appellent, comme pour les fonctions internes des bibliothèques.
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.1 <0.9.0;
 
-    function sum(uint[] memory _arr) pure returns (uint s) {
-        for (uint i = 0; i < _arr.length; i++)
-            s += _arr[i];
+    function sum(uint[] memory arr) pure returns (uint s) {
+        for (uint i = 0; i < arr.length; i++)
+            s += arr[i];
     }
 
     contract ArrayExample {
         bool found;
+<<<<<<< HEAD
         function f(uint[] memory _arr) public {
             // Cela appelle la fonction free en interne.
             // Le compilateur ajoutera son code au contrat.
             uint s = sum(_arr);
+=======
+        function f(uint[] memory arr) public {
+            // This calls the free function internally.
+            // The compiler will add its code to the contract.
+            uint s = sum(arr);
+>>>>>>> 6b60524cfe4186eb7d22d80ca67b9554902d8fb3
             require(s >= 10);
             found = true;
         }
     }
 
 .. note::
+<<<<<<< HEAD
     Les fonctions définies en dehors d'un contrat sont toujours exécutées
     dans le contexte d'un contrat. Elles ont toujours accès à la variable ``this``,
     peuvent appeler d'autres contrats, leur envoyer de l'Ether et détruire le contrat qui les a appelées,
     entre autres choses. La principale différence avec les fonctions définies à l'intérieur d'un contrat
     est que les fonctions libres n'ont pas d'accès direct aux variables de stockage et aux fonctions
     qui ne sont pas dans leur portée.
+=======
+    Functions defined outside a contract are still always executed
+    in the context of a contract.
+    They still can call other contracts, send them Ether and destroy the contract that called them,
+    among other things. The main difference to functions defined inside a contract
+    is that free functions do not have direct access to the variable ``this``, storage variables and functions
+    not in their scope.
+>>>>>>> 6b60524cfe4186eb7d22d80ca67b9554902d8fb3
 
 .. _function-parameters-return-variables:
 
@@ -65,8 +81,8 @@ avec deux entiers, vous utiliserez quelque chose comme ce qui suit :
 
     contract Simple {
         uint sum;
-        function taker(uint _a, uint _b) public {
-            sum = _a + _b;
+        function taker(uint a, uint b) public {
+            sum = a + b;
         }
     }
 
@@ -100,13 +116,13 @@ deux entiers passés comme paramètres de la fonction, vous utiliserez quelque c
     pragma solidity >=0.4.16 <0.9.0;
 
     contract Simple {
-        function arithmetic(uint _a, uint _b)
+        function arithmetic(uint a, uint b)
             public
             pure
-            returns (uint o_sum, uint o_product)
+            returns (uint sum, uint product)
         {
-            o_sum = _a + _b;
-            o_product = _a * _b;
+            sum = a + b;
+            product = a * b;
         }
     }
 
@@ -126,12 +142,12 @@ ou vous pouvez fournir des valeurs de retour
     pragma solidity >=0.4.16 <0.9.0;
 
     contract Simple {
-        function arithmetic(uint _a, uint _b)
+        function arithmetic(uint a, uint b)
             public
             pure
-            returns (uint o_sum, uint o_product)
+            returns (uint sum, uint product)
         {
-            return (_a + _b, _a * _b);
+            return (a + b, a * b);
         }
     }
 
@@ -315,12 +331,22 @@ consommeront plus de gaz que l'allocation de 2300 gaz :
 - Envoi d'éther
 
 .. warning::
+<<<<<<< HEAD
     Les contrats qui reçoivent de l'Ether directement (sans appel de fonction, c'est-à-dire en utilisant ``send`` ou ``transfer``)
     mais qui ne définissent pas de fonction de réception d'Ether ou de fonction de repli payable,
     lancer une exception en renvoyant l'Ether (ceci était différent
     avant Solidity v0.4.0). Donc si vous voulez que votre contrat reçoive de l'Ether,
     vous devez implémenter une fonction de réception d'Ether (l'utilisation de fonctions de repli payantes
     pour recevoir de l'éther n'est pas recommandée, car elle n'échouerait pas en cas de confusion d'interface).
+=======
+    When Ether is sent directly to a contract (without a function call, i.e. sender uses ``send`` or ``transfer``)
+    but the receiving contract does not define a receive Ether function or a payable fallback function,
+    an exception will be thrown, sending back the Ether (this was different
+    before Solidity v0.4.0). If you want your contract to receive Ether,
+    you have to implement a receive Ether function (using payable fallback functions for receiving Ether is
+    not recommended, since the fallback is invoked and would not fail for interface confusions
+    on the part of the sender).
+>>>>>>> 6b60524cfe4186eb7d22d80ca67b9554902d8fb3
 
 
 .. warning::
@@ -359,11 +385,19 @@ Ci-dessous vous pouvez voir un exemple d'un contrat Sink qui utilise la fonction
 Fonction de repli
 -----------------
 
+<<<<<<< HEAD
 Un contrat peut avoir au maximum une fonction ``fallback``, déclarée en utilisant soit ``fallback () external [payable]``,
 soit ``fallback (bytes calldata _input) external [payable] returns (bytes memory _output)``
 (dans les deux cas sans le mot-clé ``function``).
 Cette fonction doit avoir une visibilité ``external``. Une fonction de repli peut être virtuelle, peut remplacer
 et peut avoir des modificateurs.
+=======
+A contract can have at most one ``fallback`` function, declared using either ``fallback () external [payable]``
+or ``fallback (bytes calldata input) external [payable] returns (bytes memory output)``
+(both without the ``function`` keyword).
+This function must have ``external`` visibility. A fallback function can be virtual, can override
+and can have modifiers.
+>>>>>>> 6b60524cfe4186eb7d22d80ca67b9554902d8fb3
 
 La fonction de repli est exécutée lors d'un appel au contrat si aucune des autres
 fonction ne correspond à la signature de la fonction donnée, ou si aucune donnée n'est fournie
@@ -371,9 +405,15 @@ et qu'il n'existe pas de :ref:`fonction de réception d'éther <receive-ether-fu
 La fonction de repli reçoit toujours des données, mais pour recevoir également de l'Ether
 elle doit être marquée ``payable``.
 
+<<<<<<< HEAD
 Si la version avec paramètres est utilisée, ``_input`` contiendra les données complètes envoyées au contrat
 (égal à ``msg.data``) et peut retourner des données dans ``_output``. Les données retournées ne seront pas
 codées par l'ABI. Au lieu de cela, elles seront retournées sans modifications (même pas de remplissage).
+=======
+If the version with parameters is used, ``input`` will contain the full data sent to the contract
+(equal to ``msg.data``) and can return data in ``output``. The returned data will not be
+ABI-encoded. Instead it will be returned without modifications (not even padding).
+>>>>>>> 6b60524cfe4186eb7d22d80ca67b9554902d8fb3
 
 Dans le pire des cas, si une fonction de repli payable est également utilisée
 à la place d'une fonction de réception, elle ne peut compter que sur le gaz 2300
@@ -391,6 +431,7 @@ complexes tant qu'il y a suffisamment de gaz qui lui est transmis.
     afin de distinguer les transferts Ether des confusions d'interface.
 
 .. note::
+<<<<<<< HEAD
     Si vous voulez décoder les données d'entrée, vous pouvez vérifier les quatre premiers octets
     pour le sélecteur de fonction et ensuite
     vous pouvez utiliser ``abi.decode`` avec la syntaxe array slice pour
@@ -398,6 +439,15 @@ complexes tant qu'il y a suffisamment de gaz qui lui est transmis.
     ``(c, d) = abi.decode(_input[4 :], (uint256, uint256));``
     Notez que cette méthode ne doit être utilisée qu'en dernier recours,
     et que les fonctions appropriées doivent être utilisées à la place.
+=======
+    If you want to decode the input data, you can check the first four bytes
+    for the function selector and then
+    you can use ``abi.decode`` together with the array slice syntax to
+    decode ABI-encoded data:
+    ``(c, d) = abi.decode(input[4:], (uint256, uint256));``
+    Note that this should only be used as a last resort and
+    proper functions should be used instead.
+>>>>>>> 6b60524cfe4186eb7d22d80ca67b9554902d8fb3
 
 
 .. code-block:: solidity
@@ -481,13 +531,13 @@ L'exemple suivant montre la surcharge de la fonction ``f`` dans la portée du co
     pragma solidity >=0.4.16 <0.9.0;
 
     contract A {
-        function f(uint _in) public pure returns (uint out) {
-            out = _in;
+        function f(uint value) public pure returns (uint out) {
+            out = value;
         }
 
-        function f(uint _in, bool _really) public pure returns (uint out) {
-            if (_really)
-                out = _in;
+        function f(uint value, bool really) public pure returns (uint out) {
+            if (really)
+                out = value;
         }
     }
 
@@ -501,12 +551,12 @@ fonctions visibles de l'extérieur diffèrent par leurs types Solidity mais pas 
 
     // This will not compile
     contract A {
-        function f(B _in) public pure returns (B out) {
-            out = _in;
+        function f(B value) public pure returns (B out) {
+            out = value;
         }
 
-        function f(address _in) public pure returns (address out) {
-            out = _in;
+        function f(address value) public pure returns (address out) {
+            out = value;
         }
     }
 
@@ -534,12 +584,12 @@ candidat, la résolution échoue.
     pragma solidity >=0.4.16 <0.9.0;
 
     contract A {
-        function f(uint8 _in) public pure returns (uint8 out) {
-            out = _in;
+        function f(uint8 val) public pure returns (uint8 out) {
+            out = val;
         }
 
-        function f(uint256 _in) public pure returns (uint256 out) {
-            out = _in;
+        function f(uint256 val) public pure returns (uint256 out) {
+            out = val;
         }
     }
 
