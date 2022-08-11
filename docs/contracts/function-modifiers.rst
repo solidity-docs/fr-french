@@ -71,8 +71,8 @@ s'ils sont marqués ``virtual``. Pour plus de détails, veuillez consulter
             registeredAddresses[msg.sender] = true;
         }
 
-        function changePrice(uint _price) public onlyOwner {
-            price = _price;
+        function changePrice(uint price_) public onlyOwner {
+            price = price_;
         }
     }
 

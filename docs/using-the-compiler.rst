@@ -298,8 +298,13 @@ Description de l'entrée
         // Affecte la vérification de type et la génération de code. Peut être homestead,
         // tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul ou berlin.
         "evmVersion": "byzantium",
+<<<<<<< HEAD
         // Facultatif : Modifier le pipeline de compilation pour passer par la représentation intermédiaire de Yul.
         // Il s'agit d'une fonctionnalité hautement EXPERIMENTALE, à ne pas utiliser en production. Elle est désactivée par défaut.
+=======
+        // Optional: Change compilation pipeline to go through the Yul intermediate representation.
+        // This is false by default.
+>>>>>>> 3c0a7355d01f97276915608a399235444a17606b
         "viaIR": true,
         // Facultatif : Paramètres de débogage
         "debug": {
@@ -411,6 +416,7 @@ Description de l'entrée
             "source1.sol": ["contract1"],
             "source2.sol": ["contract2", "contract3"]
           },
+<<<<<<< HEAD
           // Choisir si les opérations de division et de modulo doivent être remplacées par
           // multiplication avec des variables de type slack. La valeur par défaut est `true`.
           // L'utilisation de `false` ici est recommandée si vous utilisez le moteur CHC
@@ -418,6 +424,16 @@ Description de l'entrée
           // Voir la section Vérification formelle pour une explication plus détaillée de cette option.
           "divModWithSlacks": true,
           // Choisissez le moteur de vérification de modèle à utiliser : all (par défaut), bmc, chc, none.
+=======
+          // Choose how division and modulo operations should be encoded.
+          // When using `false` they are replaced by multiplication with slack
+          // variables. This is the default.
+          // Using `true` here is recommended if you are using the CHC engine
+          // and not using Spacer as the Horn solver (using Eldarica, for example).
+          // See the Formal Verification section for a more detailed explanation of this option.
+          "divModNoSlacks": false,
+          // Choose which model checker engine to use: all (default), bmc, chc, none.
+>>>>>>> 3c0a7355d01f97276915608a399235444a17606b
           "engine": "chc",
           // Choisissez quels types d'invariants doivent être signalés à l'utilisateur : contrat, réentrance.
           "invariants": ["contract", "reentrancy"],
