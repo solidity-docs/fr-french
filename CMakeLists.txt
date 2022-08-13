@@ -21,7 +21,7 @@ include(EthPolicy)
 eth_policy()
 
 # project name and version should be set after cmake_policy CMP0048
-set(PROJECT_VERSION "0.8.12")
+set(PROJECT_VERSION "0.8.17")
 # OSX target needed in order to support std::visit
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.14")
 project(solidity VERSION ${PROJECT_VERSION} LANGUAGES C CXX)
@@ -65,7 +65,11 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/templates/license.h.in" include/licens
 
 include(EthOptions)
 configure_project(TESTS)
+<<<<<<< HEAD
 set(LATEST_Z3_VERSION "4.8.13")
+=======
+set(LATEST_Z3_VERSION "4.8.17")
+>>>>>>> e27cb025c2d8c115bb4df227d4d93c299e2fac00
 set(MINIMUM_Z3_VERSION "4.8.0")
 find_package(Z3)
 if (${Z3_FOUND})
