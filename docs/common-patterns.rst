@@ -157,6 +157,7 @@ restrictions très lisibles.
         /// Pas assez d'Ether envoyé avec l'appel de fonction.
         error NotEnoughEther();
 
+<<<<<<< HEAD
         // Les modificateurs peuvent être utilisés pour changer
         // le corps d'une fonction.
         // Si ce modificateur est utilisé, il
@@ -164,8 +165,17 @@ restrictions très lisibles.
         // que si la fonction est appelée depuis
         // une certaine adresse.
         modifier onlyBy(address _account)
+=======
+        // Modifiers can be used to change
+        // the body of a function.
+        // If this modifier is used, it will
+        // prepend a check that only passes
+        // if the function is called from
+        // a certain address.
+        modifier onlyBy(address account)
+>>>>>>> a78a2bcf34f729957095587fcead56a7291abfb1
         {
-            if (msg.sender != _account)
+            if (msg.sender != account)
                 revert Unauthorized();
             // N'oubliez pas le "_;"! Il sera
             // remplacé par le corps de la fonction
@@ -173,17 +183,23 @@ restrictions très lisibles.
             _;
         }
 
+<<<<<<< HEAD
         /// Faire de `_newOwner` le nouveau propriétaire de ce
         /// contrat.
         function changeOwner(address _newOwner)
+=======
+        /// Make `newOwner` the new owner of this
+        /// contract.
+        function changeOwner(address newOwner)
+>>>>>>> a78a2bcf34f729957095587fcead56a7291abfb1
             public
             onlyBy(owner)
         {
-            owner = _newOwner;
+            owner = newOwner;
         }
 
-        modifier onlyAfter(uint _time) {
-            if (block.timestamp < _time)
+        modifier onlyAfter(uint time) {
+            if (block.timestamp < time)
                 revert TooEarly();
             _;
         }
@@ -199,6 +215,7 @@ restrictions très lisibles.
             delete owner;
         }
 
+<<<<<<< HEAD
         // Ce modificateur exige qu'un certain
         // frais étant associé à un appel de fonction.
         // Si l'appelant a envoyé trop de frais, il ou elle est
@@ -207,20 +224,35 @@ restrictions très lisibles.
         // où il était possible de sauter la partie après `_;`.
         modifier costs(uint _amount) {
             if (msg.value < _amount)
+=======
+        // This modifier requires a certain
+        // fee being associated with a function call.
+        // If the caller sent too much, he or she is
+        // refunded, but only after the function body.
+        // This was dangerous before Solidity version 0.4.0,
+        // where it was possible to skip the part after `_;`.
+        modifier costs(uint amount) {
+            if (msg.value < amount)
+>>>>>>> a78a2bcf34f729957095587fcead56a7291abfb1
                 revert NotEnoughEther();
 
             _;
-            if (msg.value > _amount)
-                payable(msg.sender).transfer(msg.value - _amount);
+            if (msg.value > amount)
+                payable(msg.sender).transfer(msg.value - amount);
         }
 
-        function forceOwnerChange(address _newOwner)
+        function forceOwnerChange(address newOwner)
             public
             payable
             costs(200 ether)
         {
+<<<<<<< HEAD
             owner = _newOwner;
             // juste quelques exemples de conditions
+=======
+            owner = newOwner;
+            // just some example condition
+>>>>>>> a78a2bcf34f729957095587fcead56a7291abfb1
             if (uint160(owner) & 0 == 1)
                 // Cela n'a pas remboursé pour Solidity
                 // avant la version 0.4.0.
@@ -315,8 +347,8 @@ fonction se termine.
 
         uint public creationTime = block.timestamp;
 
-        modifier atStage(Stages _stage) {
-            if (stage != _stage)
+        modifier atStage(Stages stage_) {
+            if (stage != stage_)
                 revert FunctionInvalidAtThisStage();
             _;
         }

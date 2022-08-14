@@ -53,11 +53,20 @@ comme des valeurs individuelles.
     l'autre en occupera trois.
 
 .. note::
+<<<<<<< HEAD
      La disposition des variables d'état dans le stockage est considérée comme faisant partie de l'interface externe
      de Solidity, en raison du fait que les pointeurs de stockage peuvent être transmis aux bibliothèques. Cela signifie que
      tout changement des règles décrites dans cette section est considéré comme un changement de rupture
      du langage et, en raison de sa nature critique, doit être considéré très attentivement avant
      d'être exécutée.
+=======
+     The layout of state variables in storage is considered to be part of the external interface
+     of Solidity due to the fact that storage pointers can be passed to libraries. This means that
+     any change to the rules outlined in this section is considered a breaking change
+     of the language and due to its critical nature should be considered very carefully before
+     being executed. In the event of such a breaking change, we would want to release a
+     compatibility mode in which the compiler would generate bytecode supporting the old layout.
+>>>>>>> a78a2bcf34f729957095587fcead56a7291abfb1
 
 
 Mappings et tableaux dynamiques
@@ -89,8 +98,13 @@ l'élément peut être obtenu à partir des données de l'emplacement ``v`` en u
 La valeur correspondant à une clé de mappage ``k`` est située à ``keccak256(h(k) . p)``
 où ``.`` est la concaténation et ``h`` est une fonction qui est appliquée à la clé en fonction de son type :
 
+<<<<<<< HEAD
 - pour les types de valeurs, ``h`` compacte la valeur à 32 octets de la même manière que lors du stockage de la valeur en mémoire.
 - pour les chaînes de caractères et les tableaux d'octets, ``h`` calcule le hachage ``keccak256`` des données non paginées.
+=======
+- for value types, ``h`` pads the value to 32 bytes in the same way as when storing the value in memory.
+- for strings and byte arrays, ``h(k)`` is just the unpadded data.
+>>>>>>> a78a2bcf34f729957095587fcead56a7291abfb1
 
 Si la valeur du mappage est un type non-valeur,
 l'emplacement calculé marque le début des données. Si la valeur est de type struct,
@@ -138,9 +152,14 @@ et les données sont stockées comme d'habitude dans ``keccak256(p)``. Cela sign
 en vérifiant si le bit le plus bas est activé : court (non activé) et long (activé).
 
 .. note::
+<<<<<<< HEAD
   La gestion des slots codés de manière invalide n'est actuellement pas prise en charge mais pourrait être ajoutée à l'avenir.
   Si vous compilez via le pipeline expérimental du compilateur basé sur l'IR, la lecture d'un slot non codé
   invalide entraîne une erreur ``Panic(0x22)``.
+=======
+  Handling invalidly encoded slots is currently not supported but may be added in the future.
+  If you are compiling via IR, reading an invalidly encoded slot results in a ``Panic(0x22)`` error.
+>>>>>>> a78a2bcf34f729957095587fcead56a7291abfb1
 
 Sortie JSON
 ===========
