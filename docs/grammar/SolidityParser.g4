@@ -13,6 +13,7 @@ options { tokenVocab=SolidityLexer; }
 sourceUnit: (
 	pragmaDirective
 	| importDirective
+	| usingDirective
 	| contractDefinition
 	| interfaceDefinition
 	| libraryDefinition
@@ -313,10 +314,15 @@ errorDefinition:
 	Semicolon;
 
 /**
+<<<<<<< HEAD
  * Utilisation de directives pour lier des fonctions de bibliothèques à des types.
  * Peut se produire dans les contrats et les bibliothèques.
+=======
+ * Using directive to bind library functions and free functions to types.
+ * Can occur within contracts and libraries and at the file level.
+>>>>>>> a3de6cd60e4277051a1cc0f8eb8f1516e6c0ec57
  */
-usingDirective: Using identifierPath For (Mul | typeName) Semicolon;
+usingDirective: Using (identifierPath | (LBrace identifierPath (Comma identifierPath)* RBrace)) For (Mul | typeName) Global? Semicolon;
 /**
  * Un nom de type peut être un type élémentaire, un type de fonction, un type de mappage, un type défini par l'utilisateur
  * (par exemple, un contrat ou un struct) ou un type de tableau.
@@ -390,7 +396,7 @@ inlineArrayExpression: LBrack (expression ( Comma expression)* ) RBrack;
 /**
  * Outre les identificateurs ordinaires sans mot-clé, certains mots-clés comme "from" et "error" peuvent également être utilisés comme identificateurs.
  */
-identifier: Identifier | From | Error | Revert;
+identifier: Identifier | From | Error | Revert | Global;
 
 literal: stringLiteral | numberLiteral | booleanLiteral | hexStringLiteral | unicodeStringLiteral;
 booleanLiteral: True | False;
@@ -478,7 +484,13 @@ revertStatement: Revert expression callArgumentList Semicolon;
  * Le contenu d'un bloc d'assemblage en ligne utilise un analyseur/lexeur séparé, c'est-à-dire que l'ensemble des mots-clés et
  * d'identificateurs autorisés est différent à l'intérieur d'un bloc d'assemblage en ligne.
  */
-assemblyStatement: Assembly AssemblyDialect? AssemblyLBrace yulStatement* YulRBrace;
+assemblyStatement: Assembly AssemblyDialect? assemblyFlags? AssemblyLBrace yulStatement* YulRBrace;
+
+/**
+ * Assembly flags.
+ * Comma-separated list of double-quoted strings as flags.
+ */
+assemblyFlags: AssemblyBlockLParen AssemblyFlagString (AssemblyBlockComma AssemblyFlagString)* AssemblyBlockRParen;
 
 //@doc:inline
 variableDeclarationList: variableDeclarations+=variableDeclaration (Comma variableDeclarations+=variableDeclaration)*;

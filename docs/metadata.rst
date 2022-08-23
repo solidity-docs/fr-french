@@ -18,10 +18,21 @@ fournisseur de données centralisé. Les autres options disponibles sont le hach
 ne pas ajouter le hachage des métadonnées au bytecode. Elles peuvent être configurées via
 l'interface :ref:`Standard JSON Interface<compiler-api>`.
 
+<<<<<<< HEAD
 Vous devez publier le fichier de métadonnées sur IPFS, Swarm, ou un autre service pour que
 que d'autres puissent y accéder. Vous créez le fichier en utilisant la commande ``solc --metadata``.
 qui génère un fichier appelé ``ContractName_meta.json``. Ce fichier contient
 les références IPFS et Swarm au code source et le fichier de métadonnées.
+=======
+You have to publish the metadata file to IPFS, Swarm, or another service so
+that others can access it. You create the file by using the ``solc --metadata``
+command together with the ``--output-dir`` parameter. Without the parameter,
+the metadata will be written to standard output.
+The metadata contains IPFS and Swarm references to the source code, so you have to
+upload all source files in addition to the metadata file. For IPFS, the hash contained
+in the CID returned by ``ipfs add`` (not the direct sha2-256 hash of the file)
+shall match with the one contained in the bytecode.
+>>>>>>> a3de6cd60e4277051a1cc0f8eb8f1516e6c0ec57
 
 Le fichier de métadonnées a le format suivant. L'exemple ci-dessous est présenté de
 manière lisible par l'homme. Des métadonnées correctement formatées doivent utiliser correctement les guillemets,
