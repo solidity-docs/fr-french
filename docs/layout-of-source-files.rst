@@ -2,9 +2,15 @@
 Mise en page d'un fichier source Solidity
 ********************************
 
+<<<<<<< HEAD
 Les fichiers sources peuvent contenir un nombre arbitraire de
 :ref:`définitions des contrats<contract_structure>`, directives d'importation,
 :ref:`directives pragmatiques<pragma>` et
+=======
+Source files can contain an arbitrary number of
+:ref:`contract definitions<contract_structure>`, import_ ,
+:ref:`pragma<pragma>` and :ref:`using for<using-for>` directives and
+>>>>>>> ecdc808e67ed8ded860681b5b4debf301455d09c
 :ref:`struct<structs>`, :ref:`enum<enums>`, :ref:`function<functions>`, :ref:`error<errors>`
 et :ref:`constant variable<constants>` définitions.
 
@@ -25,8 +31,16 @@ Le compilateur ne valide pas que la licence fait partie de la
 `liste autorisée par SPDX <https://spdx.org/licenses/>`_, mais
 il inclut la chaîne fournie dans les :ref:`métadonnées du code source <metadata>`.
 
+<<<<<<< HEAD
 Si vous ne voulez pas spécifier une licence ou si le code source n'est pas
 pas open-source, veuillez utiliser la valeur spéciale ``UNLICENSED``.
+=======
+If you do not want to specify a license or if the source code is
+not open-source, please use the special value ``UNLICENSED``.
+Note that ``UNLICENSED`` (no usage allowed, not present in SPDX license list)
+is different from ``UNLICENSE`` (grants all rights to everyone).
+Solidity follows `the npm recommendation <https://docs.npmjs.com/cli/v7/configuring-npm/package-json#license>`_.
+>>>>>>> ecdc808e67ed8ded860681b5b4debf301455d09c
 
 Le fait de fournir ce commentaire ne vous libère bien sûr pas des autres
 obligations liées à la licence, comme l'obligation de mentionner
@@ -53,7 +67,7 @@ vous devez ajouter la directive pragma à tous vos fichiers si vous voulez l'act
 dans l'ensemble de votre projet. Si vous :ref:`import<import>` un autre fichier, la directive pragma
 de ce fichier ne s'applique pas automatiquement au fichier d'importation.
 
-.. index:: ! pragma, version
+.. index:: ! pragma;version
 
 .. _version_pragma:
 
@@ -88,12 +102,20 @@ celles-ci suivent la même syntaxe que celle utilisée par `npm <https://docs.np
   requise par le pragma. Si elle ne correspond pas, le compilateur émet une
   une erreur.
 
+<<<<<<< HEAD
 Pragma du codeur ABI
+=======
+.. index:: ! ABI coder, ! pragma; abicoder, pragma; ABIEncoderV2
+.. _abi_coder:
+
+ABI Coder Pragma
+>>>>>>> ecdc808e67ed8ded860681b5b4debf301455d09c
 ----------------
 
 En utilisant ``pragma abicoder v1`` ou ``pragma abicoder v2``, vous pouvez
 choisir entre les deux implémentations du codeur et du décodeur ABI.
 
+<<<<<<< HEAD
 Le nouveau codeur ABI (v2) est capable de coder et de décoder
 tableaux et structs. Il peut produire un code
 moins optimal et n'a pas été testé autant que l'ancien codeur, mais est considéré comme
@@ -101,6 +123,14 @@ non expérimental à partir de Solidity 0.6.0. Vous devez toujours explicitement
 l'activer en utilisant ``pragma abicoder v2;``. Puisqu'il sera
 activé par défaut à partir de Solidity 0.8.0, il existe une option pour sélectionner
 l'ancien codeur en utilisant ``pragma abicoder v1;``.
+=======
+The new ABI coder (v2) is able to encode and decode arbitrarily nested
+arrays and structs. Apart from supporting more types, it involves more extensive
+validation and safety checks, which may result in higher gas costs, but also heightened
+security. It is considered
+non-experimental as of Solidity 0.6.0 and it is enabled by default starting
+with Solidity 0.8.0. The old ABI coder can still be selected using ``pragma abicoder v1;``.
+>>>>>>> ecdc808e67ed8ded860681b5b4debf301455d09c
 
 L'ensemble des types supportés par le nouveau codeur est un sur-ensemble strict de
 ceux supportés par l'ancien. Les contrats qui l'utilisent peuvent interagir
@@ -122,8 +152,7 @@ et émettra une erreur. Il suffit d'activer "abicoder v2" pour votre contrat pou
   en utilisant ``pragma experimental ABIEncoderV2``, mais il n'était pas possible
   de sélectionner explicitement le codeur v1 parce qu'il était par défaut.
 
-.. index:: ! pragma, experimental
-
+.. index:: ! pragma; experimental
 .. _experimental_pragma:
 
 Pragma expérimental
@@ -133,6 +162,7 @@ Le deuxième pragma est le pragma expérimental. Il peut être utilisé pour act
 des fonctionnalités du compilateur ou du langage qui ne sont pas encore activées par défaut.
 Les pragmes expérimentaux suivants sont actuellement supportés :
 
+.. index:: ! pragma; ABIEncoderV2
 
 ABIEncoderV2
 ~~~~~~~~~~~~
@@ -141,6 +171,7 @@ Parce que le codeur ABI v2 n'est plus considéré comme expérimental,
 il peut être sélectionné via ``pragma abicoder v2`` (voir ci-dessus)
 depuis Solidity 0.7.4.
 
+.. index:: ! pragma; SMTChecker
 .. _smt_checker:
 
 SMTChecker
