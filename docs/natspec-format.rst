@@ -180,7 +180,7 @@ l'autre à être utilisé par le développeur.
 Si le contrat ci-dessus est enregistré sous le nom de ``ex1.sol``, alors vous pouvez générer la
 documentation en utilisant :
 
-.. code::
+.. code-block:: shell
 
    solc --userdoc --devdoc ex1.sol
 
@@ -199,7 +199,7 @@ Documentation pour les utilisateurs
 La documentation ci-dessus produira la documentation utilisateur suivante
 Fichier JSON en sortie :
 
-.. code::
+.. code-block:: json
 
     {
       "version" : 1,
@@ -226,7 +226,7 @@ Documentation pour les développeurs
 Outre le fichier de documentation utilisateur, un fichier JSON
 de documentation pour les développeurs doit également être produit et doit ressembler à ceci :
 
-.. code::
+.. code-block:: json
 
     {
       "version" : 1,
