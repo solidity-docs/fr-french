@@ -71,8 +71,8 @@ s'ils sont marqués ``virtual``. Pour plus de détails, veuillez consulter
             registeredAddresses[msg.sender] = true;
         }
 
-        function changePrice(uint _price) public onlyOwner {
-            price = _price;
+        function changePrice(uint price_) public onlyOwner {
+            price = price_;
         }
     }
 
@@ -110,9 +110,21 @@ séparée par des espaces et sont évaluées dans l'ordre présenté.
 Les modificateurs ne peuvent pas accéder ou modifier implicitement les arguments et les valeurs de retour des fonctions qu'ils modifient.
 Leurs valeurs ne peuvent leur être transmises que de manière explicite au moment de l'invocation.
 
+<<<<<<< HEAD
 Les retours explicites d'un modificateur ou d'un corps de fonction ne quittent que le
 modificateur ou du corps de la fonction actuelle. Les variables de retour sont assignées et
 le flux de contrôle continue après le ``_`` du modificateur précédent.
+=======
+In function modifiers, it is necessary to specify when you want the function to which the modifier is
+applied to be run. The placeholder statement (denoted by a single underscore character ``_``) is used to
+denote where the body of the function being modified should be inserted. Note that the
+placeholder operator is different from using underscores as leading or trailing characters in variable
+names, which is a stylistic choice.
+
+Explicit returns from a modifier or function body only leave the current
+modifier or function body. Return variables are assigned and
+control flow continues after the ``_`` in the preceding modifier.
+>>>>>>> 548a4b4ac6934b1103f93069fd69c11d2e33c27e
 
 .. warning::
     Dans une version antérieure de Solidity, les instructions ``return`` dans les fonctions
