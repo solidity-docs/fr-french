@@ -298,8 +298,13 @@ Description de l'entrée
         // Affecte la vérification de type et la génération de code. Peut être homestead,
         // tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul ou berlin.
         "evmVersion": "byzantium",
+<<<<<<< HEAD
         // Facultatif : Modifier le pipeline de compilation pour passer par la représentation intermédiaire de Yul.
         // Il s'agit d'une fonctionnalité hautement EXPERIMENTALE, à ne pas utiliser en production. Elle est désactivée par défaut.
+=======
+        // Optional: Change compilation pipeline to go through the Yul intermediate representation.
+        // This is false by default.
+>>>>>>> 99428838e5bc2dbc255b80cf406a72ee408bd57a
         "viaIR": true,
         // Facultatif : Paramètres de débogage
         "debug": {
@@ -411,6 +416,7 @@ Description de l'entrée
             "source1.sol": ["contract1"],
             "source2.sol": ["contract2", "contract3"]
           },
+<<<<<<< HEAD
           // Choisir si les opérations de division et de modulo doivent être remplacées par
           // multiplication avec des variables de type slack. La valeur par défaut est `true`.
           // L'utilisation de `false` ici est recommandée si vous utilisez le moteur CHC
@@ -418,6 +424,16 @@ Description de l'entrée
           // Voir la section Vérification formelle pour une explication plus détaillée de cette option.
           "divModWithSlacks": true,
           // Choisissez le moteur de vérification de modèle à utiliser : all (par défaut), bmc, chc, none.
+=======
+          // Choose how division and modulo operations should be encoded.
+          // When using `false` they are replaced by multiplication with slack
+          // variables. This is the default.
+          // Using `true` here is recommended if you are using the CHC engine
+          // and not using Spacer as the Horn solver (using Eldarica, for example).
+          // See the Formal Verification section for a more detailed explanation of this option.
+          "divModNoSlacks": false,
+          // Choose which model checker engine to use: all (default), bmc, chc, none.
+>>>>>>> 99428838e5bc2dbc255b80cf406a72ee408bd57a
           "engine": "chc",
           // Choisissez quels types d'invariants doivent être signalés à l'utilisateur : contrat, réentrance.
           "invariants": ["contract", "reentrancy"],
@@ -602,6 +618,7 @@ Description de la sortie
 Types d'erreurs
 ~~~~~~~~~~~~~~~
 
+<<<<<<< HEAD
 1. ``JSONError`` : L'entrée JSON n'est pas conforme au format requis, par exemple, l'entrée n'est pas un objet JSON, la langue n'est pas supportée, etc.
 2. ``IOError`` : Erreurs de traitement des entrées/sorties et des importations, telles qu'une URL non résoluble ou une erreur de hachage dans les sources fournies.
 3. ``ParserError`` : Le code source n'est pas conforme aux règles du langage.
@@ -616,6 +633,23 @@ Types d'erreurs
 12. ``FatalError`` : Une erreur fatale n'a pas été traitée correctement - ceci devrait être signalé comme un problème.
 13. ``Warning`` : Un avertissement, qui n'a pas arrêté la compilation, mais qui devrait être traité si possible.
 14. ``Info`` : Une information que le compilateur pense que l'utilisateur pourrait trouver utile, mais qui n'est pas dangereuse et ne doit pas nécessairement être traitée.
+=======
+1. ``JSONError``: JSON input doesn't conform to the required format, e.g. input is not a JSON object, the language is not supported, etc.
+2. ``IOError``: IO and import processing errors, such as unresolvable URL or hash mismatch in supplied sources.
+3. ``ParserError``: Source code doesn't conform to the language rules.
+4. ``DocstringParsingError``: The NatSpec tags in the comment block cannot be parsed.
+5. ``SyntaxError``: Syntactical error, such as ``continue`` is used outside of a ``for`` loop.
+6. ``DeclarationError``: Invalid, unresolvable or clashing identifier names. e.g. ``Identifier not found``
+7. ``TypeError``: Error within the type system, such as invalid type conversions, invalid assignments, etc.
+8. ``UnimplementedFeatureError``: Feature is not supported by the compiler, but is expected to be supported in future versions.
+9. ``InternalCompilerError``: Internal bug triggered in the compiler - this should be reported as an issue.
+10. ``Exception``: Unknown failure during compilation - this should be reported as an issue.
+11. ``CompilerError``: Invalid use of the compiler stack - this should be reported as an issue.
+12. ``FatalError``: Fatal error not processed correctly - this should be reported as an issue.
+13. ``YulException``: Error during Yul Code generation - this should be reported as an issue.
+14. ``Warning``: A warning, which didn't stop the compilation, but should be addressed if possible.
+15. ``Info``: Information that the compiler thinks the user might find useful, but is not dangerous and does not necessarily need to be addressed.
+>>>>>>> 99428838e5bc2dbc255b80cf406a72ee408bd57a
 
 
 .. _compiler-tools:
