@@ -188,6 +188,16 @@ Addresses
 Comme décrit dans :ref:`address_literals`, les littéraux hexadécimaux de la taille correcte qui passent la somme de contrôle
 test sont de type ``addresse``. Aucun autre littéral ne peut être implicitement converti en type ``addresse``.
 
+<<<<<<< HEAD
 Les conversions explicites de ``bytes20`` ou de n'importe quel type d'entier en ``address`` résultent en ``address payable``.
 
 Une ``address a`` peut être convertie en ``address payable`` via ``payable(a)``.
+=======
+Explicit conversions to ``address`` are allowed only from ``bytes20`` and ``uint160``.
+
+An ``address a`` can be converted explicitly to ``address payable`` via ``payable(a)``.
+
+.. note::
+    Prior to version 0.8.0, it was possible to explicitly convert from any integer type (of any size, signed or unsigned) to  ``address`` or ``address payable``.
+    Starting with in 0.8.0 only conversion from ``uint160`` is allowed.
+>>>>>>> 1fbee8259aca10ffe04efa47a21f31d7dee1baa9
