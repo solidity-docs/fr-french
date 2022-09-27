@@ -1,5 +1,4 @@
-.. index:: ! error, revert
-
+.. index:: ! error, revert, ! selector; of an error
 .. _errors:
 
 **************************************************
@@ -73,9 +72,23 @@ De même, un échec de ``assert`` ou des conditions similaires se retourneront a
 du type intégré ``Panic(uint256)``.
 
 .. note::
+<<<<<<< HEAD
     Les données d'erreur ne doivent être utilisées que pour donner une indication de l'échec, mais
     pas comme un moyen pour le flux de contrôle. La raison en est que les données de retour
     des appels internes sont propagées en retour dans la chaîne des appels externes
     par défaut. Cela signifie qu'un appel interne
     peut "forger" des données de retour qui semblent pouvoir provenir du
     contrat qui l'a appelé.
+=======
+    Error data should only be used to give an indication of failure, but
+    not as a means for control-flow. The reason is that the revert data
+    of inner calls is propagated back through the chain of external calls
+    by default. This means that an inner call
+    can "forge" revert data that looks like it could have come from the
+    contract that called it.
+
+Members of Errors
+=================
+
+- ``error.selector``: A ``bytes4`` value containing the error selector.
+>>>>>>> 311b2054afae02bfaa8521fd94475a06e0669025
