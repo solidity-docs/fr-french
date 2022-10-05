@@ -193,11 +193,19 @@ nom de l'unité source.
 
 .. note::
 
+<<<<<<< HEAD
     Le nom d'une unité source n'est qu'un identifiant et même si sa valeur ressemble à un chemin, il
     n'est pas soumis aux règles de normalisation que l'on peut attendre d'un shell.
     Tous les segments ``/./`` ou ``../`` ou les séquences de barres obliques multiples en font toujours partie.
     Lorsque la source est fournie via une interface JSON standard, il est tout à fait possible d'associer
     différents contenus à des noms d'unités de source qui feraient référence au même fichier sur le disque.
+=======
+    A source unit name is just an identifier and even if its value happens to look like a path, it
+    is not subject to the normalization rules you would typically expect in a shell.
+    Any ``/./`` or ``/../`` segments or sequences of multiple slashes remain a part of it.
+    When the source is provided via Standard JSON interface it is entirely possible to associate
+    different content with source unit names that would refer to the same file on disk.
+>>>>>>> 70b0fb6366b313c4c06b2c54e8cb35402d1e85ef
 
 Lorsque la source n'est pas disponible dans le système de fichiers virtuel, le compilateur transmet le nom de l'unité source
 à l'import callback.
@@ -246,6 +254,7 @@ et qui est délimitée par deux séparateurs de chemin.
 Un séparateur est un slash avant ou le début/la fin de la chaîne.
 Par exemple, dans ``./abc/..//``, il y a trois segments de chemin : ``.``, ``abc`` et ``..``.
 
+<<<<<<< HEAD
 Le compilateur calcule un nom d'unité source à partir du chemin d'importation de la manière suivante :
 
 1. Un préfixe est d'abord calculé
@@ -258,6 +267,16 @@ Le compilateur calcule un nom d'unité source à partir du chemin d'importation 
 
 2. Ensuite, le préfixe est ajouté au chemin d'importation normalisé.
    Si le préfixe n'est pas vide, une seule barre oblique est insérée entre lui et le chemin d'importation.
+=======
+The compiler resolves the import into a source unit name based on the import path, in the following way:
+
+#. We start with the source unit name of the importing source unit.
+#. The last path segment with preceding slashes is removed from the resolved name.
+#. Then, for every segment in the import path, starting from the leftmost one:
+    - If the segment is ``.``, it is skipped.
+    - If the segment is ``..``, the last path segment with preceding slashes is removed from the resolved name.
+    - Otherwise, the segment (preceded by a single slash if the resolved name is not empty), is appended to the resolved name.
+>>>>>>> 70b0fb6366b313c4c06b2c54e8cb35402d1e85ef
 
 L'élimination du dernier segment de chemin avec les barres obliques précédentes
 fonctionne comme suit :
@@ -265,6 +284,7 @@ fonctionne comme suit :
 1. Tout ce qui dépasse la dernière barre oblique est supprimé (c'est-à-dire que ``a/b//c.sol`` devient ``a/b//``).
 2. Toutes les barres obliques de fin de ligne sont supprimées (par exemple, ``a/b//`` devient ``a/b``).
 
+<<<<<<< HEAD
 Les règles de normalisation sont les mêmes que pour les chemins UNIX, à savoir :
 
 - Tous les segments internes ``.`` sont supprimés.
@@ -275,6 +295,14 @@ Notez que la normalisation est effectuée uniquement sur le chemin d'importation
 Le nom de l'unité source du module d'importation qui est utilisé pour le préfixe n'est pas normalisé.
 Cela garantit que la partie ``protocol://`` ne se transforme pas en ``protocol:/`` si le fichier d'importation
 est identifié par une URL.
+=======
+Note that the process normalizes the part of the resolved source unit name that comes from the import path according
+to the usual rules for UNIX paths, i.e. all ``.`` and ``..`` are removed and multiple slashes are
+squashed into a single one.
+On the other hand, the part that comes from the source unit name of the importing module remains unnormalized.
+This ensures that the ``protocol://`` part does not turn into ``protocol:/`` if the importing file
+is identified with a URL.
+>>>>>>> 70b0fb6366b313c4c06b2c54e8cb35402d1e85ef
 
 Si vos chemins d'importation sont déjà normalisés, vous pouvez vous attendre à ce que l'algorithme ci-dessus produise des
 résultats très intuitifs.
