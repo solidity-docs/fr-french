@@ -2,11 +2,19 @@
 Canal de micropaiement
 ********************
 
+<<<<<<< HEAD
 Dans cette section, nous allons apprendre à construire un exemple d'implémentation
 d'un canal de paiement. Il utilisera des signatures cryptographiques pour faire des
 transferts répétés d'Ether entre les mêmes parties sécurisés, instantanés et
 sans frais de transaction. Pour l'exemple, nous devons comprendre comment
 signer et vérifier les signatures, et configurer le canal de paiement.
+=======
+In this section, we will learn how to build an example implementation
+of a payment channel. It uses cryptographic signatures to make
+repeated transfers of Ether between the same parties secure, instantaneous, and
+without transaction fees. For the example, we need to understand how to
+sign and verify signatures, and setup the payment channel.
+>>>>>>> 16c4c7565acf58b2509bd062bfcf8b219c0ccccd
 
 Création et vérification de signatures
 =================================
@@ -17,18 +25,33 @@ Alice est l'expéditeur et Bob est le destinataire.
 Alice n'a besoin que d'envoyer des messages signés cryptographiquement off-chain
 (exemple: par e-mail) à Bob et c'est similaire à la rédaction de chèques.
 
+<<<<<<< HEAD
 Alice et Bob utilisent des signatures pour autoriser les transactions, ce qui est possible avec les Smart Contract d'Ethereum.
 Alice construira un simple Smart Contract qui lui permettra de transmettre Ether, mais au lieu d'appeler elle-même une fonction
 pour initier un paiement, elle laissera Bob le faire, qui paiera donc les frais de transaction.
+=======
+Alice and Bob use signatures to authorize transactions, which is possible with smart contracts on Ethereum.
+Alice will build a simple smart contract that lets her transmit Ether, but instead of calling a function herself
+to initiate a payment, she will let Bob do that, and therefore pay the transaction fee.
+>>>>>>> 16c4c7565acf58b2509bd062bfcf8b219c0ccccd
 
 Le contrat fonctionnera comme ça:
 
+<<<<<<< HEAD
     1. Alice déploie le contrat ``ReceiverPays``, avec suffisamment d'Ether pour couvrir les paiements qui seront effectués.
     2. Alice autorise un paiement en signant un message avec sa clé privée.
     3. Alice envoie le message signé cryptographiquement à Bob. Le message n'a pas besoin d'être gardé secret
         (expliqué plus loin), et le mécanisme pour l'envoyer n'a pas d'importance.
     4. Bob réclame son paiement en présentant le message signé au smart contract, celui-ci vérifie le
         l'authenticité du message, puis débloque les fonds.
+=======
+    1. Alice deploys the ``ReceiverPays`` contract, attaching enough Ether to cover the payments that will be made.
+    2. Alice authorizes a payment by signing a message with her private key.
+    3. Alice sends the cryptographically signed message to Bob. The message does not need to be kept secret
+       (explained later), and the mechanism for sending it does not matter.
+    4. Bob claims his payment by presenting the signed message to the smart contract, it verifies the
+       authenticity of the message and then releases the funds.
+>>>>>>> 16c4c7565acf58b2509bd062bfcf8b219c0ccccd
 
 Création de la signature:
 ----------------------
@@ -258,8 +281,13 @@ Les messages sont signés cryptographiquement par l'expéditeur, puis transmis d
 
 Chaque message comprend les informations suivantes :
 
+<<<<<<< HEAD
     * L'adresse du Smart Contract, utilisée pour empêcher les attaques de relecture de contrats croisés.
     * Le montant total d'Ether qui est dû au destinataire jusqu'à présent.
+=======
+    * The smart contract's address, used to prevent cross-contract replay attacks.
+    * The total amount of Ether that is owed to the recipient so far.
+>>>>>>> 16c4c7565acf58b2509bd062bfcf8b219c0ccccd
 
 Un canal de paiement n'est fermé qu'une seule fois, à la fin d'une série de virements.
 Pour cette raison, seul un des messages envoyés est racheté. C'est pourquoi
