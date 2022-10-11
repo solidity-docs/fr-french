@@ -1,4 +1,4 @@
-.. index:: ! event
+.. index:: ! event, ! event; anonymous, ! event; indexed, ! event; topic
 
 .. _events:
 
@@ -71,6 +71,18 @@ quatre arguments indexés au lieu de trois.
     En particulier, il est possible de "falsifier" la signature d'un autre événement
     en utilisant un événement anonyme.
 
+.. index:: ! selector; of an event
+
+Members of Events
+=================
+
+- ``event.selector``: For non-anonymous events, this is a ``bytes32`` value
+  containing the ``keccak256`` hash of the event signature, as used in the default topic.
+
+
+Example
+=======
+
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
@@ -78,11 +90,12 @@ quatre arguments indexés au lieu de trois.
 
     contract ClientReceipt {
         event Deposit(
-            address indexed _from,
-            bytes32 indexed _id,
-            uint _value
+            address indexed from,
+            bytes32 indexed id,
+            uint value
         );
 
+<<<<<<< HEAD
         function deposit(bytes32 _id) public payable {
             // Les événements sont émis en utilisant `emit`, suivi par
             // le nom de l'événement et les arguments
@@ -90,6 +103,15 @@ quatre arguments indexés au lieu de trois.
             // (même profondément imbriquée) peut être détectée à partir de
             // l'API JavaScript en filtrant pour `Deposit`.
             emit Deposit(msg.sender, _id, msg.value);
+=======
+        function deposit(bytes32 id) public payable {
+            // Events are emitted using `emit`, followed by
+            // the name of the event and the arguments
+            // (if any) in parentheses. Any such invocation
+            // (even deeply nested) can be detected from
+            // the JavaScript API by filtering for `Deposit`.
+            emit Deposit(msg.sender, id, msg.value);
+>>>>>>> 238ac4fd9219d1f3af8ed65a09cfc0f2782f8e9b
         }
     }
 
@@ -124,9 +146,9 @@ Le résultat de l'opération ci-dessus ressemble à ce qui suit (découpé) :
 
     {
        "returnValues": {
-           "_from": "0x1111…FFFFCCCC",
-           "_id": "0x50…sd5adb20",
-           "_value": "0x420042"
+           "from": "0x1111…FFFFCCCC",
+           "id": "0x50…sd5adb20",
+           "value": "0x420042"
        },
        "raw": {
            "data": "0x7f…91385",
@@ -134,8 +156,13 @@ Le résultat de l'opération ci-dessus ressemble à ce qui suit (découpé) :
        }
     }
 
+<<<<<<< HEAD
 Ressources supplémentaires pour comprendre les événements
 =========================================================
+=======
+Additional Resources for Understanding Events
+=============================================
+>>>>>>> 238ac4fd9219d1f3af8ed65a09cfc0f2782f8e9b
 
 - `Documentation Javascript <https://github.com/ethereum/web3.js/blob/1.x/docs/web3-eth-contract.rst#events>`_
 - `Exemple d'utilisation des événements <https://github.com/ethchange/smart-exchange/blob/master/lib/contracts/SmartExchange.sol>`_
