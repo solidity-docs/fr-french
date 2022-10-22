@@ -154,6 +154,14 @@ Membres des octets
 
 - ``bytes.concat(...) retourne (bytes memory)``: :ref:`Concatène un nombre variable d'octets et les arguments bytes1, ..., bytes32 dans un tableau d'octets.<bytes-concat>`
 
+.. index:: string members
+
+Members of string
+-----------------
+
+- ``string.concat(...) returns (string memory)``: :ref:`Concatenates variable number of string arguments to one string array<string-concat>`
+
+
 .. index:: assert, revert, require
 
 Traitement des erreurs
@@ -376,4 +384,19 @@ Les propriétés suivantes sont disponibles pour un type entier ``T`` :
     La plus petite valeur représentable par le type ``T``.
 
 ``type(T).max``
+<<<<<<< HEAD
     La plus grande valeur représentable par le type ``T``.
+=======
+    The largest value representable by type ``T``.
+
+Reserved Keywords
+=================
+
+These keywords are reserved in Solidity. They might become part of the syntax in the future:
+
+``after``, ``alias``, ``apply``, ``auto``, ``byte``, ``case``, ``copyof``, ``default``,
+``define``, ``final``, ``implements``, ``in``, ``inline``, ``let``, ``macro``, ``match``,
+``mutable``, ``null``, ``of``, ``partial``, ``promise``, ``reference``, ``relocatable``,
+``sealed``, ``sizeof``, ``static``, ``supports``, ``switch``, ``typedef``, ``typeof``,
+``var``.
+>>>>>>> 8830be981725f522fa996a2d79c83e8a3ced76a7
