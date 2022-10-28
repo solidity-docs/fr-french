@@ -6,12 +6,24 @@
 Contrats abstraits
 ******************
 
+<<<<<<< HEAD
 Les contrats doivent être marqués comme abstraits lorsqu'au moins une de leurs fonctions n'est pas implémentée.
 Les contrats peuvent être marqués comme abstraits même si toutes les fonctions sont implémentées.
 
 Cela peut être fait en utilisant le mot-clé ``abstract`` comme le montre l'exemple suivant. Notez que ce contrat
 doit être défini comme abstrait, car la fonction ``utterance()`` a été définie, mais aucune implémentation
 n'a été fournie (aucun corps d'implémentation ``{ }`` n'a été donné).
+=======
+Contracts must be marked as abstract when at least one of their functions is not implemented or when
+they do not provide arguments for all of their base contract constructors.
+Even if this is not the case, a contract may still be marked abstract, such as when you do not intend
+for the contract to be created directly. Abstract contracts are similar to :ref:`interfaces` but an
+interface is more limited in what it can declare.
+
+An abstract contract is declared using the ``abstract`` keyword as shown in the following example.
+Note that this contract needs to be defined as abstract, because the function ``utterance()`` is declared,
+but no implementation was provided (no implementation body ``{ }`` was given).
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 .. code-block:: solidity
 

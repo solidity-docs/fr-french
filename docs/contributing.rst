@@ -2,7 +2,11 @@
 Contribution
 ############
 
+<<<<<<< HEAD
 L'aide est toujours la bienvenue et il existe de nombreuses possibilités de contribuer à Solidity.
+=======
+Help is always welcome and there are plenty of options to contribute to Solidity.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 En particulier, nous apprécions le soutien dans les domaines suivants :
 
@@ -22,7 +26,11 @@ Pour commencer, vous pouvez essayer :ref:`building-from-source` afin de
 vous familiariser avec les composants de Solidity et le processus de construction.
 En outre, il peut être utile de vous familiariser avec l'écriture de contrats intelligents dans Solidity.
 
+<<<<<<< HEAD
 Veuillez noter que ce projet est publié avec un `Code de conduite du contributeur <https://raw.githubusercontent.com/ethereum/solidity/develop/CODE_OF_CONDUCT.md>`_. En participant à ce projet - dans les problèmes, les demandes de pull, ou les canaux Gitter - vous acceptez de respecter ses termes.
+=======
+Please note that this project is released with a `Contributor Code of Conduct <https://raw.githubusercontent.com/ethereum/solidity/develop/CODE_OF_CONDUCT.md>`_. By participating in this project — in the issues, pull requests, or Gitter channels — you agree to abide by its terms.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 Appels de l'équipe
 ==========
@@ -30,10 +38,16 @@ Appels de l'équipe
 Si vous avez des problèmes ou des demandes de pull à discuter, ou si vous êtes intéressé à entendre ce sur quoi
 l'équipe et les contributeurs travaillent, vous pouvez rejoindre nos appels d'équipe publics :
 
+<<<<<<< HEAD
 - Les lundis à 15h CET/CEST.
 - Les mercredis à 14h CET/CEST.
 
 Les deux appels ont lieu sur `Jitsi <https://meet.ethereum.org/solidity>`_.
+=======
+- Mondays and Wednesdays at 3PM CET/CEST.
+
+Both calls take place on `Jitsi <https://meet.soliditylang.org/>`_.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 Comment signaler des problèmes
 ====================
@@ -48,8 +62,16 @@ rapportant des problèmes, veuillez mentionner les détails suivants :
 * Étapes pour reproduire le problème.
 * Le comportement réel par rapport au comportement attendu.
 
+<<<<<<< HEAD
 Il est toujours très utile de réduire au strict minimum le code source à l'origine du problème.
 Très utile et permet même parfois de clarifier un malentendu.
+=======
+Reducing the source code that caused the issue to a bare minimum is always
+very helpful, and sometimes even clarifies a misunderstanding.
+
+For technical discussions about language design, a post in the
+`Solidity forum <https://forum.soliditylang.org/>`_ is the correct place (see :ref:`solidity_language_design`).
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 Flux de travail pour les demandes de Pull
 ==========================
@@ -66,9 +88,15 @@ plus facilement.
 De plus, si vous écrivez une nouvelle fonctionnalité, veuillez vous assurer que vous ajoutez des
 tests appropriés sous ``test/`` (voir ci-dessous).
 
+<<<<<<< HEAD
 Cependant, si vous effectuez un changement plus important, veuillez consulter le `canal Gitter du développement de Solidity
 <https://gitter.im/ethereum/solidity-dev>`_ (différent de celui mentionné ci-dessus, celui-ci est
 axé sur le développement du compilateur et du langage plutôt que sur l'utilisation du langage) en premier lieu.
+=======
+However, if you are making a larger change, please consult with the `Solidity Development Gitter channel
+<https://gitter.im/ethereum/solidity-dev>`_ (different from the one mentioned above — this one is
+focused on compiler and language development instead of language usage) first.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 Les nouvelles fonctionnalités et les corrections de bogues doivent être ajoutées au fichier ``Changelog.md`` : veuillez
 suivre le style des entrées précédentes, le cas échéant.
@@ -78,7 +106,16 @@ Enfin, veillez à respecter le ``style de codage
 pour ce projet. De plus, même si nous effectuons des tests CI, veuillez tester votre code et
 assurez-vous qu'il se construit localement avant de soumettre une demande de pull.
 
+<<<<<<< HEAD
 Merci pour votre aide !
+=======
+We highly recommend going through our `review checklist <https://github.com/ethereum/solidity/blob/develop/ReviewChecklist.md>`
+before submitting the pull request.
+We thoroughly review every PR and will help you get it right, but there are many
+common problems that can be easily avoided, making the review much smoother.
+
+Thank you for your help!
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 Exécution des tests du compilateur
 ==========================
@@ -91,10 +128,24 @@ dépendances (`evmone <https://github.com/ethereum/evmone/releases>`_,
 `libz3 <https://github.com/Z3Prover/z3>`_, et
 `libhera <https://github.com/ewasm/hera>`_).
 
+<<<<<<< HEAD
 Sur macOS, certains des scripts de test attendent que GNU coreutils soit installé.
 Ceci peut être accompli plus facilement en utilisant Homebrew : ``brew install coreutils``.
 
 Exécution des tests
+=======
+On macOS systems, some of the testing scripts expect GNU coreutils to be installed.
+This can be easiest accomplished using Homebrew: ``brew install coreutils``.
+
+On Windows systems, make sure that you have a privilege to create symlinks,
+otherwise several tests may fail.
+Administrators should have that privilege, but you may also
+`grant it to other users <https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/create-symbolic-links#policy-management>`_
+or
+`enable Developer Mode <https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development>`_.
+
+Running the Tests
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 -----------------
 
 Solidity inclut différents types de tests, la plupart d'entre eux étant regroupés dans l'application ``Boost C++ Test Framework``.
@@ -109,9 +160,15 @@ tests de compilation.
 Le système de test essaie automatiquement de découvrir
 l'emplacement du `evmone <https://github.com/ethereum/evmone/releases>`_ pour exécuter les tests sémantiques.
 
+<<<<<<< HEAD
 La bibliothèque ``evmone`` doit être située dans le répertoire ``deps`` ou ``deps/lib`` relativement au
 répertoire de travail actuel, à son parent ou au parent de son parent. Alternativement, un emplacement explicite
 pour l'objet partagé ``evmone`` peut être spécifié via la variable d'environnement ``ETH_EVMONE``.
+=======
+The ``evmone`` library must be located in the ``deps`` or ``deps/lib`` directory relative to the
+current working directory, to its parent or its parent's parent. Alternatively, an explicit location
+for the ``evmone`` shared object can be specified via the ``ETH_EVMONE`` environment variable.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 ``evmone`` est principalement nécessaire pour l'exécution de tests sémantiques et de gaz.
 Si vous ne l'avez pas installé, vous pouvez ignorer ces tests en passant l'option ``--no-semantic-tests``
@@ -238,7 +295,11 @@ Il offre plusieurs options pour les tests qui échouent :
 - ``skip`` : Ignore l'exécution de ce test particulier.
 - ``quit'' : Quitte ``isoltest``.
 
+<<<<<<< HEAD
 Toutes ces options s'appliquent au contrat en cours, à l'exception de ``quit`` qui arrête l'ensemble du processus de test.
+=======
+All of these options apply to the current contract, except ``quit`` which stops the entire testing process.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 La mise à jour automatique du test ci-dessus le change en
 
@@ -285,7 +346,11 @@ Ensuite, construisez Solidity (ou juste le binaire ``solfuzzer``) avec AFL comme
     cmake .. -DCMAKE_C_COMPILER=path/to/afl-gcc -DCMAKE_CXX_COMPILER=path/to/afl-g++
     make solfuzzer
 
+<<<<<<< HEAD
 À ce stade, vous devriez pouvoir voir un message similaire à celui qui suit :
+=======
+At this stage, you should be able to see a message similar to the following:
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 .. code-block:: text
 
@@ -469,6 +534,7 @@ Par exemple, ``pragma solidity >=0.4.0 <0.9.0;``.
 Exécution des Tests de Documentation
 ---------------------------
 
+<<<<<<< HEAD
 Assurez-vous que vos contributions passent nos tests de documentation en exécutant ``./scripts/docs.sh`` qui installe les dépendances nécessaires à la documentation et vérifie les problèmes éventuels.
 Nécessaires à la documentation et vérifie l'absence de problèmes tels que des liens brisés ou des problèmes de syntaxe.
 
@@ -477,6 +543,18 @@ Conception du langage Solidity
 
 Pour vous impliquer activement dans le processus de conception du langage et partager vos idées concernant l'avenir de Solidity,
 veuillez rejoindre le `forum Solidity <https://forum.soliditylang.org/>`_.
+=======
+Make sure your contributions pass our documentation tests by running ``./docs/docs.sh`` that installs dependencies
+needed for documentation and checks for any problems such as broken links or syntax issues.
+
+.. _solidity_language_design:
+
+Solidity Language Design
+========================
+
+To actively get involved in the language design process and to share your ideas concerning the future of Solidity,
+please join the `Solidity forum <https://forum.soliditylang.org/>`_.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 Le forum Solidity sert de lieu pour proposer et discuter de nouvelles fonctionnalités du langage et de leur mise en œuvre dans
 les premiers stades de l'idéation ou des modifications de fonctionnalités existantes.
@@ -494,7 +572,12 @@ Si vous voulez savoir où en est l'équipe en termes d'implémentation de nouvel
 Les questions dans le backlog de conception nécessitent une spécification plus approfondie et seront soit discutées dans un appel de conception de langue ou dans un appel d'équipe régulier. Vous pouvez
 voir les changements à venir pour la prochaine version de rupture en passant de la branche par défaut (`develop`) à la `breaking branch <https://github.com/ethereum/solidity/tree/breaking>`_.
 
+<<<<<<< HEAD
 Pour les cas particuliers et les questions, vous pouvez nous contacter via le canal `Solidity-dev Gitter <https://gitter.im/ethereum/solidity-dev>`_, un
 chatroom dédié aux conversations autour du compilateur Solidity et du développement du langage.
+=======
+For ad-hoc cases and questions, you can reach out to us via the `Solidity-dev Gitter channel <https://gitter.im/ethereum/solidity-dev>`_ — a
+dedicated chatroom for conversations around the Solidity compiler and language development.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 Nous sommes heureux d'entendre vos réflexions sur la façon dont nous pouvons améliorer le processus de conception du langage pour qu'il soit encore plus collaboratif et transparent.

@@ -172,6 +172,7 @@ Nous allons maintenant étendre ce contract à une enchère à l'aveugle.
 L'avantage d'une enchère à l'aveugle c'est qu'il n'y a pas de pression temporelle vers la fin de la période d'enchère. 
 La création d'une enchère à l'aveugle sur une plateforme transparente peut sembler contradictoire, mais la cryptographie vient à la rescousse.
 
+<<<<<<< HEAD
 Pendant la **période d'enchère**, un enchérisseur n'envoie pas réellement son offre, mais seulement une version hachée de celle-ci.  
 Étant donné qu'il est actuellement considéré comme pratiquement impossible de trouver deux valeurs (suffisamment longues) dont les hash sont égales, l'enchérisseur s'engage à faire son offre par ce biais.  
 À la fin de la période d'enchères, les enchérisseurs doivent révéler leurs offres : Ils envoient leurs valeurs non cryptées et le contrat vérifie que le hash est le même que celui fournie pendant la période d'enchères.
@@ -179,6 +180,27 @@ Pendant la **période d'enchère**, un enchérisseur n'envoie pas réellement so
 Un autre défi est de savoir comment rendre l'enchère **liante et aveugle** en même temps.
 La seule façon d'empêcher l'enchérisseur de ne pas envoyer l'argent après avoir remporté l'enchère après avoir remporté l'enchère est de l'obliger à l'envoyer en même temps que l'offre. 
 Puisque les transferts de valeur ne peuvent pas être censurée dans Ethereum, tout le monde peut voir leur valeur.
+=======
+During the **bidding period**, a bidder does not actually send their bid, but
+only a hashed version of it.  Since it is currently considered practically
+impossible to find two (sufficiently long) values whose hash values are equal,
+the bidder commits to the bid by that.  After the end of the bidding period,
+the bidders have to reveal their bids: They send their values unencrypted, and
+the contract checks that the hash value is the same as the one provided during
+the bidding period.
+
+Another challenge is how to make the auction **binding and blind** at the same
+time: The only way to prevent the bidder from just not sending the money after
+they won the auction is to make them send it together with the bid. Since value
+transfers cannot be blinded in Ethereum, anyone can see the value.
+
+The following contract solves this problem by accepting any value that is
+larger than the highest bid. Since this can of course only be checked during
+the reveal phase, some bids might be **invalid**, and this is on purpose (it
+even provides an explicit flag to place invalid bids with high-value
+transfers): Bidders can confuse competition by placing several high or low
+invalid bids.
+>>>>>>> 0816b15e757057782d447c6d41513edfa2bec728
 
 Le contrat suivant résout ce problème en acceptant toute valeur qui est supérieure à l'offre la plus élevée. 
 Puisque cela ne peut bien sûr être vérifié que pendant la phase de révélation, certaines offres peuvent être **invalides**, 
