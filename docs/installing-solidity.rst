@@ -9,11 +9,30 @@ Installation du compilateur Solidity
 Versionnage
 ==========
 
+<<<<<<< HEAD
 Les versions de Solidity suivent le `versionnement sémantique <https://semver.org>`_ et en plus des
 versions, **des builds de développement nocturnes** sont également mis à disposition.  Les nightly builds
 ne sont pas garanties et, malgré tous les efforts, elles peuvent contenir
 et/ou des changements non documentés. Nous recommandons d'utiliser la dernière version.
 Les installateurs de paquets ci-dessous utiliseront la dernière version.
+=======
+Solidity versions follow `Semantic Versioning <https://semver.org>`_. In
+addition, patch level releases with major release 0 (i.e. 0.x.y) will not
+contain breaking changes. That means code that compiles with version 0.x.y
+can be expected to compile with 0.x.z where z > y.
+
+In addition to releases, we provide **nightly development builds** with the
+intention of making it easy for developers to try out upcoming features and
+provide early feedback. Note, however, that while the nightly builds are usually
+very stable, they contain bleeding-edge code from the development branch and are
+not guaranteed to be always working. Despite our best efforts, they might
+contain undocumented and/or broken changes that will not become a part of an
+actual release. They are not meant for production use.
+
+When deploying contracts, you should use the latest released version of Solidity. This
+is because breaking changes, as well as new features and bug fixes are introduced regularly.
+We currently use a 0.x version number `to indicate this fast pace of change <https://semver.org/#spec-item-4>`_.
+>>>>>>> 46a7ebd5b66c5638427295b9c3dbf15fc48c4ed2
 
 Remix
 =====
@@ -344,7 +363,22 @@ Les éléments suivants sont des dépendances pour toutes les versions de Solidi
     Si vous faites cela, cependant, n'oubliez pas de passer l'option ``--no-smt`` à ``scripts/tests.sh``
     pour sauter les tests SMT.
 
+<<<<<<< HEAD
 Versions minimales du compilateur
+=======
+.. note::
+    By default the build is performed in *pedantic mode*, which enables extra warnings and tells the
+    compiler to treat all warnings as errors.
+    This forces developers to fix warnings as they arise, so they do not accumulate "to be fixed later".
+    If you are only interested in creating a release build and do not intend to modify the source code
+    to deal with such warnings, you can pass ``-DPEDANTIC=OFF`` option to CMake to disable this mode.
+    Doing this is not recommended for general use but may be necessary when using a toolchain we are
+    not testing with or trying to build an older version with newer tools.
+    If you encounter such warnings, please consider
+    `reporting them <https://github.com/ethereum/solidity/issues/new>`_.
+
+Minimum Compiler Versions
+>>>>>>> 46a7ebd5b66c5638427295b9c3dbf15fc48c4ed2
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Les compilateurs C++ suivants et leurs versions minimales peuvent construire la base de code Solidity :
