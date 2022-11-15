@@ -151,10 +151,13 @@ to the end-user as:
 
 Si une fonction est appelée et que la valeur 10 est attribuée à l'entrée ``a``.
 
+<<<<<<< HEAD
 La spécification de ces expressions dynamiques n'entre pas dans le cadre de la documentation de Solidity.
 et vous pouvez en savoir plus à l'adresse suivante
 `le projet radspec <https://github.com/aragon/radspec>`__.
 
+=======
+>>>>>>> 4100a59ccaf6b921c5c8edbf66537d22d6e3e974
 .. _header-inheritance:
 
 Notes sur l'héritage
@@ -180,7 +183,7 @@ l'autre à être utilisé par le développeur.
 Si le contrat ci-dessus est enregistré sous le nom de ``ex1.sol``, alors vous pouvez générer la
 documentation en utilisant :
 
-.. code::
+.. code-block:: shell
 
    solc --userdoc --devdoc ex1.sol
 
@@ -199,7 +202,7 @@ Documentation pour les utilisateurs
 La documentation ci-dessus produira la documentation utilisateur suivante
 Fichier JSON en sortie :
 
-.. code::
+.. code-block:: json
 
     {
       "version" : 1,
@@ -226,7 +229,7 @@ Documentation pour les développeurs
 Outre le fichier de documentation utilisateur, un fichier JSON
 de documentation pour les développeurs doit également être produit et doit ressembler à ceci :
 
-.. code::
+.. code-block:: json
 
     {
       "version" : 1,
