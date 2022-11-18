@@ -4,6 +4,7 @@
 Contrats modulaires (Librairie)
 *****************
 
+<<<<<<< HEAD
 Une approche modulaire de la construction de vos contrats vous aide à réduire la complexité
 et améliorer la lisibilité ce qui aidera à identifier les bugs et les vulnérabilités
 pendant le développement et la relecture de code.
@@ -16,6 +17,20 @@ les adresses correspondent à ce que vous attendez. Ainsi, la `library` ``Balanc
 fournit un composant isolé des contrats qui suit correctement les soldes des comptes.
 Il est facile de vérifier que la `library` ``Balances`` ne produise jamais de soldes négatifs ou de débordements grâce au terme ``require()``
 De ce faites, la somme de tous les soldes est un invariant sur la durée de vie du contrat.
+=======
+A modular approach to building your contracts helps you reduce the complexity
+and improve the readability which will help to identify bugs and vulnerabilities
+during development and code review.
+If you specify and control the behaviour of each module in isolation, the
+interactions you have to consider are only those between the module specifications
+and not every other moving part of the contract.
+In the example below, the contract uses the ``move`` method
+of the ``Balances`` :ref:`library <libraries>` to check that balances sent between
+addresses match what you expect. In this way, the ``Balances`` library
+provides an isolated component that properly tracks balances of accounts.
+It is easy to verify that the ``Balances`` library never produces negative balances or overflows
+and the sum of all balances is an invariant across the lifetime of the contract.
+>>>>>>> 0b4b1045cf3e78065f446714872926cde72e5135
 
 .. code-block:: solidity
 
