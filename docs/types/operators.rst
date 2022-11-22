@@ -3,11 +3,19 @@
 Les opérateurs (arithmetique)
 =========
 
+<<<<<<< HEAD
 Les opérateurs arithmétiques et binaires peuvent être appliqués même si les deux opérandes n'ont pas le même type.
 Par exemple, vous pouvez calculer ``y = x + z``, où ``x`` est un ``uint8`` et ``z`` a
 le type ``int32``. Dans ces cas, le mécanisme suivant sera utilisé pour déterminer
 le type dans lequel l'opération est calculée (c'est important en cas de débordement)
 et le type du résultat de l'opérateur :
+=======
+Arithmetic and bit operators can be applied even if the two operands do not have the same type.
+For example, you can compute ``y = x + z``, where ``x`` is a ``uint8`` and ``z`` has
+the type ``uint32``. In these cases, the following mechanism will be used to determine
+the type in which the operation is computed (this is important in case of overflow)
+and the type of the operator's result:
+>>>>>>> 5211d3da0d6c56c72c5a5c438109bc0b4b6b2437
 
 1. Si le type de l'opérande droit peut être implicitement converti en type de l'opérande gauche
    utilisez le type de l'opérande de gauche,
@@ -15,16 +23,42 @@ et le type du résultat de l'opérateur :
    utilisez le type de l'opérande de droite,
 3. Sinon, l'opération n'est pas autorisée.
 
+<<<<<<< HEAD
 Dans le cas où l'un des opérandes est un :ref:`literal number <rational_literals>` il est d'abord converti en son
 "type mobile", qui est le plus petit type pouvant contenir la valeur
 (les types non signés de même largeur de bit sont considérés comme "plus petits" que les types signés).
 Si les deux sont des nombres littéraux, l'opération est calculée avec une précision arbitraire.
+=======
+In case one of the operands is a :ref:`literal number <rational_literals>` it is first converted to its
+"mobile type", which is the smallest type that can hold the value
+(unsigned types of the same bit-width are considered "smaller" than the signed types).
+If both are literal numbers, the operation is computed with effectively unlimited precision in
+that the expression is evaluated to whatever precision is necessary so that none is lost
+when the result is used with a non-literal type.
+>>>>>>> 5211d3da0d6c56c72c5a5c438109bc0b4b6b2437
 
 Le type de résultat de l'opérateur est le même que le type dans lequel l'opération est effectuée,
 sauf pour les opérateurs de comparaison où le résultat est toujours ``bool``.
 
 Les opérateurs ``**`` (exponentiation), ``<<`` and ``>>`` utilisent le type du
 opérande de gauche pour l'opération et le résultat.
+
+Ternary Operator
+----------------
+The ternary operator is used in expressions of the form ``<expression> ? <trueExpression> : <falseExpression>``.
+It evaluates one of the latter two given expressions depending upon the result of the evaluation of the main ``<expression>``.
+If ``<expression>`` evaluates to ``true``, then ``<trueExpression>`` will be evaluated, otherwise ``<falseExpression>`` is evaluated.
+
+The result of the ternary operator does not have a rational number type, even if all of its operands are rational number literals.
+The result type is determined from the types of the two operands in the same way as above, converting to their mobile type first if required.
+
+As a consequence, ``255 + (true ? 1 : 0)`` will revert due to arithmetic overflow.
+The reason is that ``(true ? 1 : 0)`` is of ``uint8`` type, which forces the addition to be performed in ``uint8`` as well,
+and 256 exceeds the range allowed for this type.
+
+Another consequence is that an expression like ``1.5 + 1.5`` is valid but ``1.5 + (true ? 1.5 : 2.5)`` is not.
+This is because the former is a rational expression evaluated in unlimited precision and only its final value matters.
+The latter involves a conversion of a fractional rational number to an integer, which is currently disallowed.
 
 .. index:: assignment, lvalue, ! compound operators
 
@@ -91,3 +125,11 @@ valeur à laquelle il se référait précédemment.
             assert(y.length == 0);
         }
     }
+
+.. index:: ! operator; precedence
+.. _order:
+
+Order of Precedence of Operators
+--------------------------------
+
+.. include:: types/operator-precedence-table.rst
