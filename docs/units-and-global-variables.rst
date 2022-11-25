@@ -154,6 +154,14 @@ Membres des octets
 
 - ``bytes.concat(...) retourne (bytes memory)``: :ref:`Concatène un nombre variable d'octets et les arguments bytes1, ..., bytes32 dans un tableau d'octets.<bytes-concat>`
 
+.. index:: string members
+
+Members of string
+-----------------
+
+- ``string.concat(...) returns (string memory)``: :ref:`Concatenates variable number of string arguments to one string array<string-concat>`
+
+
 .. index:: assert, revert, require
 
 Traitement des erreurs
@@ -223,10 +231,15 @@ Fonctions mathématiques et cryptographiques
     pour les signatures _transaction_ (voir `EIP-2 <https://eips.ethereum.org/EIPS/eip-2#specification>`_),
     mais la fonction ecrecover est restée inchangée.
 
+<<<<<<< HEAD
     Ce n'est généralement pas un problème, à moins que vous n'exigiez que les signatures soient uniques
     ou que vous les utilisiez pour identifier des éléments. OpenZeppelin a une
     `ECDSA helper library <https://docs.openzeppelin.com/contracts/2.x/api/cryptography#ECDSA>`_ que vous pouvez
     utiliser comme un wrapper pour ``ecrecover`` sans ce problème.
+=======
+    This is usually not a problem unless you require signatures to be unique or use them to identify items.
+    OpenZeppelin have a `ECDSA helper library <https://docs.openzeppelin.com/contracts/4.x/api/utils#ECDSA>`_ that you can use as a wrapper for ``ecrecover`` without this issue.
+>>>>>>> 91589e02149333a618c1544fdebb7746bc36f4b6
 
 .. note::
 
@@ -376,4 +389,19 @@ Les propriétés suivantes sont disponibles pour un type entier ``T`` :
     La plus petite valeur représentable par le type ``T``.
 
 ``type(T).max``
+<<<<<<< HEAD
     La plus grande valeur représentable par le type ``T``.
+=======
+    The largest value representable by type ``T``.
+
+Reserved Keywords
+=================
+
+These keywords are reserved in Solidity. They might become part of the syntax in the future:
+
+``after``, ``alias``, ``apply``, ``auto``, ``byte``, ``case``, ``copyof``, ``default``,
+``define``, ``final``, ``implements``, ``in``, ``inline``, ``let``, ``macro``, ``match``,
+``mutable``, ``null``, ``of``, ``partial``, ``promise``, ``reference``, ``relocatable``,
+``sealed``, ``sizeof``, ``static``, ``supports``, ``switch``, ``typedef``, ``typeof``,
+``var``.
+>>>>>>> 91589e02149333a618c1544fdebb7746bc36f4b6
