@@ -171,8 +171,14 @@ Vous trouverez ci-dessous une liste des versions EVM cibles et des modifications
      compilateur suppose des coûts de gaz froid pour de telles opérations. Ceci est pertinent pour l'estimation des gaz et
      l'optimiseur.
 - ``london`` (**default**)
+<<<<<<< HEAD
    - Le tarif de base du bloc (`EIP-3198 <https://eips.ethereum.org/EIPS/eip-3198>`_ et `EIP-1559 <https://eips.ethereum.org/EIPS/eip-1559>`_) est accessible via le global ``block.basefee`` ou ``basefee()`` en assemblage inline.
 
+=======
+   - The block's base fee (`EIP-3198 <https://eips.ethereum.org/EIPS/eip-3198>`_ and `EIP-1559 <https://eips.ethereum.org/EIPS/eip-1559>`_) can be accessed via the global ``block.basefee`` or ``basefee()`` in inline assembly.
+- ``paris``
+   - No changes, however the semantics of the ``difficulty`` value have changed (see `EIP-4399 <https://eips.ethereum.org/EIPS/eip-4399>`_).
+>>>>>>> 40b24850d2d9d4b69fbbd5eec469255cb0a19308
 
 .. index:: ! standard JSON, ! --standard-json
 .. _compiler-api:
@@ -288,18 +294,42 @@ Description de l'entrée
               // Améliore l'allocation des emplacements de pile pour les variables, peut libérer les emplacements de pile plus tôt.
               // Activé par défaut si l'optimiseur Yul est activé.
               "stackAllocation": true,
+<<<<<<< HEAD
               // Sélectionnez les étapes d'optimisation à appliquer.
               // Facultatif, l'optimiseur utilisera la séquence par défaut si elle est omise.
+=======
+              // Select optimization steps to be applied. It is also possible to modify both the
+              // optimization sequence and the clean-up sequence. Instructions for each sequence
+              // are separated with the ":" delimiter and the values are provided in the form of
+              // optimization-sequence:clean-up-sequence. For more information see
+              // "The Optimizer > Selecting Optimizations".
+              // This field is optional, and if not provided, the default sequences for both
+              // optimization and clean-up are used. If only one of the options is provivded
+              // the other will not be run.
+              // If only the delimiter ":" is provided then neither the optimization nor the clean-up
+              // sequence will be run.
+              // If set to an empty value, only the default clean-up sequence is used and
+              // no optimization steps are applied.
+>>>>>>> 40b24850d2d9d4b69fbbd5eec469255cb0a19308
               "optimizerSteps": "dhfoDgvulfnTUtnIf..."
             }
           }
         },
+<<<<<<< HEAD
         // Version de l'EVM pour laquelle il faut compiler.
         // Affecte la vérification de type et la génération de code. Peut être homestead,
         // tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul ou berlin.
         "evmVersion": "byzantium",
         // Facultatif : Modifier le pipeline de compilation pour passer par la représentation intermédiaire de Yul.
         // Il s'agit d'une fonctionnalité hautement EXPERIMENTALE, à ne pas utiliser en production. Elle est désactivée par défaut.
+=======
+        // Version of the EVM to compile for.
+        // Affects type checking and code generation. Can be homestead,
+        // tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul, berlin, london or paris
+        "evmVersion": "byzantium",
+        // Optional: Change compilation pipeline to go through the Yul intermediate representation.
+        // This is false by default.
+>>>>>>> 40b24850d2d9d4b69fbbd5eec469255cb0a19308
         "viaIR": true,
         // Facultatif : Paramètres de débogage
         "debug": {
@@ -324,7 +354,14 @@ Description de l'entrée
         },
         // Paramètres des métadonnées (facultatif)
         "metadata": {
+<<<<<<< HEAD
           // Utiliser uniquement le contenu littéral et non les URL (faux par défaut)
+=======
+          // The CBOR metadata is appended at the end of the bytecode by default.
+          // Setting this to false omits the metadata from the runtime and deploy time code.
+          "appendCBOR": true,
+          // Use only literal content and not URLs (false by default)
+>>>>>>> 40b24850d2d9d4b69fbbd5eec469255cb0a19308
           "useLiteralContent": true,
           // Utilisez la méthode de hachage donnée pour le hachage des métadonnées qui est ajouté au bytecode.
           // Le hachage des métadonnées peut être supprimé du bytecode via l'option "none".
@@ -411,6 +448,7 @@ Description de l'entrée
             "source1.sol": ["contract1"],
             "source2.sol": ["contract2", "contract3"]
           },
+<<<<<<< HEAD
           // Choisir si les opérations de division et de modulo doivent être remplacées par
           // multiplication avec des variables de type slack. La valeur par défaut est `true`.
           // L'utilisation de `false` ici est recommandée si vous utilisez le moteur CHC
@@ -418,6 +456,16 @@ Description de l'entrée
           // Voir la section Vérification formelle pour une explication plus détaillée de cette option.
           "divModWithSlacks": true,
           // Choisissez le moteur de vérification de modèle à utiliser : all (par défaut), bmc, chc, none.
+=======
+          // Choose how division and modulo operations should be encoded.
+          // When using `false` they are replaced by multiplication with slack
+          // variables. This is the default.
+          // Using `true` here is recommended if you are using the CHC engine
+          // and not using Spacer as the Horn solver (using Eldarica, for example).
+          // See the Formal Verification section for a more detailed explanation of this option.
+          "divModNoSlacks": false,
+          // Choose which model checker engine to use: all (default), bmc, chc, none.
+>>>>>>> 40b24850d2d9d4b69fbbd5eec469255cb0a19308
           "engine": "chc",
           // Choisissez quels types d'invariants doivent être signalés à l'utilisateur : contrat, réentrance.
           "invariants": ["contract", "reentrancy"],
@@ -602,6 +650,7 @@ Description de la sortie
 Types d'erreurs
 ~~~~~~~~~~~~~~~
 
+<<<<<<< HEAD
 1. ``JSONError`` : L'entrée JSON n'est pas conforme au format requis, par exemple, l'entrée n'est pas un objet JSON, la langue n'est pas supportée, etc.
 2. ``IOError`` : Erreurs de traitement des entrées/sorties et des importations, telles qu'une URL non résoluble ou une erreur de hachage dans les sources fournies.
 3. ``ParserError`` : Le code source n'est pas conforme aux règles du langage.
@@ -616,6 +665,23 @@ Types d'erreurs
 12. ``FatalError`` : Une erreur fatale n'a pas été traitée correctement - ceci devrait être signalé comme un problème.
 13. ``Warning`` : Un avertissement, qui n'a pas arrêté la compilation, mais qui devrait être traité si possible.
 14. ``Info`` : Une information que le compilateur pense que l'utilisateur pourrait trouver utile, mais qui n'est pas dangereuse et ne doit pas nécessairement être traitée.
+=======
+1. ``JSONError``: JSON input doesn't conform to the required format, e.g. input is not a JSON object, the language is not supported, etc.
+2. ``IOError``: IO and import processing errors, such as unresolvable URL or hash mismatch in supplied sources.
+3. ``ParserError``: Source code doesn't conform to the language rules.
+4. ``DocstringParsingError``: The NatSpec tags in the comment block cannot be parsed.
+5. ``SyntaxError``: Syntactical error, such as ``continue`` is used outside of a ``for`` loop.
+6. ``DeclarationError``: Invalid, unresolvable or clashing identifier names. e.g. ``Identifier not found``
+7. ``TypeError``: Error within the type system, such as invalid type conversions, invalid assignments, etc.
+8. ``UnimplementedFeatureError``: Feature is not supported by the compiler, but is expected to be supported in future versions.
+9. ``InternalCompilerError``: Internal bug triggered in the compiler - this should be reported as an issue.
+10. ``Exception``: Unknown failure during compilation - this should be reported as an issue.
+11. ``CompilerError``: Invalid use of the compiler stack - this should be reported as an issue.
+12. ``FatalError``: Fatal error not processed correctly - this should be reported as an issue.
+13. ``YulException``: Error during Yul Code generation - this should be reported as an issue.
+14. ``Warning``: A warning, which didn't stop the compilation, but should be addressed if possible.
+15. ``Info``: Information that the compiler thinks the user might find useful, but is not dangerous and does not necessarily need to be addressed.
+>>>>>>> 40b24850d2d9d4b69fbbd5eec469255cb0a19308
 
 
 .. _compiler-tools:
