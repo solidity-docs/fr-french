@@ -1,4 +1,4 @@
-# Documentation officiel Français de Solidity
+# Documentation officielle Française de Solidity
 
 Bienvenue dans la documentation française officielle de Solidity! Veuillez noter qu'il a été créé très récemment et qu'il est en cours de traduction, il est donc susceptible d'être modifié de temps à autre.
 
