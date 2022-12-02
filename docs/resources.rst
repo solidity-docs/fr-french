@@ -83,7 +83,17 @@ Intégrations de l'éditeur
     * `Visual Studio Code extension <https://juan.blanco.ws/solidity-contracts-in-visual-studio-code/>`_
         Plugin Solidity pour Microsoft Visual Studio Code qui comprend la coloration syntaxique et le compilateur Solidity.
 
+<<<<<<< HEAD
 Outils Solidity
+=======
+    * `Solidity Visual Auditor extension <https://marketplace.visualstudio.com/items?itemName=tintinweb.solidity-visual-auditor>`_
+        Adds security centric syntax and semantic highlighting to Visual Studio Code.
+
+    * `Hardhat + Solidity Visual Studio Code extension <https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity>`_
+        Solidity and Hardhat support by the Hardhat team.
+
+Solidity Tools
+>>>>>>> 056c4593e37bdbd929d0ef538462242c7ddcbf21
 ==============
 
 * `ABI to Solidity interface converter <https://gist.github.com/chriseth/8f533d133fa0c15b0d6eaf3ec502c82b>`_
