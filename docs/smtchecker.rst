@@ -82,12 +82,12 @@ Débordement
         uint immutable x;
         uint immutable y;
 
-        function add(uint _x, uint _y) internal pure returns (uint) {
-            return _x + _y;
+        function add(uint x_, uint y_) internal pure returns (uint) {
+            return x_ + y_;
         }
 
-        constructor(uint _x, uint _y) {
-            (x, y) = (_x, _y);
+        constructor(uint x_, uint y_) {
+            (x, y) = (x_, y_);
         }
 
         function stateAdd() public view returns (uint) {
@@ -116,7 +116,7 @@ Ici, il signale ce qui suit :
         Overflow.add(1, 115792089237316195423570985008687907853269984665640564039457584007913129639935) -- internal call
      --> o.sol:9:20:
       |
-    9 |             return _x + _y;
+    9 |             return x_ + y_;
       |                    ^^^^^^^
 
 Si nous ajoutons des déclarations ``require`` qui filtrent les cas de débordement,
@@ -131,12 +131,12 @@ le SMTChecker prouve qu'aucun débordement n'est atteignable (en ne signalant pa
         uint immutable x;
         uint immutable y;
 
-        function add(uint _x, uint _y) internal pure returns (uint) {
-            return _x + _y;
+        function add(uint x_, uint y_) internal pure returns (uint) {
+            return x_ + y_;
         }
 
-        constructor(uint _x, uint _y) {
-            (x, y) = (_x, _y);
+        constructor(uint x_, uint y_) {
+            (x, y) = (x_, y_);
         }
 
         function stateAdd() public view returns (uint) {
@@ -153,12 +153,21 @@ Affirmer
 Une assertion représente un invariant dans votre code : une propriété qui doit être vraie
 *pour toutes les opérations, y compris toutes les valeurs d'entrée et de stockage*, sinon il y a un bug.
 
+<<<<<<< HEAD
 Le code ci-dessous définit une fonction ``f`` qui garantit l'absence de débordement.
 La fonction ``inv`` définit la spécification que ``f`` est monotone et croissante :
 pour chaque paire possible ``(_a, _b)``, si ``_b > _a`` alors ``f(_b) > f(_a)``.
 Puisque ``f`` est effectivement monotone et croissante, le SMTChecker prouve que notre
 propriété est correcte. Nous vous encourageons à jouer avec la propriété et la définition de la fonction
 pour voir les résultats qui en découlent !
+=======
+The code below defines a function ``f`` that guarantees no overflow.
+Function ``inv`` defines the specification that ``f`` is monotonically increasing:
+for every possible pair ``(a, b)``, if ``b > a`` then ``f(b) > f(a)``.
+Since ``f`` is indeed monotonically increasing, the SMTChecker proves that our
+property is correct. You are encouraged to play with the property and the function
+definition to see what results come out!
+>>>>>>> 591df042115c6df190faa26a1fb87617f7772db3
 
 .. code-block:: Solidity
 
@@ -166,14 +175,14 @@ pour voir les résultats qui en découlent !
     pragma solidity >=0.8.0;
 
     contract Monotonic {
-        function f(uint _x) internal pure returns (uint) {
-            require(_x < type(uint128).max);
-            return _x * 42;
+        function f(uint x) internal pure returns (uint) {
+            require(x < type(uint128).max);
+            return x * 42;
         }
 
-        function inv(uint _a, uint _b) public pure {
-            require(_b > _a);
-            assert(f(_b) > f(_a));
+        function inv(uint a, uint b) public pure {
+            require(b > a);
+            assert(f(b) > f(a));
         }
     }
 
@@ -188,14 +197,14 @@ nombres, et affirme la propriété selon laquelle l'élément trouvé doit être
     pragma solidity >=0.8.0;
 
     contract Max {
-        function max(uint[] memory _a) public pure returns (uint) {
+        function max(uint[] memory a) public pure returns (uint) {
             uint m = 0;
-            for (uint i = 0; i < _a.length; ++i)
-                if (_a[i] > m)
-                    m = _a[i];
+            for (uint i = 0; i < a.length; ++i)
+                if (a[i] > m)
+                    m = a[i];
 
-            for (uint i = 0; i < _a.length; ++i)
-                assert(m >= _a[i]);
+            for (uint i = 0; i < a.length; ++i)
+                assert(m >= a[i]);
 
             return m;
         }
@@ -222,15 +231,15 @@ Par exemple, en changeant le code en
     pragma solidity >=0.8.0;
 
     contract Max {
-        function max(uint[] memory _a) public pure returns (uint) {
-            require(_a.length >= 5);
+        function max(uint[] memory a) public pure returns (uint) {
+            require(a.length >= 5);
             uint m = 0;
-            for (uint i = 0; i < _a.length; ++i)
-                if (_a[i] > m)
-                    m = _a[i];
+            for (uint i = 0; i < a.length; ++i)
+                if (a[i] > m)
+                    m = a[i];
 
-            for (uint i = 0; i < _a.length; ++i)
-                assert(m > _a[i]);
+            for (uint i = 0; i < a.length; ++i)
+                assert(m > a[i]);
 
             return m;
         }
@@ -243,7 +252,7 @@ nous donne :
     Warning: CHC: Assertion violation happens here.
     Counterexample:
 
-    _a = [0, 0, 0, 0, 0]
+    a = [0, 0, 0, 0, 0]
      = 0
 
     Transaction trace:
@@ -251,7 +260,7 @@ nous donne :
     Test.max([0, 0, 0, 0, 0])
       --> max.sol:14:4:
        |
-    14 |            assert(m > _a[i]);
+    14 |            assert(m > a[i]);
 
 
 Propriétés de l'État
@@ -381,9 +390,9 @@ n'importe quoi, y compris réintroduire le contrat de l'appelant.
 
         Unknown immutable unknown;
 
-        constructor(Unknown _u) {
-            require(address(_u) != address(0));
-            unknown = _u;
+        constructor(Unknown u) {
+            require(address(u) != address(0));
+            unknown = u;
         }
 
         modifier mutex {
@@ -393,8 +402,8 @@ n'importe quoi, y compris réintroduire le contrat de l'appelant.
             lock = false;
         }
 
-        function set(uint _x) mutex public {
-            x = _x;
+        function set(uint x_) mutex public {
+            x = x_;
         }
 
         function run() mutex public {
@@ -613,6 +622,7 @@ qui est principalement un solveur SMT et qui rend `Spacer
 <https://spacer.bitbucket.io/>`_ disponible comme solveur de Horn, et `Eldarica
 <https://github.com/uuverifiers/eldarica>`_ qui fait les deux.
 
+<<<<<<< HEAD
 L'utilisateur peut choisir quels solveurs doivent être utilisés, s'ils sont disponibles, via l'option CLI
 ``--model-checker-solvers {all,cvc4,smtlib2,z3}`` ou l'option JSON
 ``settings.modelChecker.solvers=[smtlib2,z3]``, où :
@@ -633,6 +643,33 @@ L'utilisateur peut choisir quels solveurs doivent être utilisés, s'ils sont di
 d'environnements, y compris dans le navigateur, la plupart des utilisateurs n'auront presque jamais à se
 préoccuper de cette option. Les utilisateurs plus avancés peuvent utiliser cette option pour essayer
 des solveurs alternatifs sur des problèmes plus complexes.
+=======
+The user can choose which solvers should be used, if available, via the CLI
+option ``--model-checker-solvers {all,cvc4,eld,smtlib2,z3}`` or the JSON option
+``settings.modelChecker.solvers=[smtlib2,z3]``, where:
+
+- ``cvc4`` is only available if the ``solc`` binary is compiled with it. Only BMC uses ``cvc4``.
+- ``eld`` is used via its binary which must be installed in the system. Only CHC uses ``eld``, and only if ``z3`` is not enabled.
+- ``smtlib2`` outputs SMT/Horn queries in the `smtlib2 <http://smtlib.cs.uiowa.edu/>`_ format.
+  These can be used together with the compiler's `callback mechanism <https://github.com/ethereum/solc-js>`_ so that
+  any solver binary from the system can be employed to synchronously return the results of the queries to the compiler.
+  This can be used by both BMC and CHC depending on which solvers are called.
+- ``z3`` is available
+
+  - if ``solc`` is compiled with it;
+  - if a dynamic ``z3`` library of version >=4.8.x is installed in a Linux system (from Solidity 0.7.6);
+  - statically in ``soljson.js`` (from Solidity 0.6.9), that is, the Javascript binary of the compiler.
+
+.. note::
+  z3 version 4.8.16 broke ABI compatibility with previous versions and cannot
+  be used with solc <=0.8.13. If you are using z3 >=4.8.16 please use solc
+  >=0.8.14.
+
+Since both BMC and CHC use ``z3``, and ``z3`` is available in a greater variety
+of environments, including in the browser, most users will almost never need to be
+concerned about this option. More advanced users might apply this option to try
+alternative solvers on more complex problems.
+>>>>>>> 591df042115c6df190faa26a1fb87617f7772db3
 
 Veuillez noter que certaines combinaisons de moteur et de solveur choisis conduiront à ce que
 SMTChecker ne fera rien, par exemple choisir CHC et ``cvc4``.
@@ -678,8 +715,13 @@ comme le montre le tableau ci-dessous.
 Les types qui ne sont pas encore pris en charge sont abstraits par un seul entier non signé de
 256 bits, où leurs opérations non supportées sont ignorées.
 
+<<<<<<< HEAD
 Pour plus de détails sur la façon dont l'encodage SMT fonctionne en interne, voir l'article
 `Vérification basée sur SMT des contrats intelligents Solidity <https://github.com/leonardoalt/text/blob/master/solidity_isola_2018/main.pdf>`_.
+=======
+For more details on how the SMT encoding works internally, see the paper
+`SMT-based Verification of Solidity Smart Contracts <https://github.com/chriseth/solidity_isola/blob/master/main.pdf>`_.
+>>>>>>> 591df042115c6df190faa26a1fb87617f7772db3
 
 Appels de fonction
 ==============
@@ -759,15 +801,15 @@ ne signifie pas une perte de puissance de preuve.
     {
         function f(
             bytes32 hash,
-            uint8 _v1, uint8 _v2,
-            bytes32 _r1, bytes32 _r2,
-            bytes32 _s1, bytes32 _s2
+            uint8 v1, uint8 v2,
+            bytes32 r1, bytes32 r2,
+            bytes32 s1, bytes32 s2
         ) public pure returns (address) {
-            address a1 = ecrecover(hash, _v1, _r1, _s1);
-            require(_v1 == _v2);
-            require(_r1 == _r2);
-            require(_s1 == _s2);
-            address a2 = ecrecover(hash, _v2, _r2, _s2);
+            address a1 = ecrecover(hash, v1, r1, s1);
+            require(v1 == v2);
+            require(r1 == r2);
+            require(s1 == s2);
+            address a2 = ecrecover(hash, v2, r2, s2);
             assert(a1 == a2);
             return a1;
         }
