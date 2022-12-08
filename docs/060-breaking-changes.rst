@@ -53,9 +53,17 @@ Pour la plupart des sujets, le compilateur fournira des suggestions.
   Si le nom contient un point, son préfixe jusqu'au point ne doit pas entrer en conflit avec une déclaration en dehors du bloc d'assemblage en ligne.
   d'assemblage.
 
+<<<<<<< HEAD
 * Le shadowing de variables d'état est désormais interdit.  Un contrat dérivé peut seulement
   déclarer une variable d'état ``x``, que s'il n'y a pas de variable d'état visible avec le même nom
   d'état visible portant le même nom dans l'une de ses bases.
+=======
+* In inline assembly, opcodes that do not take arguments are now represented as "built-in functions" instead of standalone identifiers. So ``gas`` is now ``gas()``.
+
+* State variable shadowing is now disallowed.  A derived contract can only
+  declare a state variable ``x``, if there is no visible state variable with
+  the same name in any of its bases.
+>>>>>>> 1c8745c54a239d20b6fb0f79a8bd2628d779b27e
 
 
 Changements sémantiques et syntaxiques
@@ -169,8 +177,19 @@ Cette section donne des instructions détaillées sur la façon de mettre à jou
 * Choisissez des identifiants uniques pour les déclarations de variables dans l'assemblage en ligne qui n'entrent pas en conflit avec les déclarations en dehors de l'assemblage en ligne.
   avec des déclarations en dehors du bloc d'assemblage en ligne.
 
+<<<<<<< HEAD
 * Ajoutez "virtual" à chaque fonction non interface que vous avez l'intention de remplacer. Ajoutez ``virtual`` à toutes les fonctions sans implémentation en dehors des interfaces.
   à toutes les fonctions sans implémentation en dehors des interfaces. Pour l'héritage simple, ajoutez
   ``override`` à chaque fonction de remplacement. Pour l'héritage multiple, ajoutez ``override(A, B, ..)``,
   où vous listez entre parenthèses tous les contrats qui définissent la fonction surchargée. Lorsque
   plusieurs bases définissent la même fonction, le contrat qui hérite doit remplacer toutes les fonctions conflictuelles.
+=======
+* Add ``virtual`` to every non-interface function you intend to override. Add ``virtual``
+  to all functions without implementation outside interfaces. For single inheritance, add
+  ``override`` to every overriding function. For multiple inheritance, add ``override(A, B, ..)``,
+  where you list all contracts that define the overridden function in the parentheses. When
+  multiple bases define the same function, the inheriting contract must override all conflicting functions.
+
+* In inline assembly, add ``()`` to all opcodes that do not otherwise accept an argument.
+  For example, change ``pc`` to ``pc()``, and ``gas`` to ``gas()``.
+>>>>>>> 1c8745c54a239d20b6fb0f79a8bd2628d779b27e
