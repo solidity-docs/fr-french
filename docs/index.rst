@@ -1,10 +1,13 @@
 Solidity
 ========
 
-.. image:: logo.svg
-    :width: 120px
-    :alt: Solidity logo
-    :align: center
+.. warning::
+
+  You are reading a community translation of the Solidity documentation. The Solidity team
+  can give no guarantees on the quality and accuracy of the translations provided.
+  The English reference version is and will remain the only officially supported version
+  by the Solidity team and will always be the most accurate and most up-to-date one.
+  When in doubt, please always refer to the `English (original) documentation <https://docs.soliditylang.org/en/latest/>`_.
 
 Solidity est un langage orienté objet et de haut niveau pour la 
 mise en œuvre de contrats intelligents. Les contrats intelligents 
