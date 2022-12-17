@@ -46,6 +46,7 @@ Cela signifie que les dépendances cycliques de création sont impossibles.
         address owner;
         bytes32 name;
 
+<<<<<<< HEAD
         // Il s'agit du constructeur qui enregistre le
         // créateur et le nom attribué.
         constructor(bytes32 _name) {
@@ -57,6 +58,19 @@ Cela signifie que les dépendances cycliques de création sont impossibles.
             // vous ne devriez pas accéder aux fonctions de manière externe,
             // car la fonction n'existe pas encore.
             // Voir la section suivante pour plus de détails.
+=======
+        // This is the constructor which registers the
+        // creator and the assigned name.
+        constructor(bytes32 name_) {
+            // State variables are accessed via their name
+            // and not via e.g. `this.owner`. Functions can
+            // be accessed directly or through `this.f`,
+            // but the latter provides an external view
+            // to the function. Especially in the constructor,
+            // you should not access functions externally,
+            // because the function does not exist yet.
+            // See the next section for details.
+>>>>>>> 73fcf69188fed78c3ad91f81ce7d6ed7c6ee79c6
             owner = msg.sender;
 
             // Nous effectuons une conversion de type explicite de `address`
@@ -65,7 +79,7 @@ Cela signifie que les dépendances cycliques de création sont impossibles.
             // aucun moyen réel de le vérifier.
             // Cette opération ne crée pas de nouveau contrat.
             creator = TokenCreator(msg.sender);
-            name = _name;
+            name = name_;
         }
 
         function changeName(bytes32 newName) public {

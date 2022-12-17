@@ -43,6 +43,7 @@ Environnements de développement intégrés (Ethereum)
 Intégrations de l'éditeur
 ===================
 
+<<<<<<< HEAD
 * Atom
 
     * `Etheratom <https://github.com/0mkara/etheratom>`_
@@ -55,6 +56,8 @@ Intégrations de l'éditeur
     * `Atom Solium Linter <https://atom.io/packages/linter-solium>`_
         Linter Solidity configurable pour Atom utilisant Solium (maintenant Ethlint) comme base.
 
+=======
+>>>>>>> 73fcf69188fed78c3ad91f81ce7d6ed7c6ee79c6
 * Emacs
 
     * `Emacs Solidity <https://github.com/ethereum/emacs-solidity/>`_
@@ -63,27 +66,58 @@ Intégrations de l'éditeur
 * IntelliJ
 
     * `IntelliJ IDEA plugin <https://plugins.jetbrains.com/plugin/9475-intellij-solidity>`_
+<<<<<<< HEAD
         Plugin Solidity pour IntelliJ IDEA (et tous les autres IDE de JetBrains)
+=======
+        Solidity plugin for IntelliJ IDEA (and all other JetBrains IDEs).
+>>>>>>> 73fcf69188fed78c3ad91f81ce7d6ed7c6ee79c6
 
-* Sublime
+* Sublime Text
 
     * `Package for SublimeText - Solidity language syntax <https://packagecontrol.io/packages/Ethereum/>`_
         Coloration syntaxique Solidity pour l'éditeur SublimeText.
 
 * Vim
 
+<<<<<<< HEAD
     * `Vim Solidity <https://github.com/tomlion/vim-solidity/>`_
         Plugin pour l'éditeur Vim fournissant une coloration syntaxique.
+=======
+    * `Vim Solidity by Thesis <https://github.com/thesis/vim-solidity/>`_
+        Syntax highlighting for Solidity in Vim.
+
+    * `Vim Solidity by TovarishFin <https://github.com/TovarishFin/vim-solidity>`_
+        Vim syntax file for Solidity.
+>>>>>>> 73fcf69188fed78c3ad91f81ce7d6ed7c6ee79c6
 
     * `Vim Syntastic <https://github.com/vim-syntastic/syntastic>`_
         Plugin pour l'éditeur Vim permettant de vérifier la compilation.
 
-* Visual Studio Code
+* Visual Studio Code (VS Code)
 
+<<<<<<< HEAD
     * `Visual Studio Code extension <https://juan.blanco.ws/solidity-contracts-in-visual-studio-code/>`_
         Plugin Solidity pour Microsoft Visual Studio Code qui comprend la coloration syntaxique et le compilateur Solidity.
 
 Outils Solidity
+=======
+    * `Ethereum Remix Visual Studio Code extension <https://marketplace.visualstudio.com/items?itemName=RemixProject.ethereum-remix>`_
+        Ethereum Remix extension pack for VS Code
+
+    * `Solidity Visual Studio Code extension, by Juan Blanco <https://juan.blanco.ws/solidity-contracts-in-visual-studio-code/>`_
+        Solidity plugin for Microsoft Visual Studio Code that includes syntax highlighting and the Solidity compiler.
+
+    * `Solidity Visual Studio Code extension, by Nomic Foundation <https://marketplace.visualstudio.com/items?itemName=NomicFoundation.hardhat-solidity>`_
+        Solidity and Hardhat support by the Hardhat team, including: syntax highlighting, jump to definition, renames, quick fixes and inline solc warnings and errors.
+
+    * `Solidity Visual Auditor extension <https://marketplace.visualstudio.com/items?itemName=tintinweb.solidity-visual-auditor>`_
+        Adds security centric syntax and semantic highlighting to Visual Studio Code.
+
+    * `Truffle for VS Code <https://marketplace.visualstudio.com/items?itemName=trufflesuite-csi.truffle-vscode>`_
+        Build, debug and deploy smart contracts on Ethereum and EVM-compatible blockchains.
+
+Solidity Tools
+>>>>>>> 73fcf69188fed78c3ad91f81ce7d6ed7c6ee79c6
 ==============
 
 * `ABI to Solidity interface converter <https://gist.github.com/chriseth/8f533d133fa0c15b0d6eaf3ec502c82b>`_
