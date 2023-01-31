@@ -4,12 +4,22 @@
 Type Mapping
 =============
 
+<<<<<<< HEAD
 Les types de mappage utilisent la syntaxe ``mapping(_KeyType => _ValueType)`` et des variables
 de type mapping sont déclarés en utilisant la syntaxe ``mapping(_KeyType => _ValueType) _VariableName``.
 Le ``_KeyType`` peut être n'importe quel
 type de valeur intégré, ``bytes``, ``string``, ou tout type de contrat ou d'énumération. Autre défini par l'utilisateur
 ou les types complexes, tels que les mappages, les structures ou les types de tableau ne sont pas autorisés.
 ``_ValueType`` peut être n'importe quel type, y compris les mappages, les tableaux et les structures.
+=======
+Mapping types use the syntax ``mapping(KeyType KeyName? => ValueType ValueName?)`` and variables of
+mapping type are declared using the syntax ``mapping(KeyType KeyName? => ValueType ValueName?)
+VariableName``. The ``KeyType`` can be any built-in value type, ``bytes``, ``string``, or any
+contract or enum type. Other user-defined or complex types, such as mappings, structs or array types
+are not allowed. ``ValueType`` can be any type, including mappings, arrays and structs. ``KeyName``
+and ``ValueName`` are optional (so ``mapping(KeyType => ValueType)`` works as well) and can be any
+valid identifier that is not a type.
+>>>>>>> english/develop
 
 Vous pouvez considérer les mappages comme des `tables de hachage <https://en.wikipedia.org/wiki/Hash_table>`_, qui sont virtuellement initialisées
 telle que chaque clé possible existe et est mappée à une valeur dont
@@ -28,11 +38,21 @@ Ils ne peuvent pas être utilisés comme paramètres ou paramètres de retour (r
 des fonctions contractuelles qui sont publiquement visibles.
 Ces restrictions s'appliquent également aux tableaux et structures contenant des mappages.
 
+<<<<<<< HEAD
 Vous pouvez marquer les variables d'état de type mappage comme ``public`` et Solidity crée un
 :ref:`getter <visibility-and-getters>` pour vous. Le ``_KeyType`` devient un paramètre pour le getter.
 Si ``_ValueType`` est un type valeur ou une structure, le getter renvoie ``_ValueType``.
 Si ``_ValueType`` est un tableau ou un mappage, le getter a un paramètre pour
 chaque ``_KeyType``, récursivement.
+=======
+You can mark state variables of mapping type as ``public`` and Solidity creates a
+:ref:`getter <visibility-and-getters>` for you. The ``KeyType`` becomes a parameter
+with name ``KeyName`` (if specified) for the getter.
+If ``ValueType`` is a value type or a struct, the getter returns ``ValueType`` with
+name ``ValueName`` (if specified).
+If ``ValueType`` is an array or a mapping, the getter has one parameter for
+each ``KeyType``, recursively.
+>>>>>>> english/develop
 
 Dans l'exemple ci-dessous, le contrat ``MappingExample`` définit un ``balances`` public
 mappage, avec le type de clé une ``adresse``, et un type de valeur un ``uint``, map
@@ -61,10 +81,36 @@ contrat qui renvoie la valeur à l'adresse spécifiée.
         }
     }
 
+<<<<<<< HEAD
 L'exemple ci-dessous est une version simplifiée d'un
 `Jeton ERC20 <https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol>`_.
 ``_allowances`` est un exemple de type de mappage à l'intérieur d'un autre type de mappage.
 L'exemple ci-dessous utilise ``_allowances`` pour enregistrer le montant que quelqu'un d'autre est autorisé à retirer de votre compte.
+=======
+The example below is a simplified version of an
+`ERC20 token <https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol>`_.
+``_allowances`` is an example of a mapping type inside another mapping type.
+
+In the example below, the optional ``KeyName`` and ``ValueName`` are provided for the mapping.
+It does not affect any contract functionality or bytecode, it only sets the ``name`` field
+for the inputs and outputs in the ABI for the mapping's getter.
+
+.. code-block:: solidity
+
+    // SPDX-License-Identifier: GPL-3.0
+    pragma solidity ^0.8.18;
+
+    contract MappingExampleWithNames {
+        mapping(address user => uint balance) public balances;
+
+        function update(uint newBalance) public {
+            balances[msg.sender] = newBalance;
+        }
+    }
+
+
+The example below uses ``_allowances`` to record the amount someone else is allowed to withdraw from your account.
+>>>>>>> english/develop
 
 .. code-block:: solidity
 
@@ -116,16 +162,24 @@ L'exemple ci-dessous utilise ``_allowances`` pour enregistrer le montant que que
 Mapping itérables
 -----------------
 
+<<<<<<< HEAD
 Vous ne pouvez pas itérer les mappages, c'est-à-dire que vous ne pouvez pas énumérer leurs clés.
 Il est cependant possible d'implémenter une structure de données par
 dessus d'eux et itérer dessus. Par exemple, le code ci-dessous implémente un
 bibliothèque ``IterableMapping`` que le contrat ``User`` ajoute également des données, et
 la fonction ``sum`` effectue une itération pour additionner toutes les valeurs.
+=======
+You cannot iterate over mappings, i.e. you cannot enumerate their keys.
+It is possible, though, to implement a data structure on
+top of them and iterate over that. For example, the code below implements an
+``IterableMapping`` library that the ``User`` contract then adds data to, and
+the ``sum`` function iterates over to sum all the values.
+>>>>>>> english/develop
 
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >=0.6.8 <0.9.0;
+    pragma solidity ^0.8.8;
 
     struct IndexValue { uint keyIndex; uint value; }
     struct KeyFlag { uint key; bool deleted; }
@@ -135,6 +189,8 @@ la fonction ``sum`` effectue une itération pour additionner toutes les valeurs.
         KeyFlag[] keys;
         uint size;
     }
+
+    type Iterator is uint;
 
     library IterableMapping {
         function insert(itmap storage self, uint key, uint value) internal returns (bool replaced) {
@@ -165,24 +221,28 @@ la fonction ``sum`` effectue une itération pour additionner toutes les valeurs.
             return self.data[key].keyIndex > 0;
         }
 
-        function iterate_start(itmap storage self) internal view returns (uint keyIndex) {
-            return iterate_next(self, type(uint).max);
+        function iterateStart(itmap storage self) internal view returns (Iterator) {
+            return iteratorSkipDeleted(self, 0);
         }
 
-        function iterate_valid(itmap storage self, uint keyIndex) internal view returns (bool) {
-            return keyIndex < self.keys.length;
+        function iterateValid(itmap storage self, Iterator iterator) internal view returns (bool) {
+            return Iterator.unwrap(iterator) < self.keys.length;
         }
 
-        function iterate_next(itmap storage self, uint keyIndex) internal view returns (uint r_keyIndex) {
-            keyIndex++;
-            while (keyIndex < self.keys.length && self.keys[keyIndex].deleted)
-                keyIndex++;
-            return keyIndex;
+        function iterateNext(itmap storage self, Iterator iterator) internal view returns (Iterator) {
+            return iteratorSkipDeleted(self, Iterator.unwrap(iterator) + 1);
         }
 
-        function iterate_get(itmap storage self, uint keyIndex) internal view returns (uint key, uint value) {
+        function iterateGet(itmap storage self, Iterator iterator) internal view returns (uint key, uint value) {
+            uint keyIndex = Iterator.unwrap(iterator);
             key = self.keys[keyIndex].key;
             value = self.data[key].value;
+        }
+
+        function iteratorSkipDeleted(itmap storage self, uint keyIndex) private view returns (Iterator) {
+            while (keyIndex < self.keys.length && self.keys[keyIndex].deleted)
+                keyIndex++;
+            return Iterator.wrap(keyIndex);
         }
     }
 
@@ -205,11 +265,11 @@ la fonction ``sum`` effectue une itération pour additionner toutes les valeurs.
         // Calcule la somme de toutes les données stockées.
         function sum() public view returns (uint s) {
             for (
-                uint i = data.iterate_start();
-                data.iterate_valid(i);
-                i = data.iterate_next(i)
+                Iterator i = data.iterateStart();
+                data.iterateValid(i);
+                i = data.iterateNext(i)
             ) {
-                (, uint value) = data.iterate_get(i);
+                (, uint value) = data.iterateGet(i);
                 s += value;
             }
         }
