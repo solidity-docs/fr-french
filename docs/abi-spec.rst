@@ -13,23 +13,37 @@ L'interface binaire d'application de contrat (ABI) est le moyen standard d'inter
 de l'extérieur de la blockchain que pour l'interaction entre contrats. Les données sont codées en fonction de leur type,
 comme décrit dans cette spécification. L'encodage n'est pas autodécrit et nécessite donc un schéma pour être décodé.
 
+<<<<<<< HEAD
 Nous supposons que les fonctions d'interface d'un contrat sont fortement typées, connues au moment de la compilation et statiques.
 Nous supposons que tous les contrats auront les définitions d'interface de tous les contrats qu'ils appellent disponibles au moment de la compilation.
+=======
+We assume that the interface functions of a contract are strongly typed, known at compilation time and static.
+We assume that all contracts will have the interface definitions of any contracts they call available at compile-time.
+>>>>>>> english/develop
 
 Cette spécification ne concerne pas les contrats dont l'interface est dynamique ou connue uniquement au moment de l'exécution.
 
 .. _abi_function_selector:
-.. index:: selector
+.. index:: ! selector; of a function
 
 Sélecteur de fonctions
 =================
 
+<<<<<<< HEAD
 Les quatre premiers octets des données d'appel d'une fonction spécifient la fonction à appeler. Il s'agit des
 premiers (gauche, ordre supérieur en big-endian) quatre octets du hachage Keccak-256 de la signature de la fonction.
 la fonction. La signature est définie comme l'expression canonique du prototype de base sans spécificateur d'emplacement de données, c'est-à-dire qu'il s'agit de l'expression canonique de la fonction.
 spécificateur d'emplacement de données, c'est-à-dire
 le nom de la fonction avec la liste des types de paramètres entre parenthèses. Les types de paramètres sont séparés par une simple
 virgule - aucun espace n'est utilisé.
+=======
+The first four bytes of the call data for a function call specifies the function to be called. It is the
+first (left, high-order in big-endian) four bytes of the Keccak-256 hash of the signature of
+the function. The signature is defined as the canonical expression of the basic prototype without data
+location specifier, i.e.
+the function name with the parenthesised list of parameter types. Parameter types are split by a single
+comma — no spaces are used.
+>>>>>>> english/develop
 
 .. note::
     Le type de retour d'une fonction ne fait pas partie de cette signature. Dans
@@ -134,8 +148,13 @@ Le codage est conçu pour avoir les propriétés suivantes, qui sont particuliè
    version précédente de l'ABI, le nombre de lectures était linéairement proportionnel au nombre total de paramètres dynamiques dans le pire des cas.
    dynamiques dans le pire des cas.
 
+<<<<<<< HEAD
 2. Les données d'une variable ou d'un élément de tableau ne sont pas entrelacées avec d'autres données et elles sont
    relocalisables, c'est-à-dire qu'elles n'utilisent que des "adresses" relatives.
+=======
+2. The data of a variable or an array element is not interleaved with other data and it is
+   relocatable, i.e. it only uses relative "addresses".
+>>>>>>> english/develop
 
 
 Spécification formelle de l'encodage
@@ -192,10 +211,15 @@ du type de ``X`` qui est
 
 - ``T[]`` où ``X`` a `k`` éléments (``k`` est supposé être de type ``uint256``) :
 
-  ``enc(X) = enc(k) enc([X[0], ..., X[k-1]])``
+  ``enc(X) = enc(k) enc((X[0], ..., X[k-1]))``
 
+<<<<<<< HEAD
   c'est-à-dire qu'il est encodé comme s'il s'agissait d'un tableau de taille statique ``k``, préfixé par le
   le nombre d'éléments.
+=======
+  i.e. it is encoded as if it were a tuple with ``k`` elements of the same type (resp. an array of static size ``k``), prefixed with
+  the number of elements.
+>>>>>>> english/develop
 
 - ``bytes``, de longueur ``k`` (qui est supposé être de type ``uint256``) :
 
@@ -253,8 +277,13 @@ Exemples
     }
 
 
+<<<<<<< HEAD
 Ainsi, pour notre exemple ``Foo``, si nous voulions appeler ``baz`` avec les paramètres ``69`` et
 ``true``, nous passerions 68 octets au total, qui peuvent être décomposés en :
+=======
+Thus, for our ``Foo`` example if we wanted to call ``baz`` with the parameters ``69`` and
+``true``, we would pass 68 bytes total, which can be broken down into:
+>>>>>>> english/develop
 
 - ``0xcdcd77c0`` : l'ID de la méthode. Il s'agit des 4 premiers octets du hachage de Keccak de la forme
   la forme ASCII de la signature ``baz(uint32,bool)``.
@@ -309,6 +338,7 @@ Au total :
 Utilisation des types dynamiques
 ====================
 
+<<<<<<< HEAD
 Un appel à une fonction dont la signature est ``f(uint,uint32[],bytes10,bytes)`` avec les valeurs suivantes
 ``(0x123, [0x456, 0x789], "1234567890", "Hello, world !")`` est codé de la manière suivante :
 
@@ -317,6 +347,16 @@ Ensuite, nous encodons les parties de tête des quatre arguments. Pour les types
 ce sont directement les valeurs que nous voulons passer, alors que pour les types dynamiques ``uint32[]`` et ``bytes``,
 nous utilisons le décalage en octets par rapport au début de leur zone de données, mesuré à partir du début de l'encodage de la valeur (c'est-à-dire pas de l'encodage de la valeur).
 (c'est-à-dire sans compter les quatre premiers octets contenant le hachage de la signature de la fonction). Ces valeurs sont les suivantes
+=======
+A call to a function with the signature ``f(uint256,uint32[],bytes10,bytes)`` with values
+``(0x123, [0x456, 0x789], "1234567890", "Hello, world!")`` is encoded in the following way:
+
+We take the first four bytes of ``keccak("f(uint256,uint32[],bytes10,bytes)")``, i.e. ``0x8be65246``.
+Then we encode the head parts of all four arguments. For the static types ``uint256`` and ``bytes10``,
+these are directly the values we want to pass, whereas for the dynamic types ``uint32[]`` and ``bytes``,
+we use the offset in bytes to the start of their data area, measured from the start of the value
+encoding (i.e. not counting the first four bytes containing the hash of the function signature). These are:
+>>>>>>> english/develop
 
 - ``0x0000000000000000000000000000000000000000000000000000000000000123`` (``0x123`` padded to 32 bytes)
 - ``0x0000000000000000000000000000000000000000000000000000000000000080`` (décalage du début de la partie données du second paramètre, 4*32 octets, exactement la taille de la partie tête)
@@ -349,8 +389,13 @@ Au total, le codage est le suivant (nouvelle ligne après le sélecteur de fonct
       000000000000000000000000000000000000000000000000000000000000000d
       48656c6c6f2c20776f726c642100000000000000000000000000000000000000
 
+<<<<<<< HEAD
 Appliquons le même principe pour encoder les données d'une fonction de signature ``g(uint[][],string[])``
 avec les valeurs ``([1, 2], [3]], ["un", "deux", "trois"])`` mais commençons par les parties les plus atomiques de l'encodage :
+=======
+Let us apply the same principle to encode the data for a function with a signature ``g(uint256[][],string[])``
+with values ``([[1, 2], [3]], ["one", "two", "three"])`` but start from the most atomic parts of the encoding:
+>>>>>>> english/develop
 
 D'abord, nous encodons la longueur et les données du premier tableau dynamique intégré ``[1, 2]`` du premier tableau racine ``[[1, 2], [3]]`` :
 
@@ -417,8 +462,13 @@ Le décalage ``e`` pointe vers le début du contenu de la chaîne ``"trois"`` qu
 donc ``e = 0x00000000000000000000000000000000000000000000000000000000000000e0``.
 
 
+<<<<<<< HEAD
 Notez que les encodages des éléments intégrés des tableaux racines ne sont pas dépendants les uns des autres
 et ont les mêmes encodages pour une fonction avec une signature ``g(string[],uint[][])``.
+=======
+Note that the encodings of the embedded elements of the root arrays are not dependent on each other
+and have the same encodings for a function with a signature ``g(string[],uint256[][])``.
+>>>>>>> english/develop
 
 Ensuite, nous encodons la longueur du premier tableau racine :
 
@@ -504,6 +554,7 @@ recherche efficace et la lisibilité arbitraire en définissant des événements
 indexés, l'autre non - destinés à contenir la même valeur.
 
 .. _abi_errors:
+.. index:: error, selector; of an error
 
 Erreurs
 ======
@@ -596,11 +647,19 @@ Les erreurs se présentent comme suit :
   * ``components`` : utilisé pour les types de tuple (plus bas).
 
 .. note::
+<<<<<<< HEAD
   Il peut y avoir plusieurs erreurs avec le même nom et même avec une signature identique
   signature identique dans le tableau JSON, par exemple si les erreurs proviennent de différents
   fichiers différents dans le contrat intelligent ou sont référencées à partir d'un autre contrat intelligent.
   Pour l'ABI, seul le nom de l'erreur elle-même est pertinent et non l'endroit où elle est
   définie.
+=======
+  There can be multiple errors with the same name and even with identical signature
+  in the JSON array; for example, if the errors originate from different
+  files in the smart contract or are referenced from another smart contract.
+  For the ABI, only the name of the error itself is relevant and not where it is
+  defined.
+>>>>>>> english/develop
 
 
 Par exemple,
@@ -646,6 +705,7 @@ donnerait le JSON :
 Handling tuple types
 --------------------
 
+<<<<<<< HEAD
 Bien que les noms ne fassent intentionnellement pas partie de l'encodage ABI, il est tout à fait logique de les inclure
 dans le JSON pour pouvoir l'afficher à l'utilisateur final. La structure est imbriquée de la manière suivante :
 
@@ -656,6 +716,18 @@ une séquence de ``[]`` et de ``[k]`` avec des
 entiers ``k``. Les composants du tuple sont ensuite stockés dans le membre ``components``,
 qui est de type tableau et a la même structure que l'objet de niveau supérieur, sauf que
 ``indexed`` n'y est pas autorisé.
+=======
+Despite the fact that names are intentionally not part of the ABI encoding, they do make a lot of sense to be included
+in the JSON to enable displaying it to the end user. The structure is nested in the following way:
+
+An object with members ``name``, ``type`` and potentially ``components`` describes a typed variable.
+The canonical type is determined until a tuple type is reached and the string description up
+to that point is stored in ``type`` prefix with the word ``tuple``, i.e. it will be ``tuple`` followed by
+a sequence of ``[]`` and ``[k]`` with
+integers ``k``. The components of the tuple are then stored in the member ``components``,
+which is of an array type and has the same structure as the top-level object except that
+``indexed`` is not allowed there.
+>>>>>>> english/develop
 
 A titre d'exemple, le code
 
@@ -737,6 +809,7 @@ donnerait le JSON :
 Mode de codage strict
 ====================
 
+<<<<<<< HEAD
 Le mode d'encodage strict est le mode qui conduit exactement au même encodage que celui défini dans la spécification formelle ci-dessus.
 Cela signifie que les décalages doivent être aussi petits que possible tout en ne créant pas de chevauchements dans les zones de données.
 autorisés.
@@ -744,6 +817,15 @@ autorisés.
 Habituellement, les décodeurs ABI sont écrits de manière simple en suivant simplement les pointeurs de décalage, mais certains décodeurs
 peuvent appliquer un mode strict. Le décodeur Solidity ABI n'applique pas actuellement le mode strict, mais l'encodeur crée toujours des données en mode strict.
 crée toujours les données en mode strict.
+=======
+Strict encoding mode is the mode that leads to exactly the same encoding as defined in the formal specification above.
+This means that offsets have to be as small as possible while still not creating overlaps in the data areas, and thus no gaps are
+allowed.
+
+Usually, ABI decoders are written in a straightforward way by just following offset pointers, but some decoders
+might enforce strict mode. The Solidity ABI decoder currently does not enforce strict mode, but the encoder
+always creates data in strict mode.
+>>>>>>> english/develop
 
 Mode Packed non standard
 ========================
@@ -768,6 +850,7 @@ A titre d'exemple, l'encodage de ``int16(-1), bytes1(0x42), uint16(0x03), string
 
 Plus précisément :
 
+<<<<<<< HEAD
 - Pendant l'encodage, tout est encodé sur place. Cela signifie qu'il n'y a
   pas de distinction entre la tête et la queue, comme dans l'encodage ABI, et la longueur
   d'un tableau n'est pas encodée.
@@ -780,6 +863,20 @@ Plus précisément :
 - L'encodage de ``string`` ou ``bytes`` n'applique pas de remplissage à la fin
   sauf s'il s'agit d'une partie d'un tableau ou d'une structure (dans ce cas, il s'agit d'un multiple de 32 octets).
   32 octets).
+=======
+- During the encoding, everything is encoded in-place. This means that there is
+  no distinction between head and tail, as in the ABI encoding, and the length
+  of an array is not encoded.
+- The direct arguments of ``abi.encodePacked`` are encoded without padding,
+  as long as they are not arrays (or ``string`` or ``bytes``).
+- The encoding of an array is the concatenation of the
+  encoding of its elements **with** padding.
+- Dynamically-sized types like ``string``, ``bytes`` or ``uint[]`` are encoded
+  without their length field.
+- The encoding of ``string`` or ``bytes`` does not apply padding at the end,
+  unless it is part of an array or struct (then it is padded to a multiple of
+  32 bytes).
+>>>>>>> english/develop
 
 En général, l'encodage est ambigu dès qu'il y a deux éléments de taille dynamique,
 à cause du champ de longueur manquant.
@@ -804,9 +901,15 @@ pour faire précéder un sélecteur de fonction. Comme l'encodage est ambigu, il
 Codage des paramètres d'événements indexés
 ====================================
 
+<<<<<<< HEAD
 Les paramètres d'événements indexés qui ne sont pas des types de valeur, c'est-à-dire les tableaux et les
 stockés directement, mais un keccak256-hash d'un encodage est stocké. Ce codage
 est défini comme suit :
+=======
+Indexed event parameters that are not value types, i.e. arrays and structs are not
+stored directly but instead a Keccak-256 hash of an encoding is stored. This encoding
+is defined as follows:
+>>>>>>> english/develop
 
 - l'encodage d'une valeur de type ``bytes`` et ``chaîne`'' est juste le contenu de la chaîne de caractères
   sans aucun padding ou préfixe de longueur.
