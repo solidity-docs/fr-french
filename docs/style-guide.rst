@@ -8,13 +8,20 @@ Guide de style
 Introduction
 ************
 
+<<<<<<< HEAD
 Ce guide est destiné à fournir des conventions de codage pour l'écriture du code Solidity.
 Ce guide doit être considéré comme un document évolutif qui changera
 au fur et à mesure que des conventions utiles seront trouvées et que les anciennes conventions seront rendues obsolètes.
+=======
+This guide is intended to provide coding conventions for writing Solidity code.
+This guide should be thought of as an evolving document that will change over
+time as useful conventions are found and old conventions are rendered obsolete.
+>>>>>>> english/develop
 
 De nombreux projets mettront en place leurs propres guides de style. En cas de
 conflits, les guides de style spécifiques au projet sont prioritaires.
 
+<<<<<<< HEAD
 La structure et un grand nombre de recommandations de ce guide de style ont été
 tirées du guide de style de python
 `pep8 style guide <https://www.python.org/dev/peps/pep-0008/>`_.
@@ -23,14 +30,28 @@ Le but de ce guide n'est *pas* d'être la bonne ou la meilleure façon d'écrire
 code Solidity. Le but de ce guide est la *consistance*. Une citation de python
 `pep8 <https://www.python.org/dev/peps/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds>`_
 résume bien ce concept.
+=======
+The structure and many of the recommendations within this style guide were
+taken from python's
+`pep8 style guide <https://peps.python.org/pep-0008/>`_.
+
+The goal of this guide is *not* to be the right way or the best way to write
+Solidity code.  The goal of this guide is *consistency*.  A quote from python's
+`pep8 <https://peps.python.org/pep-0008/#a-foolish-consistency-is-the-hobgoblin-of-little-minds>`_
+captures this concept well.
+>>>>>>> english/develop
 
 .. note::
 
     Un guide de style est une question de cohérence. La cohérence avec ce guide de style est importante.
     La cohérence au sein d'un module ou d'une fonction est la plus importante.
 
+<<<<<<< HEAD
     Mais le plus important : **savoir quand être incohérent** - parfois le guide de style ne s'applique tout simplement pas.
     En cas de doute, utilisez votre meilleur jugement. Regardez d'autres exemples et décidez de ce qui vous semble le mieux. Et n'hésitez pas à demander !
+=======
+    But most importantly: **know when to be inconsistent** -- sometimes the style guide just doesn't apply. When in doubt, use your best judgment. Look at other examples and decide what looks best. And don't hesitate to ask!
+>>>>>>> english/develop
 
 
 ********************
@@ -55,7 +76,18 @@ Lignes vierges
 
 Entourer les déclarations de haut niveau dans le code source de solidity de deux lignes vides.
 
+<<<<<<< HEAD
 Oui :
+=======
+Mixing tabs and spaces should be avoided.
+
+Blank Lines
+===========
+
+Surround top level declarations in Solidity source with two blank lines.
+
+Yes:
+>>>>>>> english/develop
 
 .. code-block:: solidity
 
@@ -148,8 +180,12 @@ Non :
 Longueur maximale de la ligne
 =============================
 
+<<<<<<< HEAD
 Garder les lignes sous la recommandation `PEP 8 <https://www.python.org/dev/peps/pep-0008/#maximum-line-length>`_ à un maximum de 79 (ou 99)
 caractères aide les lecteurs à analyser facilement le code.
+=======
+Maximum suggested line length is 120 characters.
+>>>>>>> english/develop
 
 Les lignes enveloppées doivent se conformer aux directives suivantes.
 
@@ -206,7 +242,7 @@ Oui :
 
 .. code-block:: solidity
 
-    thisIsALongNestedMapping[being][set][to_some_value] = someFunction(
+    thisIsALongNestedMapping[being][set][toSomeValue] = someFunction(
         argument1,
         argument2,
         argument3,
@@ -217,7 +253,7 @@ Non :
 
 .. code-block:: solidity
 
-    thisIsALongNestedMapping[being][set][to_some_value] = someFunction(argument1,
+    thisIsALongNestedMapping[being][set][toSomeValue] = someFunction(argument1,
                                                                        argument2,
                                                                        argument3,
                                                                        argument4);
@@ -440,15 +476,15 @@ Yes:
 
     x = 1;
     y = 2;
-    long_variable = 3;
+    longVariable = 3;
 
 Non :
 
 .. code-block:: solidity
 
-    x             = 1;
-    y             = 2;
-    long_variable = 3;
+    x            = 1;
+    y            = 2;
+    longVariable = 3;
 
 Ne pas inclure d'espace dans les fonctions de réception et de repli :
 
@@ -680,10 +716,17 @@ Non :
         selfdestruct(owner);
     }
 
+<<<<<<< HEAD
 Pour les longues déclarations de fonctions, il est recommandé de déposer chaque argument
 sur sa propre ligne au même niveau d'indentation que le corps de la fonction. La
 parenthèse fermante et la parenthèse ouvrante doivent être placées sur leur propre ligne
 au même niveau d'indentation que la déclaration de fonction.
+=======
+For long function declarations, it is recommended to drop each argument onto
+its own line at the same indentation level as the function body.  The closing
+parenthesis and opening bracket should be placed on their own line as well at
+the same indentation level as the function declaration.
+>>>>>>> english/develop
 
 Oui :
 
@@ -928,9 +971,15 @@ C'est autorisé :
 
     function shortFunction() public { doSomething(); }
 
+<<<<<<< HEAD
 Ces directives pour les déclarations de fonctions sont destinées à améliorer la lisibilité.
 Les auteurs doivent faire preuve de discernement car ce guide ne prétend pas couvrir toutes les
 permutations possibles pour les déclarations de fonctions.
+=======
+These guidelines for function declarations are intended to improve readability.
+Authors should use their best judgment as this guide does not try to cover all
+possible permutations for function declarations.
+>>>>>>> english/develop
 
 Mappages
 ========
@@ -1017,10 +1066,17 @@ Non :
     x += 3+4;
     x |= y&&z;
 
+<<<<<<< HEAD
 * Les opérateurs ayant une priorité plus élevée que les autres peuvent exclure les espaces
   afin d'indiquer la préséance. Ceci a pour but de permettre
   d'améliorer la lisibilité d'une déclaration complexe. Vous devez toujours utiliser la même
   quantité d'espaces blancs de part et d'autre d'un opérateur :
+=======
+* Operators with a higher priority than others can exclude surrounding
+  whitespace in order to denote precedence.  This is meant to allow for
+  improved readability for complex statements. You should always use the same
+  amount of whitespace on either side of an operator:
+>>>>>>> english/develop
 
 Oui :
 
@@ -1052,19 +1108,59 @@ Disposez les éléments du contrat dans l'ordre suivant :
 
 À l'intérieur de chaque contrat, bibliothèque ou interface, utilisez l'ordre suivant :
 
+<<<<<<< HEAD
 1. Les déclarations de type
 2. Variables d'état
 3. Événements
 4. Fonctions
+=======
+1. Type declarations
+2. State variables
+3. Events
+4. Errors
+5. Modifiers
+6. Functions
+>>>>>>> english/develop
 
 .. note::
 
     Il peut être plus clair de déclarer les types à proximité de leur utilisation dans les événements ou les
     variables d'état.
 
+<<<<<<< HEAD
 *************************
 Conventions d'appellation
 *************************
+=======
+Yes:
+
+.. code-block:: solidity
+
+    // SPDX-License-Identifier: GPL-3.0
+    pragma solidity >=0.8.4 <0.9.0;
+
+    abstract contract Math {
+        error DivideByZero();
+        function divide(int256 numerator, int256 denominator) public virtual returns (uint256);
+    }
+
+No:
+
+.. code-block:: solidity
+
+    // SPDX-License-Identifier: GPL-3.0
+    pragma solidity >=0.8.4 <0.9.0;
+
+    abstract contract Math {
+        function divide(int256 numerator, int256 denominator) public virtual returns (uint256);
+        error DivideByZero();
+    }
+
+
+******************
+Naming Conventions
+******************
+>>>>>>> english/develop
 
 Les conventions de dénomination sont puissantes lorsqu'elles sont adoptées et utilisées à grande échelle. L'utilisation de
 différentes conventions peut véhiculer des informations *méta* significatives
@@ -1104,8 +1200,20 @@ Noms à éviter
 * ``O`` - Lettre majuscule oh
 * ``I`` - Lettre majuscule eye
 
+<<<<<<< HEAD
 N'utilisez jamais l'un de ces noms pour des noms de variables à une seule lettre.  Elles sont
 souvent impossibles à distinguer des chiffres un et zéro.
+=======
+* ``b`` (single lowercase letter)
+* ``B`` (single uppercase letter)
+* ``lowercase``
+* ``UPPERCASE``
+* ``UPPER_CASE_WITH_UNDERSCORES``
+* ``CapitalizedWords`` (or CapWords)
+* ``mixedCase`` (differs from CapitalizedWords by initial lowercase character!)
+
+.. note:: When using initialisms in CapWords, capitalize all the letters of the initialisms. Thus HTTPServerError is better than HttpServerError. When using initialisms in mixedCase, capitalize all the letters of the initialisms, except keep the first one lower case if it is the beginning of the name. Thus xmlHTTPRequest is better than XMLHTTPRequest.
+>>>>>>> english/develop
 
 
 Noms de contrats et de bibliothèques
@@ -1128,13 +1236,13 @@ Oui :
     contract Owned {
         address public owner;
 
-        constructor() {
-            owner = msg.sender;
-        }
-
         modifier onlyOwner {
             require(msg.sender == owner);
             _;
+        }
+
+        constructor() {
+            owner = msg.sender;
         }
 
         function transferOwnership(address newOwner) public onlyOwner {
@@ -1167,13 +1275,13 @@ Non :
     contract owned {
         address public owner;
 
-        constructor() {
-            owner = msg.sender;
-        }
-
         modifier onlyOwner {
             require(msg.sender == owner);
             _;
+        }
+
+        constructor() {
+            owner = msg.sender;
         }
 
         function transferOwnership(address newOwner) public onlyOwner {
@@ -1251,10 +1359,15 @@ Les Enums, dans le style des déclarations de type simples, doivent être nommé
 Éviter les collisions de noms
 =============================
 
-* ``single_trailing_underscore_``
+* ``singleTrailingUnderscore_``
 
+<<<<<<< HEAD
 Cette convention est suggérée lorsque le nom souhaité entre en collision avec celui d'un
 nom intégré ou autrement réservé.
+=======
+This convention is suggested when the desired name collides with that of
+an existing state variable, function, built-in or otherwise reserved name.
+>>>>>>> english/develop
 
 .. _style_guide_natspec:
 
