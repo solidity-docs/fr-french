@@ -10,7 +10,7 @@ Conception de base
 ============
 
 L'interface binaire d'application de contrat (ABI) est le moyen standard d'interagir avec les contrats dans l'écosystème Ethereum, à la fois depuis l'extérieur de la blockchain et pour l'interaction entre les contrats.
-de l'extérieur de la blockchain que pour l'interaction entre contrats. Les données sont codées en fonction de leur type,
+Les données sont codées en fonction de leur type,
 comme décrit dans cette spécification. L'encodage n'est pas autodécrit et nécessite donc un schéma pour être décodé.
 
 Nous supposons que les fonctions d'interface d'un contrat sont fortement typées, connues au moment de la compilation et statiques.
@@ -26,8 +26,8 @@ Sélecteur de fonctions
 
 Les quatre premiers octets des données d'appel d'une fonction spécifient la fonction à appeler. Il s'agit des
 premiers (gauche, ordre supérieur en big-endian) quatre octets du hachage Keccak-256 de la signature de la fonction.
-la fonction. La signature est définie comme l'expression canonique du prototype de base sans spécificateur d'emplacement de données, c'est-à-dire qu'il s'agit de l'expression canonique de la fonction.
-spécificateur d'emplacement de données, c'est-à-dire
+La signature est définie comme l'expression canonique du prototype de base sans spécificateur d'emplacement de données, c'est-à-dire qu'il s'agit de l'expression canonique de la fonction,
+c'est-à-dire
 le nom de la fonction avec la liste des types de paramètres entre parenthèses. Les types de paramètres sont séparés par une simple
 virgule - aucun espace n'est utilisé.
 
