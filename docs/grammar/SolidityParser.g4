@@ -13,6 +13,7 @@ options { tokenVocab=SolidityLexer; }
 sourceUnit: (
 	pragmaDirective
 	| importDirective
+	| usingDirective
 	| contractDefinition
 	| interfaceDefinition
 	| libraryDefinition
@@ -313,10 +314,35 @@ errorDefinition:
 	Semicolon;
 
 /**
+<<<<<<< HEAD
  * Utilisation de directives pour lier des fonctions de bibliothèques à des types.
  * Peut se produire dans les contrats et les bibliothèques.
+=======
+ * Operators that users are allowed to implement for some types with `using for`.
+>>>>>>> english/develop
  */
-usingDirective: Using identifierPath For (Mul | typeName) Semicolon;
+userDefinableOperator:
+	BitAnd
+	| BitNot
+	| BitOr
+	| BitXor
+	| Add
+	| Div
+	| Mod
+	| Mul
+	| Sub
+	| Equal
+	| GreaterThan
+	| GreaterThanOrEqual
+	| LessThan
+	| LessThanOrEqual
+	| NotEqual;
+
+/**
+ * Using directive to attach library functions and free functions to types.
+ * Can occur within contracts and libraries and at the file level.
+ */
+usingDirective: Using (identifierPath | (LBrace identifierPath (As userDefinableOperator)? (Comma identifierPath (As userDefinableOperator)?)* RBrace)) For (Mul | typeName) Global? Semicolon;
 /**
  * Un nom de type peut être un type élémentaire, un type de fonction, un type de mappage, un type défini par l'utilisateur
  * (par exemple, un contrat ou un struct) ou un type de tableau.
@@ -390,7 +416,7 @@ inlineArrayExpression: LBrack (expression ( Comma expression)* ) RBrack;
 /**
  * Outre les identificateurs ordinaires sans mot-clé, certains mots-clés comme "from" et "error" peuvent également être utilisés comme identificateurs.
  */
-identifier: Identifier | From | Error | Revert;
+identifier: Identifier | From | Error | Revert | Global;
 
 literal: stringLiteral | numberLiteral | booleanLiteral | hexStringLiteral | unicodeStringLiteral;
 booleanLiteral: True | False;
@@ -478,7 +504,13 @@ revertStatement: Revert expression callArgumentList Semicolon;
  * Le contenu d'un bloc d'assemblage en ligne utilise un analyseur/lexeur séparé, c'est-à-dire que l'ensemble des mots-clés et
  * d'identificateurs autorisés est différent à l'intérieur d'un bloc d'assemblage en ligne.
  */
-assemblyStatement: Assembly AssemblyDialect? AssemblyLBrace yulStatement* YulRBrace;
+assemblyStatement: Assembly AssemblyDialect? assemblyFlags? AssemblyLBrace yulStatement* YulRBrace;
+
+/**
+ * Assembly flags.
+ * Comma-separated list of double-quoted strings as flags.
+ */
+assemblyFlags: AssemblyBlockLParen AssemblyFlagString (AssemblyBlockComma AssemblyFlagString)* AssemblyBlockRParen;
 
 //@doc:inline
 variableDeclarationList: variableDeclarations+=variableDeclaration (Comma variableDeclarations+=variableDeclaration)*;
@@ -499,7 +531,7 @@ variableDeclarationTuple:
 variableDeclarationStatement: ((variableDeclaration (Assign expression)?) | (variableDeclarationTuple Assign expression)) Semicolon;
 expressionStatement: expression Semicolon;
 
-mappingType: Mapping LParen key=mappingKeyType DoubleArrow value=typeName RParen;
+mappingType: Mapping LParen key=mappingKeyType name=identifier? DoubleArrow value=typeName name=identifier? RParen;
 /**
  * Seuls les types élémentaires ou les types définis par l'utilisateur sont viables comme clés de mappage.
  */
