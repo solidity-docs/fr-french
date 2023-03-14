@@ -9,10 +9,9 @@ ReservedKeywords:
 	| 'partial' | 'promise' | 'reference' | 'relocatable' | 'sealed' | 'sizeof' | 'static'
 	| 'supports' | 'switch' | 'typedef' | 'typeof' | 'var';
 
-Pragma: 'pragma' -> pushMode(PragmaMode);
 Abstract: 'abstract';
-Anonymous: 'anonymous';
 Address: 'address';
+Anonymous: 'anonymous';
 As: 'as';
 Assembly: 'assembly' -> pushMode(AssemblyBlockMode);
 Bool: 'bool';
@@ -29,14 +28,21 @@ Do: 'do';
 Else: 'else';
 Emit: 'emit';
 Enum: 'enum';
+<<<<<<< HEAD
 Error: 'error'; // pas un vrai mot-clé
 Revert: 'revert'; // pas un vrai mot-clé
+=======
+Error: 'error'; // not a real keyword
+>>>>>>> english/develop
 Event: 'event';
 External: 'external';
 Fallback: 'fallback';
 False: 'false';
 Fixed: 'fixed' | ('fixed' [1-9][0-9]* 'x' [1-9][0-9]*);
+<<<<<<< HEAD
 From: 'from'; // pas un vrai mot-clé
+=======
+>>>>>>> english/develop
 /**
  * Types d'octets de longueur fixe.
  */
@@ -46,7 +52,9 @@ FixedBytes:
 	'bytes17' | 'bytes18' | 'bytes19' | 'bytes20' | 'bytes21' | 'bytes22' | 'bytes23' | 'bytes24' |
 	'bytes25' | 'bytes26' | 'bytes27' | 'bytes28' | 'bytes29' | 'bytes30' | 'bytes31' | 'bytes32';
 For: 'for';
+From: 'from'; // not a real keyword
 Function: 'function';
+Global: 'global'; // not a real keyword
 Hex: 'hex';
 If: 'if';
 Immutable: 'immutable';
@@ -66,12 +74,14 @@ New: 'new';
 NumberUnit: 'wei' | 'gwei' | 'ether' | 'seconds' | 'minutes' | 'hours' | 'days' | 'weeks' | 'years';
 Override: 'override';
 Payable: 'payable';
+Pragma: 'pragma' -> pushMode(PragmaMode);
 Private: 'private';
 Public: 'public';
 Pure: 'pure';
 Receive: 'receive';
 Return: 'return';
 Returns: 'returns';
+Revert: 'revert'; // not a real keyword
 /**
  * Types d'entiers signés dimensionnés.
  * int est un alias de int256.
@@ -198,9 +208,7 @@ fragment EscapeSequence:
 /**
  * Un littéral de chaîne de caractères entre guillemets permettant des caractères unicodes arbitraires.
  */
-UnicodeStringLiteral:
-	'unicode"' DoubleQuotedUnicodeStringCharacter* '"'
-	| 'unicode\'' SingleQuotedUnicodeStringCharacter* '\'';
+UnicodeStringLiteral: 'unicode' (('"' DoubleQuotedUnicodeStringCharacter* '"') | ('\'' SingleQuotedUnicodeStringCharacter* '\''));
 //@doc:inline
 fragment DoubleQuotedUnicodeStringCharacter: ~["\r\n\\] | EscapeSequence;
 //@doc:inline
@@ -254,6 +262,12 @@ mode AssemblyBlockMode;
 AssemblyDialect: '"evmasm"';
 AssemblyLBrace: '{' -> popMode, pushMode(YulMode);
 
+AssemblyFlagString: '"' DoubleQuotedStringCharacter+ '"';
+
+AssemblyBlockLParen: '(';
+AssemblyBlockRParen: ')';
+AssemblyBlockComma: ',';
+
 AssemblyBlockWS: [ \t\r\n\u000C]+ -> skip ;
 AssemblyBlockCOMMENT: '/*' .*? '*/' -> channel(HIDDEN) ;
 AssemblyBlockLINE_COMMENT: '//' ~[\r\n]* -> channel(HIDDEN) ;
@@ -287,8 +301,8 @@ YulEVMBuiltin:
 	| 'returndatacopy' | 'extcodehash' | 'create' | 'create2' | 'call' | 'callcode'
 	| 'delegatecall' | 'staticcall' | 'return' | 'revert' | 'selfdestruct' | 'invalid'
 	| 'log0' | 'log1' | 'log2' | 'log3' | 'log4' | 'chainid' | 'origin' | 'gasprice'
-	| 'blockhash' | 'coinbase' | 'timestamp' | 'number' | 'difficulty' | 'gaslimit'
-	| 'basefee';
+	| 'blockhash' | 'coinbase' | 'timestamp' | 'number' | 'difficulty' | 'prevrandao'
+	| 'gaslimit' | 'basefee';
 
 YulLBrace: '{' -> pushMode(YulMode);
 YulRBrace: '}' -> popMode;
