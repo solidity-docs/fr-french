@@ -44,10 +44,17 @@ Information privée et aléatoire
 Tout ce que vous utilisez dans un contrat intelligent est visible publiquement, même
 les variables locales et les variables d'état marquées ``private``.
 
+<<<<<<< HEAD
 L'utilisation de nombres aléatoires dans les contrats intelligents est assez délicat si vous ne voulez pas
 que les mineurs soient capables de tricher.
 
 Ré-entrée en scène
+=======
+Using random numbers in smart contracts is quite tricky if you do not want
+block builders to be able to cheat.
+
+Reentrancy
+>>>>>>> english/develop
 ===========
 
 Toute interaction d'un contrat (A) avec un autre contrat (B) et tout transfert
@@ -97,8 +104,13 @@ car il utilise ``call`` qui renvoie tout le gaz restant par défaut :
         }
     }
 
+<<<<<<< HEAD
 Pour éviter la ré-entrance, vous pouvez utiliser le modèle Checks-Effects-Interactions comme
 comme indiqué ci-dessous :
+=======
+To avoid reentrancy, you can use the Checks-Effects-Interactions pattern as
+demonstrated below:
+>>>>>>> english/develop
 
 .. code-block:: solidity
 
@@ -116,10 +128,24 @@ comme indiqué ci-dessous :
         }
     }
 
+<<<<<<< HEAD
 Notez que la ré-entrance n'est pas seulement un effet du transfert d'Ether mais de tout
 appel de fonction sur un autre contrat. De plus, vous devez également prendre en compte
 les situations de multi-contrats. Un contrat appelé pourrait modifier
 l'état d'un autre contrat dont vous dépendez.
+=======
+The Checks-Effects-Interactions pattern ensures that all code paths through a contract complete all required checks
+of the supplied parameters before modifying the contract's state (Checks); only then it makes any changes to the state (Effects);
+it may make calls to functions in other contracts *after* all planned state changes have been written to
+storage (Interactions). This is a common foolproof way to prevent *reentrancy attacks*, where an externally called
+malicious contract is able to double-spend an allowance, double-withdraw a balance, among other things, by using logic that calls back into the
+original contract before it has finalized its transaction.
+
+Note that reentrancy is not only an effect of Ether transfer but of any
+function call on another contract. Furthermore, you also have to take
+multi-contract situations into account. A called contract could modify the
+state of another contract you depend on.
+>>>>>>> english/develop
 
 Limite et boucles de gaz
 ===================
@@ -211,9 +237,9 @@ en utilisant un deuxième proxy :
     contract ProxyWithMoreFunctionality {
         PermissionlessProxy proxy;
 
-        function callOther(address _addr, bytes memory _payload) public
+        function callOther(address addr, bytes memory payload) public
                 returns (bool, bytes memory) {
-            return proxy.callOther(_addr, _payload);
+            return proxy.callOther(addr, payload);
         }
         // Autres fonctions et autres fonctionnalités
     }
@@ -221,9 +247,9 @@ en utilisant un deuxième proxy :
     // Il s'agit du contrat complet, il n'a pas d'autre fonctionnalités et
     // ne nécessite aucun privilège pour fonctionner.
     contract PermissionlessProxy {
-        function callOther(address _addr, bytes memory _payload) public
+        function callOther(address addr, bytes memory payload) public
                 returns (bool, bytes memory) {
-            return _addr.call(_payload);
+            return addr.call(payload);
         }
     }
 
@@ -332,19 +358,19 @@ d'une ``structure`` qui est le type de base d'un tableau de stockage dynamique. 
     pragma solidity >=0.6.0 <0.9.0;
 
     contract Map {
-        mapping (uint => uint)[] array;
+        mapping(uint => uint)[] array;
 
-        function allocate(uint _newMaps) public {
-            for (uint i = 0; i < _newMaps; i++)
+        function allocate(uint newMaps) public {
+            for (uint i = 0; i < newMaps; i++)
                 array.push();
         }
 
-        function writeMap(uint _map, uint _key, uint _value) public {
-            array[_map][_key] = _value;
+        function writeMap(uint map, uint key, uint value) public {
+            array[map][key] = value;
         }
 
-        function readMap(uint _map, uint _key) public view returns (uint) {
-            return array[_map][_key];
+        function readMap(uint map, uint key) public view returns (uint) {
+            return array[map][key];
         }
 
         function eraseMaps() public {
@@ -421,9 +447,15 @@ Dans un second temps, si toutes les vérifications sont passées, les effets sur
 du contrat en cours. L'interaction avec d'autres contrats
 doit être la toute dernière étape de toute fonction.
 
+<<<<<<< HEAD
 Les premiers contrats retardaient certains effets et attendaient que les appels de fonctions
 externes reviennent dans un état de non-erreur. C'est souvent une grave erreur
 à cause du problème de ré-entrance expliqué ci-dessus.
+=======
+Early contracts delayed some effects and waited for external function
+calls to return in a non-error state. This is often a serious mistake
+because of the reentrancy problem explained above.
+>>>>>>> english/develop
 
 Notez également que les appels à des contrats connus peuvent à leur tour provoquer des appels à des
 contrats inconnus, il est donc probablement préférable de toujours appliquer ce modèle.
