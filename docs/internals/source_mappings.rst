@@ -26,10 +26,17 @@ qui ne font pas partie de l'entrée d'origine mais sont référencés à partir 
 Ces fichiers sources ainsi que leurs identifiants peuvent être
 obtenu via ``output['contracts'][sourceName][contractName]['evm']['bytecode']['generatedSources']``.
 
+<<<<<<< HEAD
 .. note ::
     Dans le cas d'instructions qui ne sont associées à aucun fichier source particulier,
     le mappage source attribue un identifiant entier de ``-1``. Cela peut arriver pour
     sections de bytecode issues d'instructions d'assemblage en ligne générées par le compilateur.
+=======
+.. note::
+    In the case of instructions that are not associated with any particular source file,
+    the source mapping assigns an integer identifier of ``-1``. This may happen for
+    bytecode sections stemming from compiler-generated inline assembly statements.
+>>>>>>> english/develop
 
 Les SourceMap à l'intérieur de l'AST utilisent la notation suivantes
 
