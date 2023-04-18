@@ -65,12 +65,13 @@ Certaines variables et fonctions spéciales existent toujours dans l'espace de n
 et sont principalement utilisées pour fournir des informations sur la blockchain,
 ou sont des fonctions utilitaires d'usage général.
 
-.. index:: abi, block, coinbase, difficulty, encode, number, block;number, timestamp, block;timestamp, msg, data, gas, sender, value, gas price, origin
+.. index:: abi, block, coinbase, difficulty, prevrandao, encode, number, block;number, timestamp, block;timestamp, msg, data, gas, sender, value, gas price, origin
 
 
 Propriétés des blocs et des transactions
 ----------------------------------------
 
+<<<<<<< HEAD
 - ``blockhash(uint blockNumber) retourne (bytes32)``: hachage du bloc donné si ``blocknumber`` est l'un des 256 blocs les plus récents ; sinon retourne zéro.
 - ``block.basefee`` (``uint``): la redevance de base du bloc actuel (`EIP-3198 <https://eips.ethereum.org/EIPS/eip-3198>`_ et `EIP-1559 <https://eips.ethereum.org/EIPS/eip-1559>`_)
 - ``block.chainid`` (``uint``): identifiant de la chaîne actuelle
@@ -86,6 +87,24 @@ Propriétés des blocs et des transactions
 - ``msg.value`` (``uint``): nombre de wei envoyés avec le message
 - ``tx.gasprice`` (``uint``): prix du gaz de la transaction
 - ``tx.origin`` (``address``): expéditeur de la transaction (chaîne d'appel complète)
+=======
+- ``blockhash(uint blockNumber) returns (bytes32)``: hash of the given block when ``blocknumber`` is one of the 256 most recent blocks; otherwise returns zero
+- ``block.basefee`` (``uint``): current block's base fee (`EIP-3198 <https://eips.ethereum.org/EIPS/eip-3198>`_ and `EIP-1559 <https://eips.ethereum.org/EIPS/eip-1559>`_)
+- ``block.chainid`` (``uint``): current chain id
+- ``block.coinbase`` (``address payable``): current block miner's address
+- ``block.difficulty`` (``uint``): current block difficulty (``EVM < Paris``). For other EVM versions it behaves as a deprecated alias for ``block.prevrandao`` (`EIP-4399 <https://eips.ethereum.org/EIPS/eip-4399>`_ )
+- ``block.gaslimit`` (``uint``): current block gaslimit
+- ``block.number`` (``uint``): current block number
+- ``block.prevrandao`` (``uint``): random number provided by the beacon chain (``EVM >= Paris``)
+- ``block.timestamp`` (``uint``): current block timestamp as seconds since unix epoch
+- ``gasleft() returns (uint256)``: remaining gas
+- ``msg.data`` (``bytes calldata``): complete calldata
+- ``msg.sender`` (``address``): sender of the message (current call)
+- ``msg.sig`` (``bytes4``): first four bytes of the calldata (i.e. function identifier)
+- ``msg.value`` (``uint``): number of wei sent with the message
+- ``tx.gasprice`` (``uint``): gas price of the transaction
+- ``tx.origin`` (``address``): sender of the transaction (full call chain)
+>>>>>>> english/develop
 
 .. note::
     Les valeurs de tous les membres de ``msg``, y compris ``msg.sender`` et
@@ -153,6 +172,14 @@ Membres des octets
 ----------------
 
 - ``bytes.concat(...) retourne (bytes memory)``: :ref:`Concatène un nombre variable d'octets et les arguments bytes1, ..., bytes32 dans un tableau d'octets.<bytes-concat>`
+
+.. index:: string members
+
+Members of string
+-----------------
+
+- ``string.concat(...) returns (string memory)``: :ref:`Concatenates variable number of string arguments to one string array<string-concat>`
+
 
 .. index:: assert, revert, require
 
@@ -223,10 +250,15 @@ Fonctions mathématiques et cryptographiques
     pour les signatures _transaction_ (voir `EIP-2 <https://eips.ethereum.org/EIPS/eip-2#specification>`_),
     mais la fonction ecrecover est restée inchangée.
 
+<<<<<<< HEAD
     Ce n'est généralement pas un problème, à moins que vous n'exigiez que les signatures soient uniques
     ou que vous les utilisiez pour identifier des éléments. OpenZeppelin a une
     `ECDSA helper library <https://docs.openzeppelin.com/contracts/2.x/api/cryptography#ECDSA>`_ que vous pouvez
     utiliser comme un wrapper pour ``ecrecover`` sans ce problème.
+=======
+    This is usually not a problem unless you require signatures to be unique or use them to identify items.
+    OpenZeppelin have a `ECDSA helper library <https://docs.openzeppelin.com/contracts/4.x/api/utils#ECDSA>`_ that you can use as a wrapper for ``ecrecover`` without this issue.
+>>>>>>> english/develop
 
 .. note::
 
@@ -304,13 +336,24 @@ Pour plus d'informations, consultez la section sur :ref:`adress`.
     sémantique similaire mais légèrement différente de celle de ``delegatecall``.
 
 
-.. index:: this, selfdestruct
+.. index:: this, selfdestruct, super
 
+<<<<<<< HEAD
 Concernant les contrats
 -----------------------
 
 ``this`` (le type du contrat actuel)
     le contrat actuel, explicitement convertible en :ref:`address`.
+=======
+Contract-related
+----------------
+
+``this`` (current contract's type)
+    The current contract, explicitly convertible to :ref:`address`
+
+``super``
+    A contract one level higher in the inheritance hierarchy
+>>>>>>> english/develop
 
 ``selfdestruct(address payable recipient)``
     Détruit le contrat actuel, en envoyant ses fonds à l'adresse :ref:`address` donnée
@@ -320,10 +363,19 @@ Concernant les contrats
     - la fonction de réception du contrat récepteur n'est pas exécutée.
     - le contrat n'est réellement détruit qu'à la fin de la transaction et les ``revert`` peuvent "annuler" la destruction.
 
+<<<<<<< HEAD
 
 
 
 En outre, toutes les fonctions du contrat en cours sont appelables directement, y compris la fonction en cours.
+=======
+Furthermore, all functions of the current contract are callable directly including the current function.
+>>>>>>> english/develop
+
+.. warning::
+    From version 0.8.18 and up, the use of ``selfdestruct`` in both Solidity and Yul will trigger a
+    deprecation warning, since the ``SELFDESTRUCT`` opcode will eventually undergo breaking changes in behaviour
+    as stated in `EIP-6049 <https://eips.ethereum.org/EIPS/eip-6049>`_.
 
 .. note::
     Avant la version 0.5.0, il existait une fonction appelée ``suicide`` ayant la même
@@ -376,4 +428,19 @@ Les propriétés suivantes sont disponibles pour un type entier ``T`` :
     La plus petite valeur représentable par le type ``T``.
 
 ``type(T).max``
+<<<<<<< HEAD
     La plus grande valeur représentable par le type ``T``.
+=======
+    The largest value representable by type ``T``.
+
+Reserved Keywords
+=================
+
+These keywords are reserved in Solidity. They might become part of the syntax in the future:
+
+``after``, ``alias``, ``apply``, ``auto``, ``byte``, ``case``, ``copyof``, ``default``,
+``define``, ``final``, ``implements``, ``in``, ``inline``, ``let``, ``macro``, ``match``,
+``mutable``, ``null``, ``of``, ``partial``, ``promise``, ``reference``, ``relocatable``,
+``sealed``, ``sizeof``, ``static``, ``supports``, ``switch``, ``typedef``, ``typeof``,
+``var``.
+>>>>>>> english/develop
