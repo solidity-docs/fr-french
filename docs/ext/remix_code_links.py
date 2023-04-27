@@ -21,7 +21,7 @@ def insert_node_before(child, new_sibling):
 def remix_code_url(source_code, language, solidity_version):
     # NOTE: Les données encodées en base64 peuvent contenir les caractères +, = et /. Remix semble bien les gérer sans erreurs
     base64_encoded_source = base64.b64encode(source_code.encode('utf-8')).decode('ascii')
-    return f"https://remix.ethereum.org/?language={language}&version={solidity_version}&code={base64_encoded_source}"
+    return f"https://remix.ethereum.org/?#language={language}&version={solidity_version}&code={base64_encoded_source}"
 
 
 def build_remix_link_node(url):
