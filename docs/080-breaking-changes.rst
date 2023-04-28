@@ -163,6 +163,7 @@ Changements d'interface
 Comment mettre à jour votre code
 =======================
 
+<<<<<<< HEAD
 - Si vous comptez sur l'arithmétique enveloppante, entourez chaque opération de ``unchecked { ... }``.
 - Optionnel : Si vous utilisez SafeMath ou une bibliothèque similaire, changez ``x.add(y)`` en ``x + y``, ``x.mul(y)`` en ``x * y`` etc.
 - Ajoutez ``pragma abicoder v1;`` si vous voulez rester avec l'ancien codeur ABI.
@@ -174,3 +175,16 @@ Comment mettre à jour votre code
 - Remplacez ``x**y**z`` par ``(x**y)**z``.
 - Utilisez l'assemblage en ligne en remplacement de ``log0``, ..., ``log4``.
 - Négation des entiers non signés en les soustrayant de la valeur maximale du type et en ajoutant 1 (par exemple, ``type(uint256).max - x + 1``, tout en s'assurant que `x` n'est pas zéro)
+=======
+- If you rely on wrapping arithmetic, surround each operation with ``unchecked { ... }``.
+- Optional: If you use SafeMath or a similar library, change ``x.add(y)`` to ``x + y``, ``x.mul(y)`` to ``x * y`` etc.
+- Add ``pragma abicoder v1;`` if you want to stay with the old ABI coder.
+- Optionally remove ``pragma experimental ABIEncoderV2`` or ``pragma abicoder v2`` since it is redundant.
+- Change ``byte`` to ``bytes1``.
+- Add intermediate explicit type conversions if required.
+- Combine ``c.f{gas: 10000}{value: 1}()`` to ``c.f{gas: 10000, value: 1}()``.
+- Change ``msg.sender.transfer(x)`` to ``payable(msg.sender).transfer(x)`` or use a stored variable of ``address payable`` type.
+- Change ``x**y**z`` to ``(x**y)**z``.
+- Use inline assembly as a replacement for ``log0``, ..., ``log4``.
+- Negate unsigned integers by subtracting them from the maximum value of the type and adding 1 (e.g. ``type(uint256).max - x + 1``, while ensuring that ``x`` is not zero)
+>>>>>>> english/develop
