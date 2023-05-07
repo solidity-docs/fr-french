@@ -130,6 +130,7 @@ Si le tableau est plus court que le type cible, il sera complété par des zéro
         }
     }
 
+.. index:: ! literal;conversion, literal;rational, literal;hexadecimal number
 .. _types-conversion-literals:
 
 Conversions entre littéraux et types élémentaires
@@ -152,7 +153,13 @@ suffisamment grand pour le représenter sans troncature :
     converti en un type entier. Depuis la version 0.8.0, ces conversions explicites sont aussi strictes qu'implicites
     conversions, c'est-à-dire qu'elles ne sont autorisées que si le littéral correspond à la plage résultante.
 
+<<<<<<< HEAD
 Tableaux d'octets de taille fixe
+=======
+.. index:: literal;string, literal;hexadecimal
+
+Fixed-Size Byte Arrays
+>>>>>>> english/develop
 ----------------------
 
 Les littéraux décimaux ne peuvent pas être implicitement convertis en tableaux d'octets de taille fixe. Hexadécimal
@@ -182,12 +189,24 @@ si leur nombre de caractères correspond à la taille du type d'octets :
     bytes2 e = "x"; // Interdit
     bytes2 f = "xyz"; // Interdit
 
+.. index:: literal;address
+
 Addresses
 ---------
 
 Comme décrit dans :ref:`address_literals`, les littéraux hexadécimaux de la taille correcte qui passent la somme de contrôle
 test sont de type ``addresse``. Aucun autre littéral ne peut être implicitement converti en type ``addresse``.
 
+<<<<<<< HEAD
 Les conversions explicites de ``bytes20`` ou de n'importe quel type d'entier en ``address`` résultent en ``address payable``.
 
 Une ``address a`` peut être convertie en ``address payable`` via ``payable(a)``.
+=======
+Explicit conversions to ``address`` are allowed only from ``bytes20`` and ``uint160``.
+
+An ``address a`` can be converted explicitly to ``address payable`` via ``payable(a)``.
+
+.. note::
+    Prior to version 0.8.0, it was possible to explicitly convert from any integer type (of any size, signed or unsigned) to  ``address`` or ``address payable``.
+    Starting with in 0.8.0 only conversion from ``uint160`` is allowed.
+>>>>>>> english/develop
