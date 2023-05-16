@@ -150,8 +150,13 @@ lève une exception ou tombe en panne.
     utiliser "f.value(x).gas(g)()``. Cette méthode a été dépréciée dans Solidity 0.6.2 et n'est
     plus possible depuis Solidity 0.7.0.
 
+<<<<<<< HEAD
 Appels nominatifs et paramètres de fonctions anonymes
 ---------------------------------------------
+=======
+Function Calls with Named Parameters
+------------------------------------
+>>>>>>> english/develop
 
 Les arguments d'un appel de fonction peuvent être donnés par leur nom, dans n'importe quel ordre,
 s'ils sont entourés de ``{ }`` comme on peut le voir dans
@@ -173,14 +178,23 @@ paramètres de la déclaration de la fonction, mais peut être dans un ordre arb
         function set(uint key, uint value) public {
             data[key] = value;
         }
-
     }
 
+<<<<<<< HEAD
 Noms des paramètres de la fonction omise
 --------------------------------
 
 Les noms des paramètres non utilisés (en particulier les paramètres de retour) peuvent être omis.
 Ces paramètres seront toujours présents sur la pile, mais ils seront inaccessibles.
+=======
+Omitted Names in Function Definitions
+-------------------------------------
+
+The names of parameters and return values in the function declaration can be omitted.
+Those items with omitted names will still be present on the stack, but they are
+inaccessible by name. An omitted return value name
+can still return a value to the caller by use of the ``return`` statement.
+>>>>>>> english/develop
 
 .. code-block:: solidity
 
@@ -284,7 +298,7 @@ qui n'ont besoin d'être créés que s'il y a un différend.
                 salt,
                 keccak256(abi.encodePacked(
                     type(D).creationCode,
-                    arg
+                    abi.encode(arg)
                 ))
             )))));
 
@@ -647,9 +661,15 @@ par le compilateur dans les situations suivantes :
    modificateur ``payable`` (y compris le constructeur et la fonction de repli).
 #. Si votre contrat reçoit de l'Ether via une fonction publique getter.
 
+<<<<<<< HEAD
 Dans les cas suivants, les données d'erreur de l'appel externe
 (s'il est fourni) sont transférées. Cela signifie qu'il peut soit causer
 une `Error` ou une `Panic` (ou toute autre donnée) :
+=======
+For the following cases, the error data from the external call
+(if provided) is forwarded. This means that it can either cause
+an ``Error`` or a ``Panic`` (or whatever else was given):
+>>>>>>> english/develop
 
 #. Si un ``.transfer()`` échoue.
 #. Si vous appelez une fonction via un appel de message mais qu'elle
