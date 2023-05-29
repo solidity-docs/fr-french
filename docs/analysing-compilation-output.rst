@@ -6,7 +6,7 @@ Analyse de la sortie du compilateur
 
 Il est souvent utile d'examiner le code d'assemblage généré par le compilateur. Le binaire généré,
 c'est-à-dire la sortie de ``solc --bin contract.sol``, est généralement difficile à lire. Il est recommandé
-d'utiliser l'indicateur ``--asm`` pour analyser la sortie de l'assemblage. Même pour les gros contrats, regarder une
+d'utiliser l'indicateur ``--asm`` pour analyser la sortie de l'assemblage. Même pour les gros contrats, regarder un
 visuel de l'assemblage avant et après un changement est souvent très instructif.
 
 Considérons le contrat suivant (nommé, disons ``contract.sol``) :
