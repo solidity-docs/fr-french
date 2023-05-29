@@ -4,7 +4,7 @@ Bienvenue dans la documentation française officielle de Solidity! Veuillez note
 
 ## Documentation
 
-Dès que toutes les traductions seront terminées, le Français sera ajouté au menu déroulant de la documenttation officiel et le contenu de ce référentiel sera disponible pour consultation. 
+Dès que toutes les traductions seront terminées, le Français sera ajouté au menu déroulant de la documentation officielle et le contenu de ce référentiel sera disponible pour consultation. 
 Cependant, jusque-là, la traduction française sera temporairement disponible sur **https://fr-solidity.readthedocs.io/fr/latest/**.
 
 ## Modérateur et Contributeur
@@ -22,14 +22,14 @@ Avant de contribuer, lisez le glossaire et le guide de style (liens ici s'ils ex
 
 Soyez rapide avec vos traductions ! Si vous constatez que vous ne pouvez plus vous engager, faites-le savoir aux responsables afin qu'ils puissent attribuer la page à quelqu'un d'autre.
 
-> Quiconque souhaite contribuer à la documentation officiel Solidity French est libre de participer.
+> Quiconque souhaite contribuer à la documentation officielle Solidity French est libre de participer.
 
 ## Règles de traduction
 
 Lors de la traduction, veuillez suivre ces règles :
 
 1. Ne modifiez jamais le nom ou le chemin du fichier.
-2. Pour les noms propres ou le vocabulaire conceptuel important à Solidity, traduisez phonétiquement ou laisser comme telle (par exemple, Smart Contract peu se traduire par "contrat intelligent").
+2. Pour les noms propres ou le vocabulaire conceptuel important à Solidity, traduisez phonétiquement ou laisser comme telle (par exemple, Smart Contract peut se traduire par "contrat intelligent").
 3. Utilisez une police honorifique et soutenu.
 4. Le code tels que les noms de variables ne doivent pas être transcrites. Cependant, les commentaires sont traduits en Français.
 
