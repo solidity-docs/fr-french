@@ -12,8 +12,13 @@ Pour la liste complète, consultez
 Changements dont le compilateur pourrait ne pas être averti
 =========================================
 
+<<<<<<< HEAD
 Cette section liste les changements pour lesquels le comportement de votre code pourrait
 changer sans que le compilateur vous en avertisse.
+=======
+This section lists changes where the behavior of your code might
+change without the compiler telling you about it.
+>>>>>>> english/develop
 
 * Le type résultant d'une exponentiation est le type de la base. Il s'agissait auparavant du plus petit type
   qui peut contenir à la fois le type de la base et le type de l'exposant, comme pour les opérations symétriques.
@@ -53,9 +58,17 @@ Pour la plupart des sujets, le compilateur fournira des suggestions.
   Si le nom contient un point, son préfixe jusqu'au point ne doit pas entrer en conflit avec une déclaration en dehors du bloc d'assemblage en ligne.
   d'assemblage.
 
+<<<<<<< HEAD
 * Le shadowing de variables d'état est désormais interdit.  Un contrat dérivé peut seulement
   déclarer une variable d'état ``x``, que s'il n'y a pas de variable d'état visible avec le même nom
   d'état visible portant le même nom dans l'une de ses bases.
+=======
+* In inline assembly, opcodes that do not take arguments are now represented as "built-in functions" instead of standalone identifiers. So ``gas`` is now ``gas()``.
+
+* State variable shadowing is now disallowed.  A derived contract can only
+  declare a state variable ``x``, if there is no visible state variable with
+  the same name in any of its bases.
+>>>>>>> english/develop
 
 
 Changements sémantiques et syntaxiques
@@ -102,25 +115,45 @@ ou qui étaient plus difficiles à réaliser.
 Changements d'interface
 =================
 
+<<<<<<< HEAD
 Cette section liste les changements qui ne sont pas liés au langage lui-même, mais qui ont un effet sur les interfaces du compilateur.
 le compilateur. Ces modifications peuvent changer la façon dont vous utilisez le compilateur sur la ligne de commande, la façon dont vous utilisez son interface programmable, ou la façon dont vous analysez la sortie qu'il produit.
 ou comment vous analysez la sortie qu'il produit.
+=======
+This section lists changes that are unrelated to the language itself, but that have an effect on the interfaces of
+the compiler. These may change the way how you use the compiler on the command-line, how you use its programmable
+interface, or how you analyze the output produced by it.
+>>>>>>> english/develop
 
 Nouveau rapporteur d'erreurs
 ~~~~~~~~~~~~~~~~~~
 
+<<<<<<< HEAD
 Un nouveau rapporteur d'erreur a été introduit, qui vise à produire des messages d'erreur plus accessibles sur la ligne de commande.
 Il est activé par défaut, mais si vous passez ``--old-reporter``, vous revenez à l'ancien rapporteur d'erreurs, qui est déprécié.
+=======
+A new error reporter was introduced, which aims at producing more accessible error messages on the command-line.
+It is enabled by default, but passing ``--old-reporter`` falls back to the the deprecated old error reporter.
+>>>>>>> english/develop
 
 Options de hachage des métadonnées
 ~~~~~~~~~~~~~~~~~~~~~
 
+<<<<<<< HEAD
 Le compilateur ajoute maintenant le hash `IPFS <https://ipfs.io/>`_ du fichier de métadonnées à la fin du bytecode par défaut.
 (pour plus de détails, voir la documentation sur :doc:`contract metadata <metadata>`). Avant la version 0.6.0, le compilateur ajoutait la balise
 `Swarm <https://ethersphere.github.io/swarm-home/>`_ hash par défaut, et afin de toujours supporter ce comportement,
 la nouvelle option de ligne de commande ``--metadata-hash`` a été introduite. Elle permet de sélectionner le hachage à produire et à ajouter
 ajouté, en passant soit ``ipfs`` soit ``swarm`` comme valeur à l'option de ligne de commande ``--metadata-hash``.
 Passer la valeur ``none`` supprime complètement le hachage.
+=======
+The compiler now appends the `IPFS <https://ipfs.io/>`_ hash of the metadata file to the end of the bytecode by default
+(for details, see documentation on :doc:`contract metadata <metadata>`). Before 0.6.0, the compiler appended the
+`Swarm <https://ethersphere.github.io/swarm-home/>`_ hash by default, and in order to still support this behavior,
+the new command-line option ``--metadata-hash`` was introduced. It allows you to select the hash to be produced and
+appended, by passing either ``ipfs`` or ``swarm`` as value to the ``--metadata-hash`` command-line option.
+Passing the value ``none`` completely removes the hash.
+>>>>>>> english/develop
 
 Ces changements peuvent également être utilisés via l'interface :ref:`Standard JSON Interface<compiler-api>` et affecter les métadonnées JSON générées par le compilateur.
 
@@ -169,8 +202,19 @@ Cette section donne des instructions détaillées sur la façon de mettre à jou
 * Choisissez des identifiants uniques pour les déclarations de variables dans l'assemblage en ligne qui n'entrent pas en conflit avec les déclarations en dehors de l'assemblage en ligne.
   avec des déclarations en dehors du bloc d'assemblage en ligne.
 
+<<<<<<< HEAD
 * Ajoutez "virtual" à chaque fonction non interface que vous avez l'intention de remplacer. Ajoutez ``virtual`` à toutes les fonctions sans implémentation en dehors des interfaces.
   à toutes les fonctions sans implémentation en dehors des interfaces. Pour l'héritage simple, ajoutez
   ``override`` à chaque fonction de remplacement. Pour l'héritage multiple, ajoutez ``override(A, B, ..)``,
   où vous listez entre parenthèses tous les contrats qui définissent la fonction surchargée. Lorsque
   plusieurs bases définissent la même fonction, le contrat qui hérite doit remplacer toutes les fonctions conflictuelles.
+=======
+* Add ``virtual`` to every non-interface function you intend to override. Add ``virtual``
+  to all functions without implementation outside interfaces. For single inheritance, add
+  ``override`` to every overriding function. For multiple inheritance, add ``override(A, B, ..)``,
+  where you list all contracts that define the overridden function in the parentheses. When
+  multiple bases define the same function, the inheriting contract must override all conflicting functions.
+
+* In inline assembly, add ``()`` to all opcodes that do not otherwise accept an argument.
+  For example, change ``pc`` to ``pc()``, and ``gas`` to ``gas()``.
+>>>>>>> english/develop
