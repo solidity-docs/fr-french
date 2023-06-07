@@ -10,20 +10,34 @@ le changelog de la version `0.8.0 <https://github.com/ethereum/solidity/releases
 Changements silencieux de la sémantique
 ===============================
 
+<<<<<<< HEAD
 Cette section répertorie les modifications où le code existant change de comportement sans que
 le compilateur vous en informe.
 
 * Les opérations arithmétiques s'inversent en cas de sous-dépassement et de dépassement. Vous pouvez utiliser ``unchecked { ... }`` pour utiliser
   le comportement d'enveloppement précédent.
+=======
+This section lists changes where existing code changes its behavior without
+the compiler notifying you about it.
+
+* Arithmetic operations revert on underflow and overflow. You can use ``unchecked { ... }`` to use
+  the previous wrapping behavior.
+>>>>>>> english/develop
 
   Les vérifications pour le débordement sont très communes, donc nous les avons faites par défaut pour augmenter la lisibilité du code,
   même si cela entraîne une légère augmentation du coût de l'essence.
 
 * ABI coder v2 est activé par défaut.
 
+<<<<<<< HEAD
   Vous pouvez choisir d'utiliser l'ancien comportement en utilisant ``pragma abicoder v1;``.
   Le pragma ``pragma experimental ABIEncoderV2;`` est toujours valide, mais il est déprécié et n'a aucun effet.
   Si vous voulez être explicite, veuillez utiliser le pragma ``pragma abicoder v2;`` à la place.
+=======
+  You can choose to use the old behavior using ``pragma abicoder v1;``.
+  The pragma ``pragma experimental ABIEncoderV2;`` is still valid, but it is deprecated and has no effect.
+  If you want to be explicit, please use ``pragma abicoder v2;`` instead.
+>>>>>>> english/develop
 
   Notez que ABI coder v2 supporte plus de types que v1 et effectue plus de contrôles d'intégrité sur les entrées.
   ABI coder v2 rend certains appels de fonctions plus coûteux et il peut aussi faire des appels de contrats
@@ -57,8 +71,13 @@ Nouvelles restrictions
 
 Cette section énumère les changements qui pourraient empêcher les contrats existants de se compiler.
 
+<<<<<<< HEAD
 * Il existe de nouvelles restrictions liées aux conversions explicites de littéraux. Le comportement précédent dans
   les cas suivants était probablement ambigu :
+=======
+* There are new restrictions related to explicit conversions of literals. The previous behavior in
+  the following cases was likely ambiguous:
+>>>>>>> english/develop
 
   1. Les conversions explicites de littéraux négatifs et de littéraux plus grands que ``type(uint160).max`` en
      ``adresse`` sont interdites.
@@ -106,7 +125,11 @@ Cette section énumère les changements qui pourraient empêcher les contrats ex
 
 * Les fonctions globales ``log0``, ``log1``, ``log2``, ``log3`` et ``log4`` ont été supprimées.
 
+<<<<<<< HEAD
   Ce sont des fonctions de bas niveau qui étaient largement inutilisées. Leur comportement est accessible depuis l'assemblage en ligne.
+=======
+  These are low-level functions that were largely unused. Their behavior can be accessed from inline assembly.
+>>>>>>> english/develop
 
 * Les définitions de ``enum`` ne peuvent pas contenir plus de 256 membres.
 
@@ -163,6 +186,7 @@ Changements d'interface
 Comment mettre à jour votre code
 =======================
 
+<<<<<<< HEAD
 - Si vous comptez sur l'arithmétique enveloppante, entourez chaque opération de ``unchecked { ... }``.
 - Optionnel : Si vous utilisez SafeMath ou une bibliothèque similaire, changez ``x.add(y)`` en ``x + y``, ``x.mul(y)`` en ``x * y`` etc.
 - Ajoutez ``pragma abicoder v1;`` si vous voulez rester avec l'ancien codeur ABI.
@@ -174,3 +198,16 @@ Comment mettre à jour votre code
 - Remplacez ``x**y**z`` par ``(x**y)**z``.
 - Utilisez l'assemblage en ligne en remplacement de ``log0``, ..., ``log4``.
 - Négation des entiers non signés en les soustrayant de la valeur maximale du type et en ajoutant 1 (par exemple, ``type(uint256).max - x + 1``, tout en s'assurant que `x` n'est pas zéro)
+=======
+- If you rely on wrapping arithmetic, surround each operation with ``unchecked { ... }``.
+- Optional: If you use SafeMath or a similar library, change ``x.add(y)`` to ``x + y``, ``x.mul(y)`` to ``x * y`` etc.
+- Add ``pragma abicoder v1;`` if you want to stay with the old ABI coder.
+- Optionally remove ``pragma experimental ABIEncoderV2`` or ``pragma abicoder v2`` since it is redundant.
+- Change ``byte`` to ``bytes1``.
+- Add intermediate explicit type conversions if required.
+- Combine ``c.f{gas: 10000}{value: 1}()`` to ``c.f{gas: 10000, value: 1}()``.
+- Change ``msg.sender.transfer(x)`` to ``payable(msg.sender).transfer(x)`` or use a stored variable of ``address payable`` type.
+- Change ``x**y**z`` to ``(x**y)**z``.
+- Use inline assembly as a replacement for ``log0``, ..., ``log4``.
+- Negate unsigned integers by subtracting them from the maximum value of the type and adding 1 (e.g. ``type(uint256).max - x + 1``, while ensuring that ``x`` is not zero)
+>>>>>>> english/develop
