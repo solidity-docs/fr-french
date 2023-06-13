@@ -4,6 +4,7 @@
 Achat à distance sécurisé
 ********************
 
+<<<<<<< HEAD
 L'achat de biens à distance nécessite actuellement plusieurs parties qui doivent se faire confiance.
 La configuration la plus simple implique un vendeur et un acheteur. L'acheteur souhaite recevoir
 un article du vendeur et le vendeur souhaite obtenir de l'argent (ou un équivalent)
@@ -18,6 +19,22 @@ l'acheteur reçoit la valeur (la moitié de son acompte) et le vendeur reçoit t
 fois la valeur (leur dépôt plus la valeur). L'idée derrière
 c'est que les deux parties ont une incitation à résoudre la situation ou autrement
 leur argent est verrouillé pour toujours.
+=======
+Purchasing goods remotely currently requires multiple parties that need to trust each other.
+The simplest configuration involves a seller and a buyer. The buyer would like to receive
+an item from the seller and the seller would like to get some compensation, e.g. Ether,
+in return. The problematic part is the shipment here: There is no way to determine for
+sure that the item arrived at the buyer.
+
+There are multiple ways to solve this problem, but all fall short in one or the other way.
+In the following example, both parties have to put twice the value of the item into the
+contract as escrow. As soon as this happened, the Ether will stay locked inside
+the contract until the buyer confirms that they received the item. After that,
+the buyer is returned the value (half of their deposit) and the seller gets three
+times the value (their deposit plus the value). The idea behind
+this is that both parties have an incentive to resolve the situation or otherwise
+their Ether is locked forever.
+>>>>>>> english/develop
 
 Bien entendu, ce contrat ne résout pas le problème, mais donne un aperçu de la manière dont
 vous pouvez utiliser des constructions de type machine d'état dans un contrat.
