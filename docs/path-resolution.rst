@@ -138,8 +138,13 @@ Le contenu initial du VFS dépend de la façon dont vous invoquez le compilateur
 
 #. **Entrée standard**
 
+<<<<<<< HEAD
    En ligne de commande, il est également possible de fournir la source en l'envoyant à
    l'entrée standard du compilateur :
+=======
+   On the command-line it is also possible to provide the source by sending it to compiler's
+   standard input:
+>>>>>>> english/develop
 
    .. code-block:: bash
 
@@ -193,11 +198,19 @@ nom de l'unité source.
 
 .. note::
 
+<<<<<<< HEAD
     Le nom d'une unité source n'est qu'un identifiant et même si sa valeur ressemble à un chemin, il
     n'est pas soumis aux règles de normalisation que l'on peut attendre d'un shell.
     Tous les segments ``/./`` ou ``../`` ou les séquences de barres obliques multiples en font toujours partie.
     Lorsque la source est fournie via une interface JSON standard, il est tout à fait possible d'associer
     différents contenus à des noms d'unités de source qui feraient référence au même fichier sur le disque.
+=======
+    A source unit name is just an identifier and even if its value happens to look like a path, it
+    is not subject to the normalization rules you would typically expect in a shell.
+    Any ``/./`` or ``/../`` segments or sequences of multiple slashes remain a part of it.
+    When the source is provided via Standard JSON interface it is entirely possible to associate
+    different content with source unit names that would refer to the same file on disk.
+>>>>>>> english/develop
 
 Lorsque la source n'est pas disponible dans le système de fichiers virtuel, le compilateur transmet le nom de l'unité source
 à l'import callback.
@@ -246,6 +259,7 @@ et qui est délimitée par deux séparateurs de chemin.
 Un séparateur est un slash avant ou le début/la fin de la chaîne.
 Par exemple, dans ``./abc/..//``, il y a trois segments de chemin : ``.``, ``abc`` et ``..``.
 
+<<<<<<< HEAD
 Le compilateur calcule un nom d'unité source à partir du chemin d'importation de la manière suivante :
 
 1. Un préfixe est d'abord calculé
@@ -258,6 +272,17 @@ Le compilateur calcule un nom d'unité source à partir du chemin d'importation 
 
 2. Ensuite, le préfixe est ajouté au chemin d'importation normalisé.
    Si le préfixe n'est pas vide, une seule barre oblique est insérée entre lui et le chemin d'importation.
+=======
+The compiler resolves the import into a source unit name based on the import path, in the following way:
+
+#. We start with the source unit name of the importing source unit.
+#. The last path segment with preceding slashes is removed from the resolved name.
+#. Then, for every segment in the import path, starting from the leftmost one:
+
+    - If the segment is ``.``, it is skipped.
+    - If the segment is ``..``, the last path segment with preceding slashes is removed from the resolved name.
+    - Otherwise, the segment (preceded by a single slash if the resolved name is not empty), is appended to the resolved name.
+>>>>>>> english/develop
 
 L'élimination du dernier segment de chemin avec les barres obliques précédentes
 fonctionne comme suit :
@@ -265,6 +290,7 @@ fonctionne comme suit :
 1. Tout ce qui dépasse la dernière barre oblique est supprimé (c'est-à-dire que ``a/b//c.sol`` devient ``a/b//``).
 2. Toutes les barres obliques de fin de ligne sont supprimées (par exemple, ``a/b//`` devient ``a/b``).
 
+<<<<<<< HEAD
 Les règles de normalisation sont les mêmes que pour les chemins UNIX, à savoir :
 
 - Tous les segments internes ``.`` sont supprimés.
@@ -275,6 +301,14 @@ Notez que la normalisation est effectuée uniquement sur le chemin d'importation
 Le nom de l'unité source du module d'importation qui est utilisé pour le préfixe n'est pas normalisé.
 Cela garantit que la partie ``protocol://`` ne se transforme pas en ``protocol:/`` si le fichier d'importation
 est identifié par une URL.
+=======
+Note that the process normalizes the part of the resolved source unit name that comes from the import path according
+to the usual rules for UNIX paths, i.e. all ``.`` and ``..`` are removed and multiple slashes are
+squashed into a single one.
+On the other hand, the part that comes from the source unit name of the importing module remains unnormalized.
+This ensures that the ``protocol://`` part does not turn into ``protocol:/`` if the importing file
+is identified with a URL.
+>>>>>>> english/develop
 
 Si vos chemins d'importation sont déjà normalisés, vous pouvez vous attendre à ce que l'algorithme ci-dessus produise des
 résultats très intuitifs.
@@ -350,6 +384,7 @@ du compilateur.
 Normalisation et suppression des chemins CLI
 ------------------------------------
 
+<<<<<<< HEAD
 Sur la ligne de commande, le compilateur se comporte comme vous le feriez avec n'importe quel autre programme :
 Il accepte les chemins dans un format natif de la plate-forme et les chemins relatifs sont relatifs au répertoire de travail actuel.
 Les noms d'unités sources attribués aux fichiers dont les chemins sont spécifiés sur la ligne de commande, cependant,
@@ -357,6 +392,16 @@ ne doivent pas changer simplement parce que le projet est compilé sur une plate
 compilateur a été invoqué à partir d'un répertoire différent.
 Pour cela, les chemins des fichiers sources provenant de la ligne de commande doivent être convertis en une forme canonique
 et, si possible, rendus relatifs au chemin de base ou à l'un des chemins d'inclusion.
+=======
+On the command-line the compiler behaves just as you would expect from any other program:
+it accepts paths in a format native to the platform and relative paths are relative to the current
+working directory.
+The source unit names assigned to files whose paths are specified on the command-line, however,
+should not change just because the project is being compiled on a different platform or because the
+compiler happens to have been invoked from a different directory.
+To achieve this, paths to source files coming from the command-line must be converted to a canonical
+form, and, if possible, made relative to the base path or one of the include paths.
+>>>>>>> english/develop
 
 Les règles de normalisation sont les suivantes :
 
@@ -408,10 +453,17 @@ Le chemin de fichier résultant devient le nom de l'unité source.
 
 .. note::
 
+<<<<<<< HEAD
     Avant la version 0.8.8, la suppression des chemins d'accès de l'interface CLI n'était pas effectuée et la seule normalisation appliquée
     était la conversion des séparateurs de chemin.
     Lorsque vous travaillez avec des versions plus anciennes du compilateur, il est recommandé d'invoquer le compilateur à partir du
     chemin de base et de n'utiliser que des chemins relatifs sur la ligne de commande.
+=======
+    Prior to version 0.8.8, CLI path stripping was not performed and the only normalization applied
+    was the conversion of path separators.
+    When working with older versions of the compiler it is recommended to invoke the compiler from
+    the base path and to only use relative paths on the command-line.
+>>>>>>> english/develop
 
 .. index:: ! allowed paths, ! --allow-paths, remapping; target
 .. _allowed-paths:
@@ -424,11 +476,19 @@ emplacements qui sont considérés comme sûrs par défaut :
 
 - En dehors du mode JSON standard :
 
+<<<<<<< HEAD
   - Les répertoires contenant les fichiers d'entrée listés sur la ligne de commande.
   - Les répertoires utilisés comme cibles :ref:`remapping <import-remapping>`.
     Si la cible n'est pas un répertoire (c'est-à-dire ne se termine pas par ``/``, ``/.`` ou ``/..``), le répertoire
     contenant la cible est utilisé à la place.
   - Chemin de base et chemins d'inclusion.
+=======
+  - The directories containing input files listed on the command-line.
+  - The directories used as :ref:`remapping <import-remapping>` targets.
+    If the target is not a directory (i.e does not end with ``/``, ``/.`` or ``/..``) the directory
+    containing the target is used instead.
+  - Base path and include paths.
+>>>>>>> english/develop
 
 - En mode JSON standard :
 
@@ -551,7 +611,11 @@ que vous avez extraite vers ``/project/dapp-bin_old``, alors vous pouvez exécut
 Cela signifie que tous les imports de ``module2`` pointent vers l'ancienne version mais que les imports de ``module1``
 pointent vers la nouvelle version.
 
+<<<<<<< HEAD
 Voici les règles détaillées qui régissent le comportement des remappages :
+=======
+Here are the detailed rules governing the behavior of remappings:
+>>>>>>> english/develop
 
 #. **Les remappages n'affectent que la traduction entre les chemins d'importation et les noms d'unités sources.**
 
