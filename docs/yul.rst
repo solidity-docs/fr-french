@@ -9,6 +9,7 @@ Yul
 Yul (précédemment aussi appelé JULIA ou IULIA) est un langage intermédiaire qui peut être
 compilé en bytecode pour différents backends.
 
+<<<<<<< HEAD
 Le support d'EVM 1.0, EVM 1.5 et Ewasm est prévu, et il est conçu pour
 être un dénominateur commun utilisable pour ces trois
 plateformes. Il peut déjà être utilisé en mode autonome et
@@ -16,6 +17,11 @@ pour "l'assemblage en ligne" dans Solidity
 et il existe une implémentation expérimentale du compilateur Solidity
 qui utilise Yul comme langage intermédiaire. Le Yul est une bonne cible pour
 étapes d'optimisation de haut niveau qui peuvent bénéficier à toutes les plates-formes cibles de manière égale.
+=======
+It can be used in stand-alone mode and for "inline assembly" inside Solidity.
+The compiler uses Yul as an intermediate language in the IR-based code generator ("new codegen" or "IR-based codegen").
+Yul is a good target for high-level optimisation stages that can benefit all target platforms equally.
+>>>>>>> english/develop
 
 Motivation et description de haut niveau
 ========================================
@@ -87,9 +93,14 @@ Il peut être compilé en utilisant ``solc --strict-assembly``. Les fonctions in
         }
     }
 
+<<<<<<< HEAD
 Le programme d'exemple suivant est écrit dans le dialecte EVM et calcule l'exponentiation.
 Il peut être compilé en utilisant ``solc --strict-assembly``. Les fonctions intégrées
 ``mul`` et ``div`` calculent le produit et la division, respectivement.
+=======
+It is also possible to implement the same function using a for-loop
+instead of with recursion. Here, ``lt(a, b)`` computes whether ``a`` is less than ``b``.
+>>>>>>> english/develop
 
 .. code-block:: yul
 
@@ -157,6 +168,7 @@ où un objet est attendu.
 Inside a code block, the following elements can be used
 (see the later sections for more details):
 
+<<<<<<< HEAD
 - des littéraux, par exemple ``0x123``, ``42`` ou ``"abc"`` (chaînes de caractères jusqu'à 32 caractères)
 - les appels à des fonctions intégrées, par exemple ``add(1, mload(0))``
 - les déclarations de variables, par exemple ``let x := 7``, "let x := add(y, 3)`` ou ``let x`` (la valeur initiale de 0 est attribuée)
@@ -167,12 +179,31 @@ Inside a code block, the following elements can be used
 - les instructions switch, par exemple : ``switch mload(0) case 0 { revert() } default { mstore(0, 1) }``
 - Boucles for, par exemple : ``for { let i := 0} lt(i, 10) { i := add(i, 1) } { mstore(i, 7) }``
 - des définitions de fonctions, par exemple : ``fonction f(a, b) -> c { c := add(a, b) }``
+=======
+- literals, e.g. ``0x123``, ``42`` or ``"abc"`` (strings up to 32 characters)
+- calls to builtin functions, e.g. ``add(1, mload(0))``
+- variable declarations, e.g. ``let x := 7``, ``let x := add(y, 3)`` or ``let x`` (initial value of 0 is assigned)
+- identifiers (variables), e.g. ``add(3, x)``
+- assignments, e.g. ``x := add(y, 3)``
+- blocks where local variables are scoped inside, e.g. ``{ let x := 3 { let y := add(x, 1) } }``
+- if statements, e.g. ``if lt(a, b) { sstore(0, 1) }``
+- switch statements, e.g. ``switch mload(0) case 0 { revert() } default { mstore(0, 1) }``
+- for loops, e.g. ``for { let i := 0} lt(i, 10) { i := add(i, 1) } { mstore(i, 7) }``
+- function definitions, e.g. ``function f(a, b) -> c { c := add(a, b) }``
+>>>>>>> english/develop
 
 Plusieurs éléments syntaxiques peuvent se succéder en étant simplement séparés par
 un espace, c'est-à-dire qu'il n'est pas nécessaire de mettre un ``;`` ou un saut de ligne à la fin.
 
+<<<<<<< HEAD
 Littéraux
 ---------
+=======
+.. index:: ! literal;in Yul
+
+Literals
+--------
+>>>>>>> english/develop
 
 En tant que littéraux, vous pouvez utiliser :
 
@@ -240,11 +271,19 @@ elles doivent être assignées à des variables locales.
     // Ici, la fonction définie par l'utilisateur `f` renvoie deux valeurs.
     let x, y := f(1, mload(0))
 
+<<<<<<< HEAD
 Pour les fonctions intégrées de l'EVM, les expressions fonctionnelles
 peuvent être directement traduites en un flux d'opcodes :
 Il suffit de lire l'expression de droite à gauche pour obtenir les
 opcodes. Dans le cas de la première ligne de l'exemple, il s'agit de
 ``PUSH1 3 PUSH1 0x80 MLOAD ADD PUSH1 0x80 MSTORE``.
+=======
+For built-in functions of the EVM, functional expressions
+can be directly translated to a stream of opcodes:
+You just read the expression from right to left to obtain the
+opcodes. In the case of the second line in the example, this
+is ``PUSH1 3 PUSH1 0x80 MLOAD ADD PUSH1 0x80 MSTORE``.
+>>>>>>> english/develop
 
 Pour les appels aux fonctions définies par l'utilisateur, les arguments sont
 également placés sur la pile de droite à gauche et c'est dans cet ordre
@@ -661,11 +700,16 @@ Nous utiliserons une notation de déstructuration pour les noeuds de l'AST.
     E(G, L, <var_1, ..., var_n := rhs>: Assignment) =
         let G1, L1, v1, ..., vn = E(G, L, rhs)
         let L2 be a copy of L1 where L2[$var_i] = vi for i = 1, ..., n
-        G, L2, regular
+        G1, L2, regular
     E(G, L, <for { i1, ..., in } condition post body>: ForLoop) =
         if n >= 1:
+<<<<<<< HEAD
             let G1, L, mode = E(G, L, i1, ..., in)
             // le mode doit être régulier ou congé en raison des restrictions syntaxiques
+=======
+            let G1, L1, mode = E(G, L, i1, ..., in)
+            // mode has to be regular or leave due to the syntactic restrictions
+>>>>>>> english/develop
             if mode is leave then
                 G1, L1 restricted to variables of L, leave
             otherwise
@@ -684,7 +728,7 @@ Nous utiliserons une notation de déstructuration pour les noeuds de l'AST.
                 else:
                     G3, L3, mode = E(G2, L2, post)
                     if mode is leave:
-                        G2, L3, leave
+                        G3, L3, leave
                     otherwise
                         E(G3, L3, for {} condition post body)
     E(G, L, break: BreakContinue) =
@@ -741,10 +785,17 @@ Nous utiliserons une notation de déstructuration pour les noeuds de l'AST.
 Dialecte EVM
 ------------
 
+<<<<<<< HEAD
 Le dialecte par défaut de Yul est actuellement le dialecte EVM
 avec une version de l'EVM. Le seul type disponible dans ce dialecte
 est ``u256``, le type natif 256 bits de la machine virtuelle Ethereum.
 Comme il s'agit du type par défaut de ce dialecte, il peut être omis.
+=======
+The default dialect of Yul currently is the EVM dialect for the currently selected version of the EVM.
+The only type available in this dialect
+is ``u256``, the 256-bit native type of the Ethereum Virtual Machine.
+Since it is the default type of this dialect, it can be omitted.
+>>>>>>> english/develop
 
 Le tableau suivant liste toutes les fonctions intégrées
 (selon la version de la machine virtuelle Ethereum) et fournit une brève description de la
@@ -752,9 +803,15 @@ sémantique de la fonction / opcode.
 Ce document ne veut pas être une description complète de la machine virtuelle Ethereum.
 Veuillez vous référer à un autre document si vous êtes intéressé par la sémantique précise.
 
+<<<<<<< HEAD
 Les opcodes marqués avec ``-`` ne retournent pas de résultat et tous les autres retournent exactement une valeur.
 Les opcodes marqués par ``F``, ``H``, ``B``, ``C``, ``I`` et ``L`` sont présents depuis Frontier, Homestead,
 Byzance, Constantinople, Istanbul ou Londres respectivement.
+=======
+Opcodes marked with ``-`` do not return a result and all others return exactly one value.
+Opcodes marked with ``F``, ``H``, ``B``, ``C``, ``I``, ``L`` and ``P`` are present since Frontier,
+Homestead, Byzantium, Constantinople, Istanbul, London or Paris respectively.
+>>>>>>> english/develop
 
 Dans ce qui suit, ``mem[a...b]`` signifie les octets de mémoire commençant à la position `a`` et allant jusqu'à
 mais sans inclure la position ``b`` et ``storage[p]`` signifie le contenu de la mémoire à l'emplacement ``p``.
@@ -763,6 +820,7 @@ Puisque Yul gère les variables locales et le flux de contrôle,
 les opcodes qui interfèrent avec ces fonctionnalités ne sont pas disponibles. Ceci inclut
 les instructions ``dup`` et ``swap`` ainsi que les instructions ``jump``, les labels et les instructions ``push``.
 
+<<<<<<< HEAD
 +-------------------------+-----+---+-------------------------------------------------------------------------------------------------------------------+
 | Instruction             |     |   | Explication                                                                                                       |
 +=========================+=====+===+===================================================================================================================+
@@ -935,6 +993,183 @@ les instructions ``dup`` et ``swap`` ainsi que les instructions ``jump``, les la
 +-------------------------+-----+---+-------------------------------------------------------------------------------------------------------------------+
 | gaslimit()              |     | F | limite de gaz du bloc en cours                                                                                    |
 +-------------------------+-----+---+-------------------------------------------------------------------------------------------------------------------+
+=======
++-------------------------+-----+---+-----------------------------------------------------------------+
+| Instruction             |     |   | Explanation                                                     |
++=========================+=====+===+=================================================================+
+| stop()                  | `-` | F | stop execution, identical to return(0, 0)                       |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| add(x, y)               |     | F | x + y                                                           |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| sub(x, y)               |     | F | x - y                                                           |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| mul(x, y)               |     | F | x * y                                                           |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| div(x, y)               |     | F | x / y or 0 if y == 0                                            |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| sdiv(x, y)              |     | F | x / y, for signed numbers in two's complement, 0 if y == 0      |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| mod(x, y)               |     | F | x % y, 0 if y == 0                                              |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| smod(x, y)              |     | F | x % y, for signed numbers in two's complement, 0 if y == 0      |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| exp(x, y)               |     | F | x to the power of y                                             |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| not(x)                  |     | F | bitwise "not" of x (every bit of x is negated)                  |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| lt(x, y)                |     | F | 1 if x < y, 0 otherwise                                         |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| gt(x, y)                |     | F | 1 if x > y, 0 otherwise                                         |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| slt(x, y)               |     | F | 1 if x < y, 0 otherwise, for signed numbers in two's complement |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| sgt(x, y)               |     | F | 1 if x > y, 0 otherwise, for signed numbers in two's complement |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| eq(x, y)                |     | F | 1 if x == y, 0 otherwise                                        |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| iszero(x)               |     | F | 1 if x == 0, 0 otherwise                                        |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| and(x, y)               |     | F | bitwise "and" of x and y                                        |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| or(x, y)                |     | F | bitwise "or" of x and y                                         |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| xor(x, y)               |     | F | bitwise "xor" of x and y                                        |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| byte(n, x)              |     | F | nth byte of x, where the most significant byte is the 0th byte  |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| shl(x, y)               |     | C | logical shift left y by x bits                                  |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| shr(x, y)               |     | C | logical shift right y by x bits                                 |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| sar(x, y)               |     | C | signed arithmetic shift right y by x bits                       |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| addmod(x, y, m)         |     | F | (x + y) % m with arbitrary precision arithmetic, 0 if m == 0    |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| mulmod(x, y, m)         |     | F | (x * y) % m with arbitrary precision arithmetic, 0 if m == 0    |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| signextend(i, x)        |     | F | sign extend from (i*8+7)th bit counting from least significant  |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| keccak256(p, n)         |     | F | keccak(mem[p...(p+n)))                                          |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| pc()                    |     | F | current position in code                                        |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| pop(x)                  | `-` | F | discard value x                                                 |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| mload(p)                |     | F | mem[p...(p+32))                                                 |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| mstore(p, v)            | `-` | F | mem[p...(p+32)) := v                                            |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| mstore8(p, v)           | `-` | F | mem[p] := v & 0xff (only modifies a single byte)                |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| sload(p)                |     | F | storage[p]                                                      |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| sstore(p, v)            | `-` | F | storage[p] := v                                                 |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| msize()                 |     | F | size of memory, i.e. largest accessed memory index              |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| gas()                   |     | F | gas still available to execution                                |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| address()               |     | F | address of the current contract / execution context             |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| balance(a)              |     | F | wei balance at address a                                        |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| selfbalance()           |     | I | equivalent to balance(address()), but cheaper                   |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| caller()                |     | F | call sender (excluding ``delegatecall``)                        |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| callvalue()             |     | F | wei sent together with the current call                         |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| calldataload(p)         |     | F | call data starting from position p (32 bytes)                   |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| calldatasize()          |     | F | size of call data in bytes                                      |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| calldatacopy(t, f, s)   | `-` | F | copy s bytes from calldata at position f to mem at position t   |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| codesize()              |     | F | size of the code of the current contract / execution context    |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| codecopy(t, f, s)       | `-` | F | copy s bytes from code at position f to mem at position t       |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| extcodesize(a)          |     | F | size of the code at address a                                   |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| extcodecopy(a, t, f, s) | `-` | F | like codecopy(t, f, s) but take code at address a               |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| returndatasize()        |     | B | size of the last returndata                                     |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| returndatacopy(t, f, s) | `-` | B | copy s bytes from returndata at position f to mem at position t |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| extcodehash(a)          |     | C | code hash of address a                                          |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| create(v, p, n)         |     | F | create new contract with code mem[p...(p+n)) and send v wei     |
+|                         |     |   | and return the new address; returns 0 on error                  |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| create2(v, p, n, s)     |     | C | create new contract with code mem[p...(p+n)) at address         |
+|                         |     |   | keccak256(0xff . this . s . keccak256(mem[p...(p+n)))           |
+|                         |     |   | and send v wei and return the new address, where ``0xff`` is a  |
+|                         |     |   | 1 byte value, ``this`` is the current contract's address        |
+|                         |     |   | as a 20 byte value and ``s`` is a big-endian 256-bit value;     |
+|                         |     |   | returns 0 on error                                              |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| call(g, a, v, in,       |     | F | call contract at address a with input mem[in...(in+insize))     |
+| insize, out, outsize)   |     |   | providing g gas and v wei and output area                       |
+|                         |     |   | mem[out...(out+outsize)) returning 0 on error (eg. out of gas)  |
+|                         |     |   | and 1 on success                                                |
+|                         |     |   | :ref:`See more <yul-call-return-area>`                          |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| callcode(g, a, v, in,   |     | F | identical to ``call`` but only use the code from a and stay     |
+| insize, out, outsize)   |     |   | in the context of the current contract otherwise                |
+|                         |     |   | :ref:`See more <yul-call-return-area>`                          |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| delegatecall(g, a, in,  |     | H | identical to ``callcode`` but also keep ``caller``              |
+| insize, out, outsize)   |     |   | and ``callvalue``                                               |
+|                         |     |   | :ref:`See more <yul-call-return-area>`                          |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| staticcall(g, a, in,    |     | B | identical to ``call(g, a, 0, in, insize, out, outsize)`` but do |
+| insize, out, outsize)   |     |   | not allow state modifications                                   |
+|                         |     |   | :ref:`See more <yul-call-return-area>`                          |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| return(p, s)            | `-` | F | end execution, return data mem[p...(p+s))                       |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| revert(p, s)            | `-` | B | end execution, revert state changes, return data mem[p...(p+s)) |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| selfdestruct(a)         | `-` | F | end execution, destroy current contract and send funds to a     |
+|                         |     |   | (deprecated)                                                    |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| invalid()               | `-` | F | end execution with invalid instruction                          |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| log0(p, s)              | `-` | F | log data mem[p...(p+s))                                         |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| log1(p, s, t1)          | `-` | F | log data mem[p...(p+s)) with topic t1                           |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| log2(p, s, t1, t2)      | `-` | F | log data mem[p...(p+s)) with topics t1, t2                      |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| log3(p, s, t1, t2, t3)  | `-` | F | log data mem[p...(p+s)) with topics t1, t2, t3                  |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| log4(p, s, t1, t2, t3,  | `-` | F | log data mem[p...(p+s)) with topics t1, t2, t3, t4              |
+| t4)                     |     |   |                                                                 |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| chainid()               |     | I | ID of the executing chain (EIP-1344)                            |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| basefee()               |     | L | current block's base fee (EIP-3198 and EIP-1559)                |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| origin()                |     | F | transaction sender                                              |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| gasprice()              |     | F | gas price of the transaction                                    |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| blockhash(b)            |     | F | hash of block nr b - only for last 256 blocks excluding current |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| coinbase()              |     | F | current mining beneficiary                                      |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| timestamp()             |     | F | timestamp of the current block in seconds since the epoch       |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| number()                |     | F | current block number                                            |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| difficulty()            |     | F | difficulty of the current block (see note below)                |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| prevrandao()            |     | P | randomness provided by the beacon chain (see note below)        |
++-------------------------+-----+---+-----------------------------------------------------------------+
+| gaslimit()              |     | F | block gas limit of the current block                            |
++-------------------------+-----+---+-----------------------------------------------------------------+
+>>>>>>> english/develop
 
 .. _yul-call-return-area:
 
@@ -946,6 +1181,20 @@ les instructions ``dup`` et ``swap`` ainsi que les instructions ``jump``, les la
   Vous devez utiliser l'opcode ``returndatasize`' pour vérifier quelle partie de cette zone mémoire contient les données retournées.
   Les autres octets conserveront leurs valeurs d'avant l'appel.
 
+.. note::
+  The ``difficulty()`` instruction is disallowed in EVM version >= Paris.
+  With the Paris network upgrade the semantics of the instruction that was previously called
+  ``difficulty`` have been changed and the instruction was renamed to ``prevrandao``.
+  It can now return arbitrary values in the full 256-bit range, whereas the highest recorded
+  difficulty value within Ethash was ~54 bits.
+  This change is described in `EIP-4399 <https://eips.ethereum.org/EIPS/eip-4399>`_.
+  Please note that irrelevant to which EVM version is selected in the compiler, the semantics of
+  instructions depend on the final chain of deployment.
+
+.. warning::
+    From version 0.8.18 and up, the use of ``selfdestruct`` in both Solidity and Yul will trigger a
+    deprecation warning, since the ``SELFDESTRUCT`` opcode will eventually undergo breaking changes in behavior
+    as stated in `EIP-6049 <https://eips.ethereum.org/EIPS/eip-6049>`_.
 
 Dans certains dialectes internes, il existe des fonctions supplémentaires :
 
@@ -973,6 +1222,7 @@ toutes les positions en mémoire (par rapport à ``offset`') qui contiennent le 
 
 linkersymbol
 ^^^^^^^^^^^^
+<<<<<<< HEAD
 La fonction ``linkersymbol("library_id")`` est un espace réservé pour un littéral d'adresse à substituer
 par l'éditeur de liens.
 Son premier et seul argument doit être une chaîne de caractères et représente de manière unique l'adresse à insérer.
@@ -980,6 +1230,15 @@ Les identifiants peuvent être arbitraires mais lorsque le compilateur produit d
 il utilise un nom de bibliothèque qualifié avec le nom de l'unité source qui définit cette bibliothèque.
 Pour lier le code avec une adresse de bibliothèque particulière, le même identifiant doit être fourni à la commande
 ``--libraries`` sur la ligne de commande.
+=======
+The function ``linkersymbol("library_id")`` is a placeholder for an address literal to be substituted
+by the linker.
+Its first and only argument must be a string literal and uniquely represents the address to be inserted.
+Identifiers can be arbitrary but when the compiler produces Yul code from Solidity sources,
+it uses a library name qualified with the name of the source unit that defines that library.
+To link the code with a particular library address, the same identifier must be provided to the
+``--libraries`` option on the command-line.
+>>>>>>> english/develop
 
 Par exemple, ce code
 
@@ -1054,6 +1313,7 @@ avec l'argument le plus à gauche en haut, tandis que les valeurs de retour
 sont supposées être disposées de telle sorte que la variable la plus à droite se trouve
 en haut de la pile.
 
+<<<<<<< HEAD
 Puisque ``verbatim`` peut être utilisé pour générer des opcodes arbitraires
 ou même des opcodes inconnus du compilateur Solidity, il faut être prudent
 lorsqu'on utilise ``verbatim`` avec l'optimiseur. Même lorsque
@@ -1065,6 +1325,19 @@ La liste suivante est une liste non exhaustive des restrictions sur le
 bytecode verbatim qui ne sont pas vérifiées par
 le compilateur. La violation de ces restrictions peut entraîner
 un comportement non défini.
+=======
+Since ``verbatim`` can be used to generate arbitrary opcodes
+or even opcodes unknown to the Solidity compiler, care has to be taken
+when using ``verbatim`` together with the optimizer. Even when the
+optimizer is switched off, the code generator has to determine
+the stack layout, which means that e.g. using ``verbatim`` to modify
+the stack height can lead to undefined behavior.
+
+The following is a non-exhaustive list of restrictions on
+verbatim bytecode that are not checked by
+the compiler. Violations of these restrictions can result in
+undefined behavior.
+>>>>>>> english/develop
 
 - Le flux de contrôle ne doit pas sauter dans ou hors des blocs verbatim,
   mais il peut sauter à l'intérieur d'un même bloc verbatim
@@ -1123,10 +1396,22 @@ Ci-dessus, ``Block`` fait référence à ``Block`` dans la grammaire de code Yul
 
 .. note::
 
+<<<<<<< HEAD
     Les objets de données ou les sous-objets dont le nom contient un ``.`` peuvent être définis
     mais il n'est pas possible d'y accéder via ``datasize``,
     ``dataoffset`` ou ``datacopy`` parce que ``.`` est utilisé comme un séparateur
     pour accéder à des objets à l'intérieur d'un autre objet.
+=======
+    An object with a name that ends in ``_deployed`` is treated as deployed code by the Yul optimizer.
+    The only consequence of this is a different gas cost heuristic in the optimizer.
+
+.. note::
+
+    Data objects or sub-objects whose names contain a ``.`` can be defined
+    but it is not possible to access them through ``datasize``,
+    ``dataoffset`` or ``datacopy`` because ``.`` is used as a separator
+    to access objects inside another object.
+>>>>>>> english/develop
 
 .. note::
 
@@ -1154,6 +1439,7 @@ Un exemple d'objet Yul est présenté ci-dessous :
         code {
             function allocate(size) -> ptr {
                 ptr := mload(0x40)
+                // Note that Solidity generated IR code reserves memory offset ``0x60`` as well, but a pure Yul object is free to use memory as it chooses.
                 if iszero(ptr) { ptr := 0x60 }
                 mstore(0x40, add(ptr, size))
             }
@@ -1165,8 +1451,9 @@ Un exemple d'objet Yul est présenté ci-dessous :
             datacopy(offset, dataoffset("Contract2"), size)
             // le paramètre du constructeur est un seul nombre 0x1234
             mstore(add(offset, size), 0x1234)
-            pop(create(offset, add(size, 32), 0))
+            pop(create(0, offset, add(size, 32)))
 
+<<<<<<< HEAD
             // retourne maintenant l'objet d'exécution (le code
             // actuellement exécuté est le code du constructeur)
             size := datasize("runtime")
@@ -1174,15 +1461,24 @@ Un exemple d'objet Yul est présenté ci-dessous :
             // Cela se transformera en une copie mémoire->mémoire pour Ewasm et
             // une codecopie pour EVM
             datacopy(offset, dataoffset("runtime"), size)
+=======
+            // now return the runtime object (the currently
+            // executing code is the constructor code)
+            size := datasize("Contract1_deployed")
+            offset := allocate(size)
+            // This will turn into a codecopy for EVM
+            datacopy(offset, dataoffset("Contract1_deployed"), size)
+>>>>>>> english/develop
             return(offset, size)
         }
 
         data "Table2" hex"4123"
 
-        object "runtime" {
+        object "Contract1_deployed" {
             code {
                 function allocate(size) -> ptr {
                     ptr := mload(0x40)
+                    // Note that Solidity generated IR code reserves memory offset ``0x60`` as well, but a pure Yul object is free to use memory as it chooses.
                     if iszero(ptr) { ptr := 0x60 }
                     mstore(0x40, add(ptr, size))
                 }
@@ -1201,7 +1497,7 @@ Un exemple d'objet Yul est présenté ci-dessous :
                 // code ici ...
             }
 
-            object "runtime" {
+            object "Contract2_deployed" {
                 code {
                 // code ici ...
                 }
@@ -1230,6 +1526,7 @@ et spécifiez éventuellement le :ref:`nombre attendu d'exécutions de contrats 
 
 En mode Solidity, l'optimiseur Yul est activé en même temps que l'optimiseur normal.
 
+<<<<<<< HEAD
 Séquence des étapes d'optimisation
 ----------------------------------
 
@@ -1292,6 +1589,15 @@ Le ReasoningBasedSimplifier est une étape de l'optimiseur qui n'est actuellemen
 dans le jeu d'étapes par défaut. Elle utilise un solveur SMT pour simplifier les expressions arithmétiques
 et les conditions booléennes. Il n'a pas encore été testé ou validé de manière approfondie et peut produire des
 résultats non reproductibles, veuillez donc l'utiliser avec précaution !
+=======
+.. _optimization-step-sequence:
+
+Optimization Step Sequence
+--------------------------
+
+Detailed information regrading the optimization sequence as well a list of abbreviations is
+available in the :ref:`optimizer docs <optimizer-steps>`.
+>>>>>>> english/develop
 
 .. _erc20yul:
 
