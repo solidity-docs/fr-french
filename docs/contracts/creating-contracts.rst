@@ -8,9 +8,15 @@ Les contrats peuvent être créés "de l'extérieur" via des transactions Ethere
 
 Des IDE, tels que `Remix <https://remix.ethereum.org/>`_, rendent le processus de création transparent à l'aide d'éléments d'interface utilisateur.
 
+<<<<<<< HEAD
 Une façon de créer des contrats de façon programmatique sur Ethereum est via l'API JavaScript `web3.js <https://github.com/ethereum/web3.js>`_.
 Elle dispose d'une fonction appelée `web3.eth.Contract <https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#new-contract>`_
 pour faciliter la création de contrats.
+=======
+One way to create contracts programmatically on Ethereum is via the JavaScript API `web3.js <https://github.com/web3/web3.js>`_.
+It has a function called `web3.eth.Contract <https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#new-contract>`_
+to facilitate contract creation.
+>>>>>>> english/develop
 
 Lorsqu'un contrat est créé, son :ref:`constructeur <constructor>` (une fonction déclarée avec la fonction
 le mot-clé ``constructor``) est exécutée une fois.
@@ -46,6 +52,7 @@ Cela signifie que les dépendances cycliques de création sont impossibles.
         address owner;
         bytes32 name;
 
+<<<<<<< HEAD
         // Il s'agit du constructeur qui enregistre le
         // créateur et le nom attribué.
         constructor(bytes32 _name) {
@@ -57,6 +64,19 @@ Cela signifie que les dépendances cycliques de création sont impossibles.
             // vous ne devriez pas accéder aux fonctions de manière externe,
             // car la fonction n'existe pas encore.
             // Voir la section suivante pour plus de détails.
+=======
+        // This is the constructor which registers the
+        // creator and the assigned name.
+        constructor(bytes32 name_) {
+            // State variables are accessed via their name
+            // and not via e.g. `this.owner`. Functions can
+            // be accessed directly or through `this.f`,
+            // but the latter provides an external view
+            // to the function. Especially in the constructor,
+            // you should not access functions externally,
+            // because the function does not exist yet.
+            // See the next section for details.
+>>>>>>> english/develop
             owner = msg.sender;
 
             // Nous effectuons une conversion de type explicite de `address`
@@ -65,7 +85,7 @@ Cela signifie que les dépendances cycliques de création sont impossibles.
             // aucun moyen réel de le vérifier.
             // Cette opération ne crée pas de nouveau contrat.
             creator = TokenCreator(msg.sender);
-            name = _name;
+            name = name_;
         }
 
         function changeName(bytes32 newName) public {
