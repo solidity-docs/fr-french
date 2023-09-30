@@ -1,4 +1,4 @@
-.. index:: ! event
+.. index:: ! event, ! event; anonymous, ! event; indexed, ! event; topic
 
 .. _events:
 
@@ -9,6 +9,7 @@
 Les événements Solidity offrent une abstraction au-dessus de la fonctionnalité de journalisation de l'EVM.
 Les applications peuvent s'abonner et écouter ces événements via l'interface RPC d'un client Ethereum.
 
+<<<<<<< HEAD
 Les événements sont des membres héritables des contrats. Lorsque vous les appelez, ils font en sorte que les
 arguments dans le journal de la transaction, une structure de données spéciale
 dans la blockchain. Ces journaux sont associés à l'adresse du contrat,
@@ -16,6 +17,16 @@ sont incorporés dans la blockchain, et y restent aussi longtemps qu'un bloc est
 accessible (pour toujours à partir de maintenant,
 mais cela pourrait changer avec Serenity). Le journal et ses données d'événement ne sont pas accessibles à partir des
 contrats (même pas depuis le contrat qui les a créés).
+=======
+Events can be defined at file level or as inheritable members of contracts (including interfaces and libraries).
+When you call them, they cause the
+arguments to be stored in the transaction's log - a special data structure
+in the blockchain. These logs are associated with the address of the contract that emitted them,
+are incorporated into the blockchain, and stay there as long as a block is
+accessible (forever as of now, but this might
+change with Serenity). The Log and its event data is not accessible from within
+contracts (not even from the contract that created them).
+>>>>>>> english/develop
 
 Il est possible de demander une preuve Merkle pour les journaux.
 Si une entité externe fournit une telle preuve à un contrat, celui-ci peut vérifier
@@ -71,6 +82,18 @@ quatre arguments indexés au lieu de trois.
     En particulier, il est possible de "falsifier" la signature d'un autre événement
     en utilisant un événement anonyme.
 
+.. index:: ! selector; of an event
+
+Members of Events
+=================
+
+- ``event.selector``: For non-anonymous events, this is a ``bytes32`` value
+  containing the ``keccak256`` hash of the event signature, as used in the default topic.
+
+
+Example
+=======
+
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
@@ -78,11 +101,12 @@ quatre arguments indexés au lieu de trois.
 
     contract ClientReceipt {
         event Deposit(
-            address indexed _from,
-            bytes32 indexed _id,
-            uint _value
+            address indexed from,
+            bytes32 indexed id,
+            uint value
         );
 
+<<<<<<< HEAD
         function deposit(bytes32 _id) public payable {
             // Les événements sont émis en utilisant `emit`, suivi par
             // le nom de l'événement et les arguments
@@ -90,6 +114,15 @@ quatre arguments indexés au lieu de trois.
             // (même profondément imbriquée) peut être détectée à partir de
             // l'API JavaScript en filtrant pour `Deposit`.
             emit Deposit(msg.sender, _id, msg.value);
+=======
+        function deposit(bytes32 id) public payable {
+            // Events are emitted using `emit`, followed by
+            // the name of the event and the arguments
+            // (if any) in parentheses. Any such invocation
+            // (even deeply nested) can be detected from
+            // the JavaScript API by filtering for `Deposit`.
+            emit Deposit(msg.sender, id, msg.value);
+>>>>>>> english/develop
         }
     }
 
@@ -124,9 +157,9 @@ Le résultat de l'opération ci-dessus ressemble à ce qui suit (découpé) :
 
     {
        "returnValues": {
-           "_from": "0x1111…FFFFCCCC",
-           "_id": "0x50…sd5adb20",
-           "_value": "0x420042"
+           "from": "0x1111…FFFFCCCC",
+           "id": "0x50…sd5adb20",
+           "value": "0x420042"
        },
        "raw": {
            "data": "0x7f…91385",
@@ -134,9 +167,18 @@ Le résultat de l'opération ci-dessus ressemble à ce qui suit (découpé) :
        }
     }
 
+<<<<<<< HEAD
 Ressources supplémentaires pour comprendre les événements
 =========================================================
 
 - `Documentation Javascript <https://github.com/ethereum/web3.js/blob/1.x/docs/web3-eth-contract.rst#events>`_
 - `Exemple d'utilisation des événements <https://github.com/ethchange/smart-exchange/blob/master/lib/contracts/SmartExchange.sol>`_
 - `Comment y accéder en js <https://github.com/ethchange/smart-exchange/blob/master/lib/exchange_transactions.js>`_
+=======
+Additional Resources for Understanding Events
+=============================================
+
+- `JavaScript documentation <https://github.com/web3/web3.js/blob/1.x/docs/web3-eth-contract.rst#events>`_
+- `Example usage of events <https://github.com/ethchange/smart-exchange/blob/master/lib/contracts/SmartExchange.sol>`_
+- `How to access them in js <https://github.com/ethchange/smart-exchange/blob/master/lib/exchange_transactions.js>`_
+>>>>>>> english/develop
