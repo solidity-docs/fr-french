@@ -15,9 +15,15 @@ Utilisation du compilateur en ligne de commande
 Utilisation de base
 -------------------
 
+<<<<<<< HEAD
 L'une des cibles de construction du référentiel Solidity est ``solc``, le compilateur en ligne de commande de Solidity.
 L'utilisation de ``solc --help`` vous fournit une explication de toutes les options. Le compilateur peut produire diverses sorties, allant de simples binaires et assemblages sur un arbre syntaxique abstrait (parse tree) à des estimations de l'utilisation du gaz.
 Si vous voulez seulement compiler un seul fichier, vous le lancez comme ``solc --bin sourceFile.sol`` et il imprimera le binaire. Si vous voulez obtenir certaines des variantes de sortie plus avancées de ``solc``, il est probablement préférable de lui dire de tout sortir dans des fichiers séparés en utilisant ``solc -o outputDirectory --bin --ast-compact-json --asm sourceFile.sol``.
+=======
+One of the build targets of the Solidity repository is ``solc``, the Solidity commandline compiler.
+Using ``solc --help`` provides you with an explanation of all options. The compiler can produce various outputs, ranging from simple binaries and assembly over an abstract syntax tree (parse tree) to estimations of gas usage.
+If you only want to compile a single file, you run it as ``solc --bin sourceFile.sol`` and it will print the binary. If you want to get some of the more advanced output variants of ``solc``, it is probably better to tell it to output everything to separate files using ``solc -o outputDirectory --bin --ast-compact-json --asm sourceFile.sol``.
+>>>>>>> english/develop
 
 Options de l'optimiseur
 -----------------------
@@ -53,6 +59,7 @@ sont traités comme relatifs aux répertoires spécifiés en utilisant les optio
 (ou le répertoire de travail actuel si le chemin de base n'est pas spécifié).
 De plus, la partie du chemin ajoutée via ces options n'apparaîtra pas dans les métadonnées du contrat.
 
+<<<<<<< HEAD
 Pour des raisons de sécurité, le compilateur a des :ref:`restrictions sur les répertoires auxquels il peut accéder <allowed-paths>`.
 Les répertoires des fichiers sources spécifiés sur la ligne de commande et les chemins cibles des
 remappings sont automatiquement autorisés à être accédés par le lecteur de fichiers, mais
@@ -60,6 +67,15 @@ tout le reste est rejeté par défaut.
 Des chemins supplémentaires (et leurs sous-répertoires) peuvent être autorisés via la commande
 ``--allow-paths /sample/path,/another/sample/path``.
 Tout ce qui se trouve à l'intérieur du chemin spécifié par ``--base-path`` est toujours autorisé.
+=======
+For security reasons the compiler has :ref:`restrictions on what directories it can access <allowed-paths>`.
+Directories of source files specified on the command-line and target paths of
+remappings are automatically allowed to be accessed by the file reader, but everything
+else is rejected by default.
+Additional paths (and their subdirectories) can be allowed via the
+``--allow-paths /sample/path,/another/sample/path`` switch.
+Everything inside the path specified via ``--base-path`` is always allowed.
+>>>>>>> english/develop
 
 Ce qui précède n'est qu'une simplification de la façon dont le compilateur gère les chemins d'importation.
 Pour une explication détaillée avec des exemples et une discussion des cas de coin, veuillez vous référer à la section sur
@@ -113,6 +129,7 @@ Si ``solc`` est appelé avec l'option ``--link``, tous les fichiers d'entrée so
 Réglage de la version de l'EVM sur la cible
 *******************************************
 
+<<<<<<< HEAD
 Lorsque vous compilez le code de votre contrat, vous pouvez spécifier la version de la machine virtuelle d'Ethereum
 pour laquelle compiler afin d'éviter des caractéristiques ou des comportements particuliers.
 
@@ -123,6 +140,18 @@ pour laquelle compiler afin d'éviter des caractéristiques ou des comportements
    utilisez les versions EVM correspondantes.
 
 Sur la ligne de commande, vous pouvez sélectionner la version EVM comme suit :
+=======
+When you compile your contract code you can specify the Ethereum virtual machine
+version to compile for to avoid particular features or behaviors.
+
+.. warning::
+
+   Compiling for the wrong EVM version can result in wrong, strange and failing
+   behavior. Please ensure, especially if running a private chain, that you
+   use matching EVM versions.
+
+On the command-line, you can select the EVM version as follows:
+>>>>>>> english/develop
 
 .. code-block:: shell
 
@@ -160,19 +189,36 @@ Vous trouverez ci-dessous une liste des versions EVM cibles et des modifications
    - Il est possible d'accéder aux données dynamiques renvoyées par les appels de fonctions.
    - Introduction de l'opcode ``revert``, ce qui signifie que ``revert()`` ne gaspillera pas de gaz.
 - ``constantinople``
+<<<<<<< HEAD
    - Les opcodes ``create2``, ``extcodehash'', ``shl``, ``shr`` et ``sar`` sont disponibles en assembleur.
    - Les opérateurs de décalage utilisent des opcodes de décalage et nécessitent donc moins de gaz.
+=======
+   - Opcodes ``create2``, ``extcodehash``, ``shl``, ``shr`` and ``sar`` are available in assembly.
+   - Shifting operators use shifting opcodes and thus need less gas.
+>>>>>>> english/develop
 - ``petersburg``
    - Le compilateur se comporte de la même manière qu'avec constantinople.
 - ``istanbul``
    - Les opcodes ``chainid`` et ``selfbalance`' sont disponibles en assemblage.
 - ``berlin``
+<<<<<<< HEAD
    - Les coûts du gaz pour ``LOAD``, ``*CALL``, ``BALANCE``, ``EXT`` et ``SELFDESTRUCT`` ont augmenté. Le
      compilateur suppose des coûts de gaz froid pour de telles opérations. Ceci est pertinent pour l'estimation des gaz et
      l'optimiseur.
 - ``london`` (**default**)
    - Le tarif de base du bloc (`EIP-3198 <https://eips.ethereum.org/EIPS/eip-3198>`_ et `EIP-1559 <https://eips.ethereum.org/EIPS/eip-1559>`_) est accessible via le global ``block.basefee`` ou ``basefee()`` en assemblage inline.
 
+=======
+   - Gas costs for ``SLOAD``, ``*CALL``, ``BALANCE``, ``EXT*`` and ``SELFDESTRUCT`` increased. The
+     compiler assumes cold gas costs for such operations. This is relevant for gas estimation and
+     the optimizer.
+- ``london``
+   - The block's base fee (`EIP-3198 <https://eips.ethereum.org/EIPS/eip-3198>`_ and `EIP-1559 <https://eips.ethereum.org/EIPS/eip-1559>`_) can be accessed via the global ``block.basefee`` or ``basefee()`` in inline assembly.
+- ``paris``
+   - Introduces ``prevrandao()`` and ``block.prevrandao``, and changes the semantics of the now deprecated ``block.difficulty``, disallowing ``difficulty()`` in inline assembly (see `EIP-4399 <https://eips.ethereum.org/EIPS/eip-4399>`_).
+- ``shanghai`` (**default**)
+  - Smaller code size and gas savings due to the introduction of ``push0`` (see `EIP-3855 <https://eips.ethereum.org/EIPS/eip-3855>`_).
+>>>>>>> english/develop
 
 .. index:: ! standard JSON, ! --standard-json
 .. _compiler-api:
@@ -200,7 +246,11 @@ Description de l'entrée
 .. code-block:: javascript
 
     {
+<<<<<<< HEAD
       // Requis : Langue du code source. Les langages actuellement pris en charge sont "Solidity" et "Yul".
+=======
+      // Required: Source code language. Currently supported are "Solidity", "Yul" and "SolidityAST" (experimental).
+>>>>>>> english/develop
       "language": "Solidity",
       // Requis
       "sources":
@@ -224,9 +274,21 @@ Description de l'entrée
             "bzzr://56ab...",
             "ipfs://Qma...",
             "/tmp/path/to/file.sol"
+<<<<<<< HEAD
             // Si des fichiers sont utilisés, leurs répertoires doivent être ajoutés à la ligne de commande via
+=======
+            // If files are used, their directories should be added to the command-line via
+>>>>>>> english/develop
             // `--allow-paths <path>`.
           ]
+          // If language is set to "SolidityAST", an AST needs to be supplied under the "ast" key.
+          // Note that importing ASTs is experimental and in particular that:
+          // - importing invalid ASTs can produce undefined results and
+          // - no proper error reporting is available on invalid ASTs.
+          // Furthermore, note that the AST import only consumes the fields of the AST as
+          // produced by the compiler in "stopAfter": "parsing" mode and then re-performs
+          // analysis, so any analysis-based annotations of the AST are ignored upon import.
+          "ast": { ... } // formatted as the json ast requested with the ``ast`` output selection.
         },
         "destructible":
         {
@@ -262,11 +324,19 @@ Description de l'entrée
             // L'optimiseur de trou d'homme est toujours activé si aucun détail n'est donné,
             // utilisez les détails pour le désactiver.
             "peephole": true,
+<<<<<<< HEAD
             // L'inliner est toujours activé si aucun détail n'est donné,
             // utilisez les détails pour le désactiver.
             "inliner": true,
             // L'enlèvement du jumpdest inutilisé est toujours activé si aucun détail n'est donné,
             // utilisez les détails pour le désactiver.
+=======
+            // The inliner is always off if no details are given,
+            // use details to switch it on.
+            "inliner": false,
+            // The unused jumpdest remover is always on if no details are given,
+            // use details to switch it off.
+>>>>>>> english/develop
             "jumpdestRemover": true,
             // Réorganise parfois les littéraux dans les opérations commutatives.
             "orderLiterals": false,
@@ -288,18 +358,43 @@ Description de l'entrée
               // Améliore l'allocation des emplacements de pile pour les variables, peut libérer les emplacements de pile plus tôt.
               // Activé par défaut si l'optimiseur Yul est activé.
               "stackAllocation": true,
+<<<<<<< HEAD
               // Sélectionnez les étapes d'optimisation à appliquer.
               // Facultatif, l'optimiseur utilisera la séquence par défaut si elle est omise.
+=======
+              // Select optimization steps to be applied. It is also possible to modify both the
+              // optimization sequence and the clean-up sequence. Instructions for each sequence
+              // are separated with the ":" delimiter and the values are provided in the form of
+              // optimization-sequence:clean-up-sequence. For more information see
+              // "The Optimizer > Selecting Optimizations".
+              // This field is optional, and if not provided, the default sequences for both
+              // optimization and clean-up are used. If only one of the sequences is provided
+              // the other will not be run.
+              // If only the delimiter ":" is provided then neither the optimization nor the clean-up
+              // sequence will be run.
+              // If set to an empty value, only the default clean-up sequence is used and
+              // no optimization steps are applied.
+>>>>>>> english/develop
               "optimizerSteps": "dhfoDgvulfnTUtnIf..."
             }
           }
         },
+<<<<<<< HEAD
         // Version de l'EVM pour laquelle il faut compiler.
         // Affecte la vérification de type et la génération de code. Peut être homestead,
         // tangerineWhistle, spuriousDragon, byzantium, constantinople, petersburg, istanbul ou berlin.
         "evmVersion": "byzantium",
         // Facultatif : Modifier le pipeline de compilation pour passer par la représentation intermédiaire de Yul.
         // Il s'agit d'une fonctionnalité hautement EXPERIMENTALE, à ne pas utiliser en production. Elle est désactivée par défaut.
+=======
+        // Version of the EVM to compile for.
+        // Affects type checking and code generation. Can be homestead,
+        // tangerineWhistle, spuriousDragon, byzantium, constantinople,
+        // petersburg, istanbul, berlin, london, paris or shanghai (default)
+        "evmVersion": "byzantium",
+        // Optional: Change compilation pipeline to go through the Yul intermediate representation.
+        // This is false by default.
+>>>>>>> english/develop
         "viaIR": true,
         // Facultatif : Paramètres de débogage
         "debug": {
@@ -324,7 +419,14 @@ Description de l'entrée
         },
         // Paramètres des métadonnées (facultatif)
         "metadata": {
+<<<<<<< HEAD
           // Utiliser uniquement le contenu littéral et non les URL (faux par défaut)
+=======
+          // The CBOR metadata is appended at the end of the bytecode by default.
+          // Setting this to false omits the metadata from the runtime and deploy time code.
+          "appendCBOR": true,
+          // Use only literal content and not URLs (false by default)
+>>>>>>> english/develop
           "useLiteralContent": true,
           // Utilisez la méthode de hachage donnée pour le hachage des métadonnées qui est ajouté au bytecode.
           // Le hachage des métadonnées peut être supprimé du bytecode via l'option "none".
@@ -335,10 +437,17 @@ Description de l'entrée
         // Adresses des bibliothèques. Si toutes les bibliothèques ne sont pas données ici,
         // il peut en résulter des objets non liés dont les données de sortie sont différentes.
         "libraries": {
+<<<<<<< HEAD
           // La clé de premier niveau est le nom du fichier source dans lequel la bibliothèque est utilisée.
           // Si des remappages sont utilisés, ce fichier source doit correspondre au chemin global
           // après que les remappages aient été appliqués.
           // Si cette clé est une chaîne vide, cela fait référence à un niveau global.
+=======
+          // The top level key is the name of the source file where the library is used.
+          // If remappings are used, this source file should match the global path
+          // after remappings were applied.
+          // If this key is an empty string, that refers to a global level.
+>>>>>>> english/develop
           "myFile.sol": {
             "MyLib": "0x123123..."
           }
@@ -384,8 +493,36 @@ Description de l'entrée
         // ewasm.wast - Ewasm au format S-expressions de WebAssembly
         // ewasm.wasm - Ewasm au format binaire WebAssembly
         //
+<<<<<<< HEAD
         // Notez que l'utilisation d'un `evm`, `evm.bytecode`, `ewasm`, etc. sélectionnera chaque
         // partie cible de cette sortie. De plus, `*` peut être utilisé comme un joker pour tout demander.
+=======
+        // Contract level (needs the contract name or "*"):
+        //   abi - ABI
+        //   devdoc - Developer documentation (natspec)
+        //   userdoc - User documentation (natspec)
+        //   metadata - Metadata
+        //   ir - Yul intermediate representation of the code before optimization
+        //   irAst - AST of Yul intermediate representation of the code before optimization
+        //   irOptimized - Intermediate representation after optimization
+        //   irOptimizedAst - AST of intermediate representation after optimization
+        //   storageLayout - Slots, offsets and types of the contract's state variables.
+        //   evm.assembly - New assembly format
+        //   evm.legacyAssembly - Old-style assembly format in JSON
+        //   evm.bytecode.functionDebugData - Debugging information at function level
+        //   evm.bytecode.object - Bytecode object
+        //   evm.bytecode.opcodes - Opcodes list
+        //   evm.bytecode.sourceMap - Source mapping (useful for debugging)
+        //   evm.bytecode.linkReferences - Link references (if unlinked object)
+        //   evm.bytecode.generatedSources - Sources generated by the compiler
+        //   evm.deployedBytecode* - Deployed bytecode (has all the options that evm.bytecode has)
+        //   evm.deployedBytecode.immutableReferences - Map from AST ids to bytecode ranges that reference immutables
+        //   evm.methodIdentifiers - The list of function hashes
+        //   evm.gasEstimates - Function gas estimates
+        //
+        // Note that using `evm`, `evm.bytecode`, etc. will select every
+        // target part of that output. Additionally, `*` can be used as a wildcard to request everything.
+>>>>>>> english/develop
         //
         "outputSelection": {
           "*": {
@@ -411,6 +548,7 @@ Description de l'entrée
             "source1.sol": ["contract1"],
             "source2.sol": ["contract2", "contract3"]
           },
+<<<<<<< HEAD
           // Choisir si les opérations de division et de modulo doivent être remplacées par
           // multiplication avec des variables de type slack. La valeur par défaut est `true`.
           // L'utilisation de `false` ici est recommandée si vous utilisez le moteur CHC
@@ -425,6 +563,31 @@ Description de l'entrée
           "showUnproved": true,
           // Choisissez les solveurs à utiliser, s'ils sont disponibles.
           // Voir la section Vérification formelle pour la description des solveurs.
+=======
+          // Choose how division and modulo operations should be encoded.
+          // When using `false` they are replaced by multiplication with slack
+          // variables. This is the default.
+          // Using `true` here is recommended if you are using the CHC engine
+          // and not using Spacer as the Horn solver (using Eldarica, for example).
+          // See the Formal Verification section for a more detailed explanation of this option.
+          "divModNoSlacks": false,
+          // Choose which model checker engine to use: all (default), bmc, chc, none.
+          "engine": "chc",
+          // Choose whether external calls should be considered trusted in case the
+          // code of the called function is available at compile-time.
+          // For details see the SMTChecker section.
+          "extCalls": "trusted",
+          // Choose which types of invariants should be reported to the user: contract, reentrancy.
+          "invariants": ["contract", "reentrancy"],
+          // Choose whether to output all proved targets. The default is `false`.
+          "showProved": true,
+          // Choose whether to output all unproved targets. The default is `false`.
+          "showUnproved": true,
+          // Choose whether to output all unsupported language features. The default is `false`.
+          "showUnsupported": true,
+          // Choose which solvers should be used, if available.
+          // See the Formal Verification section for the solvers description.
+>>>>>>> english/develop
           "solvers": ["cvc4", "smtlib2", "z3"],
           // Choisissez les cibles à vérifier : constantCondition,
           // underflow, overflow, divByZero, balance, assert, popEmptyArray, outOfBounds.
@@ -469,7 +632,11 @@ Description de la sortie
           // Obligatoire : Type d'erreur, tel que "TypeError", "InternalCompilerError", "Exception", etc.
           // Voir ci-dessous pour la liste complète des types.
           "type": "TypeError",
+<<<<<<< HEAD
           // Obligatoire : Composant d'où provient l'erreur, tel que "general", "ewasm", etc.
+=======
+          // Mandatory: Component where the error originated, such as "general" etc.
+>>>>>>> english/develop
           "component": "general",
           // Obligatoire ("error", "warning" ou "info", mais veuillez noter que cela pourrait être étendu à l'avenir)
           "severity": "error",
@@ -506,9 +673,21 @@ Description de la sortie
             "userdoc": {},
             // Documentation pour les développeurs (natspec)
             "devdoc": {},
+<<<<<<< HEAD
             // Représentation intermédiaire (chaîne de caractères)
             "ir": "",
             // Voir la documentation sur l'agencement du stockage.
+=======
+            // Intermediate representation before optimization (string)
+            "ir": "",
+            // AST of intermediate representation before optimization
+            "irAst":  {/* ... */},
+            // Intermediate representation after optimization (string)
+            "irOptimized": "",
+            // AST of intermediate representation after optimization
+            "irOptimizedAst": {/* ... */},
+            // See the Storage Layout documentation.
+>>>>>>> english/develop
             "storageLayout": {"storage": [/* ... */], "types": {/* ... */} },
             // Sorties liées à l'EVM
             "evm": {
@@ -585,6 +764,7 @@ Description de la sortie
                   "heavyLifting()": "infinite"
                 }
               }
+<<<<<<< HEAD
             },
             // Sorties liées à l'Ewasm
             "ewasm": {
@@ -592,6 +772,8 @@ Description de la sortie
               "wast": "",
               // Format binaire (chaîne hexagonale)
               "wasm": ""
+=======
+>>>>>>> english/develop
             }
           }
         }
@@ -602,6 +784,7 @@ Description de la sortie
 Types d'erreurs
 ~~~~~~~~~~~~~~~
 
+<<<<<<< HEAD
 1. ``JSONError`` : L'entrée JSON n'est pas conforme au format requis, par exemple, l'entrée n'est pas un objet JSON, la langue n'est pas supportée, etc.
 2. ``IOError`` : Erreurs de traitement des entrées/sorties et des importations, telles qu'une URL non résoluble ou une erreur de hachage dans les sources fournies.
 3. ``ParserError`` : Le code source n'est pas conforme aux règles du langage.
@@ -842,3 +1025,20 @@ have to be updated manually.)
             d.f{value: 5}();
         }
     }
+=======
+1. ``JSONError``: JSON input doesn't conform to the required format, e.g. input is not a JSON object, the language is not supported, etc.
+2. ``IOError``: IO and import processing errors, such as unresolvable URL or hash mismatch in supplied sources.
+3. ``ParserError``: Source code doesn't conform to the language rules.
+4. ``DocstringParsingError``: The NatSpec tags in the comment block cannot be parsed.
+5. ``SyntaxError``: Syntactical error, such as ``continue`` is used outside of a ``for`` loop.
+6. ``DeclarationError``: Invalid, unresolvable or clashing identifier names. e.g. ``Identifier not found``
+7. ``TypeError``: Error within the type system, such as invalid type conversions, invalid assignments, etc.
+8. ``UnimplementedFeatureError``: Feature is not supported by the compiler, but is expected to be supported in future versions.
+9. ``InternalCompilerError``: Internal bug triggered in the compiler - this should be reported as an issue.
+10. ``Exception``: Unknown failure during compilation - this should be reported as an issue.
+11. ``CompilerError``: Invalid use of the compiler stack - this should be reported as an issue.
+12. ``FatalError``: Fatal error not processed correctly - this should be reported as an issue.
+13. ``YulException``: Error during Yul code generation - this should be reported as an issue.
+14. ``Warning``: A warning, which didn't stop the compilation, but should be addressed if possible.
+15. ``Info``: Information that the compiler thinks the user might find useful, but is not dangerous and does not necessarily need to be addressed.
+>>>>>>> english/develop
