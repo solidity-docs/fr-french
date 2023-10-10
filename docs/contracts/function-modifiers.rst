@@ -6,9 +6,15 @@
 Modificateurs de fonction
 *************************
 
+<<<<<<< HEAD
 Les modificateurs peuvent être utilisés pour changer le comportement des fonctions de manière déclarative.
 Par exemple, vous pouvez utiliser un modificateur pour vérifier automatiquement
 une condition avant d'exécuter la fonction.
+=======
+Modifiers can be used to change the behavior of functions in a declarative way.
+For example,
+you can use a modifier to automatically check a condition prior to executing the function.
+>>>>>>> english/develop
 
 Les modificateurs sont des propriétés héritables des contrats et peuvent être remplacées par des contrats dérivés, mais uniquement
 s'ils sont marqués ``virtual``. Pour plus de détails, veuillez consulter
@@ -18,6 +24,7 @@ s'ils sont marqués ``virtual``. Pour plus de détails, veuillez consulter
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.1 <0.9.0;
+    // This will report a warning due to deprecated selfdestruct
 
     contract owned {
         constructor() { owner = payable(msg.sender); }
@@ -59,7 +66,7 @@ s'ils sont marqués ``virtual``. Pour plus de détails, veuillez consulter
     }
 
     contract Register is priced, destructible {
-        mapping (address => bool) registeredAddresses;
+        mapping(address => bool) registeredAddresses;
         uint price;
 
         constructor(uint initialPrice) { price = initialPrice; }
@@ -71,8 +78,8 @@ s'ils sont marqués ``virtual``. Pour plus de détails, veuillez consulter
             registeredAddresses[msg.sender] = true;
         }
 
-        function changePrice(uint _price) public onlyOwner {
-            price = _price;
+        function changePrice(uint price_) public onlyOwner {
+            price = price_;
         }
     }
 
@@ -110,9 +117,21 @@ séparée par des espaces et sont évaluées dans l'ordre présenté.
 Les modificateurs ne peuvent pas accéder ou modifier implicitement les arguments et les valeurs de retour des fonctions qu'ils modifient.
 Leurs valeurs ne peuvent leur être transmises que de manière explicite au moment de l'invocation.
 
+<<<<<<< HEAD
 Les retours explicites d'un modificateur ou d'un corps de fonction ne quittent que le
 modificateur ou du corps de la fonction actuelle. Les variables de retour sont assignées et
 le flux de contrôle continue après le ``_`` du modificateur précédent.
+=======
+In function modifiers, it is necessary to specify when you want the function to which the modifier is
+applied to be run. The placeholder statement (denoted by a single underscore character ``_``) is used to
+denote where the body of the function being modified should be inserted. Note that the
+placeholder operator is different from using underscores as leading or trailing characters in variable
+names, which is a stylistic choice.
+
+Explicit returns from a modifier or function body only leave the current
+modifier or function body. Return variables are assigned and
+control flow continues after the ``_`` in the preceding modifier.
+>>>>>>> english/develop
 
 .. warning::
     Dans une version antérieure de Solidity, les instructions ``return`` dans les fonctions
@@ -122,8 +141,13 @@ Un retour explicite d'un modificateur avec ``return;`` n'affecte pas les valeurs
 Le modificateur peut toutefois choisir de ne pas exécuter du tout le corps de la fonction et, dans ce cas, les variables ``return``
 sont placées à leur :ref:`valeur par défaut<valeur par défaut>` comme si la fonction avait un corps vide.
 
+<<<<<<< HEAD
 Le symbole ``_`` peut apparaître plusieurs fois dans le modificateur. Chaque occurrence est remplacée par
 le corps de la fonction.
+=======
+The ``_`` symbol can appear in the modifier multiple times. Each occurrence is replaced with
+the function body, and the function returns the return value of the final occurrence.
+>>>>>>> english/develop
 
 Les expressions arbitraires sont autorisées pour les arguments du modificateur et dans ce contexte,
 tous les symboles visibles de la fonction sont visibles dans le modificateur. Les symboles
