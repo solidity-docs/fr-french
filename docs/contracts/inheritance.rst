@@ -40,7 +40,7 @@ Les détails sont donnés dans l'exemple suivant.
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
-
+    // This will report a warning due to deprecated selfdestruct
 
     contract Owned {
         constructor() { owner = payable(msg.sender); }
@@ -53,8 +53,13 @@ Les détails sont donnés dans l'exemple suivant.
     // les fonctions internes et les variables d'état. Ceux-ci ne peuvent pas être
     // accessibles en externe via `this`.
     contract Destructible is Owned {
+<<<<<<< HEAD
         // Le mot clé `virtual` signifie que la fonction peut modifier
         // son comportement dans les classes dérivées ("overriding").
+=======
+        // The keyword `virtual` means that the function can change
+        // its behavior in derived classes ("overriding").
+>>>>>>> english/develop
         function destroy() virtual public {
             if (msg.sender == owner) selfdestruct(owner);
         }
@@ -76,9 +81,15 @@ Les détails sont donnés dans l'exemple suivant.
     }
 
 
+<<<<<<< HEAD
     // L'héritage multiple est possible. Notez que `owned`
     // est aussi une classe de base de `Destructible`, mais il n'y a qu'une seule instance de `owned`.
     // Pourtant, il n'existe qu'une seule instance de `owned` (comme pour l'héritage virtuel en C++).
+=======
+    // Multiple inheritance is possible. Note that `Owned` is
+    // also a base class of `Destructible`, yet there is only a single
+    // instance of `Owned` (as for virtual inheritance in C++).
+>>>>>>> english/develop
     contract Named is Owned, Destructible {
         constructor(bytes32 name) {
             Config config = Config(0xD5f9D8D94886E70b06E474c3fB14Fd43E2f23970);
@@ -112,9 +123,15 @@ Les détails sont donnés dans l'exemple suivant.
             if (msg.sender == owner) info = newInfo;
         }
 
+<<<<<<< HEAD
         // Ici, nous ne spécifions que `override` et non `virtual`.
         // Cela signifie que les contrats dérivant de `PriceFeed`
         // ne peuvent plus modifier le comportement de `destroy`.
+=======
+        // Here, we only specify `override` and not `virtual`.
+        // This means that contracts deriving from `PriceFeed`
+        // cannot change the behavior of `destroy` anymore.
+>>>>>>> english/develop
         function destroy() public override(Destructible, Named) { Named.destroy(); }
         function get() public view returns(uint r) { return info; }
 
@@ -129,6 +146,7 @@ comme le montre l'exemple suivant :
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
+    // This will report a warning due to deprecated selfdestruct
 
     contract owned {
         constructor() { owner = payable(msg.sender); }
@@ -161,6 +179,7 @@ explicitement dans la surcharge finale, mais cette fonction contournera
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
+    // This will report a warning due to deprecated selfdestruct
 
     contract owned {
         constructor() { owner = payable(msg.sender); }
@@ -289,8 +308,13 @@ le graphe d'héritage qui commence au contrat considéré
 et se termine par un contrat mentionnant une fonction avec cette signature
 qui n'est pas surchargée.
 
+<<<<<<< HEAD
 Si vous n'indiquez pas qu'une fonction qui surcharge est ``virtual``, les contrats
 dérivés ne peuvent plus modifier le comportement de cette fonction.
+=======
+If you do not mark a function that overrides as ``virtual``, derived
+contracts can no longer change the behavior of that function.
+>>>>>>> english/develop
 
 .. note::
 
@@ -419,8 +443,8 @@ S'il n'y a pas de constructeur, le contrat prendra en charge le constructeur par
     abstract contract A {
         uint public a;
 
-        constructor(uint _a) {
-            a = _a;
+        constructor(uint a_) {
+            a = a_;
         }
     }
 
@@ -433,15 +457,24 @@ le contrat doit être marqué :ref:`abstract <abstract-contract>`, parce que ces
 pas se voir attribuer de valeurs valides de l'extérieur, mais uniquement par le biais des constructeurs des contrats dérivés.
 
 .. warning::
+<<<<<<< HEAD
     Avant la version 0.4.22, les constructeurs étaient définis comme des fonctions portant le même nom que le contrat.
     Cette syntaxe a été dépréciée et n'est plus autorisée dans la version 0.5.0.
 
 .. warning::
     Avant la version 0.7.0, vous deviez spécifier la visibilité des constructeurs comme étant soit
     ``internal`` ou ``public``.
+=======
+    Prior to version 0.4.22, constructors were defined as functions with the same name as the contract.
+    This syntax was deprecated and is not allowed anymore in version 0.5.0.
+
+.. warning::
+    Prior to version 0.7.0, you had to specify the visibility of constructors as either
+    ``internal`` or ``public``.
+>>>>>>> english/develop
 
 
-.. index:: ! base;constructor
+.. index:: ! base;constructor, inheritance list, contract;abstract, abstract contract
 
 Arguments pour les constructeurs de base
 ========================================
@@ -457,7 +490,7 @@ les contrats dérivés doivent tous les spécifier. Ceci peut être fait de deux
 
     contract Base {
         uint x;
-        constructor(uint _x) { x = _x; }
+        constructor(uint x_) { x = x_; }
     }
 
     // Soit spécifier directement dans la liste d'héritage...
@@ -465,11 +498,25 @@ les contrats dérivés doivent tous les spécifier. Ceci peut être fait de deux
         constructor() {}
     }
 
+<<<<<<< HEAD
     // ou par un "modificateur" du constructeur dérivé.
+=======
+    // or through a "modifier" of the derived constructor...
+>>>>>>> english/develop
     contract Derived2 is Base {
-        constructor(uint _y) Base(_y * _y) {}
+        constructor(uint y) Base(y * y) {}
     }
 
+    // or declare abstract...
+    abstract contract Derived3 is Base {
+    }
+
+    // and have the next concrete derived contract initialize it.
+    contract DerivedFromDerived is Derived3 {
+        constructor() Base(10 + 10) {}
+    }
+
+<<<<<<< HEAD
 L'une des façons est directement dans la liste d'héritage (``est Base(7)``).
 L'autre est dans la façon dont un modificateur est invoqué dans le cadre du
 constructeur dérivé (``Base(_y * _y)``). La première façon
@@ -483,6 +530,26 @@ Spécifier les arguments aux deux endroits est une erreur.
 
 Si un contrat dérivé ne spécifie pas les arguments de tous les constructeurs de ses contrats
 de base, il sera considéré comme un contrat abstrait.
+=======
+One way is directly in the inheritance list (``is Base(7)``).  The other is in
+the way a modifier is invoked as part of
+the derived constructor (``Base(y * y)``). The first way to
+do it is more convenient if the constructor argument is a
+constant and defines the behavior of the contract or
+describes it. The second way has to be used if the
+constructor arguments of the base depend on those of the
+derived contract. Arguments have to be given either in the
+inheritance list or in modifier-style in the derived constructor.
+Specifying arguments in both places is an error.
+
+If a derived contract does not specify the arguments to all of its base
+contracts' constructors, it must be declared abstract. In that case, when
+another contract derives from it, that other contract's inheritance list
+or constructor must provide the necessary parameters
+for all base classes that haven't had their parameters specified (otherwise,
+that other contract must be declared abstract as well). For example, in the above
+code snippet, see ``Derived3`` and ``DerivedFromDerived``.
+>>>>>>> english/develop
 
 .. index:: ! inheritance;multiple, ! linearization, ! C3 linearization
 
@@ -572,9 +639,20 @@ Un domaine où la linéarisation de l'héritage est particulièrement importante
 Hériter de différents types de membres portant le même nom
 ==========================================================
 
+<<<<<<< HEAD
 C'est une erreur lorsque l'une des paires suivantes dans un contrat porte le même nom en raison de l'héritage :
   - une fonction et un modificateur
   - une fonction et un événement
   - un événement et un modificateur
 
 À titre d'exception, un getter de variable d'état peut remplacer une fonction externe.
+=======
+The only situations where, due to inheritance, a contract may contain multiple definitions sharing
+the same name are:
+
+- Overloading of functions.
+- Overriding of virtual functions.
+- Overriding of external virtual functions by state variable getters.
+- Overriding of virtual modifiers.
+- Overloading of events.
+>>>>>>> english/develop
