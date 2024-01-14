@@ -9,7 +9,7 @@ Cependant, jusque-là, la traduction française sera temporairement disponible s
 
 ## Modérateur et Contributeur
 
-- ["stratusagency", "Ilingu"]
+- ["stratusceo", "Ilingu"]
 
 ### Pour participer à la traduction :
 
