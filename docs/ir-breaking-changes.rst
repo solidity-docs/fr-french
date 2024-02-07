@@ -1,6 +1,8 @@
 
 .. index: ir breaking changes
 
+.. _ir-breaking-changes:
+
 *********************************
 Changements apportés au Codegen basé sur Solidity IR
 *********************************
@@ -13,6 +15,7 @@ Le générateur de code basé sur l'IR a été introduit dans le but non seuleme
 génération de code plus transparente et plus vérifiable, mais aussi
 de permettre des passes d'optimisation plus puissantes qui couvrent plusieurs fonctions.
 
+<<<<<<< HEAD
 Actuellement, le générateur de code basé sur IR est toujours marqué comme expérimental,
 mais il supporte toutes les fonctionnalités du langage et a fait l'objet de nombreux tests.
 Nous considérons donc qu'il est presque prêt à être utilisé en production.
@@ -25,6 +28,16 @@ Pour plusieurs raisons, il existe de minuscules différences sémantiques entre 
 générateur de code basé sur l'IR, principalement dans des domaines
 où nous ne nous attendons pas à ce que les gens se fient à ce comportement de toute façon.
 Cette section met en évidence les principales différences entre l'ancien et le générateur de code basé sur la RI.
+=======
+You can enable it on the command-line using ``--via-ir``
+or with the option ``{"viaIR": true}`` in standard-json and we
+encourage everyone to try it out!
+
+For several reasons, there are tiny semantic differences between the old
+and the IR-based code generator, mostly in areas where we would not
+expect people to rely on this behavior anyway.
+This section highlights the main differences between the old and the IR-based codegen.
+>>>>>>> english/develop
 
 Changements uniquement sémantiques
 =====================
@@ -32,6 +45,7 @@ Changements uniquement sémantiques
 Cette section énumère les changements qui sont uniquement sémantiques, donc potentiellement
 cacher un comportement nouveau et différent dans le code existant.
 
+<<<<<<< HEAD
 - Lorsque les structures de stockage sont supprimées, chaque emplacement de stockage qui contient
   un membre de la structure est entièrement mis à zéro. Auparavant, l'espace de remplissage
   n'était pas modifié.
@@ -39,6 +53,59 @@ cacher un comportement nouveau et différent dans le code existant.
   (par exemple, dans le contexte d'une mise à jour de contrat), vous devez être conscient que
   que ``delete`` effacera maintenant aussi le membre ajouté (alors qu'il
   n'aurait pas été effacé dans le passé).
+=======
+.. _state-variable-initialization-order:
+
+- The order of state variable initialization has changed in case of inheritance.
+
+  The order used to be:
+
+  - All state variables are zero-initialized at the beginning.
+  - Evaluate base constructor arguments from most derived to most base contract.
+  - Initialize all state variables in the whole inheritance hierarchy from most base to most derived.
+  - Run the constructor, if present, for all contracts in the linearized hierarchy from most base to most derived.
+
+  New order:
+
+  - All state variables are zero-initialized at the beginning.
+  - Evaluate base constructor arguments from most derived to most base contract.
+  - For every contract in order from most base to most derived in the linearized hierarchy:
+
+      1. Initialize state variables.
+      2. Run the constructor (if present).
+
+  This causes differences in contracts where the initial value of a state
+  variable relies on the result of the constructor in another contract:
+
+  .. code-block:: solidity
+
+      // SPDX-License-Identifier: GPL-3.0
+      pragma solidity >=0.7.1;
+
+      contract A {
+          uint x;
+          constructor() {
+              x = 42;
+          }
+          function f() public view returns(uint256) {
+              return x;
+          }
+      }
+      contract B is A {
+          uint public y = f();
+      }
+
+  Previously, ``y`` would be set to 0. This is due to the fact that we would first initialize state variables: First, ``x`` is set to 0, and when initializing ``y``, ``f()`` would return 0 causing ``y`` to be 0 as well.
+  With the new rules, ``y`` will be set to 42. We first initialize ``x`` to 0, then call A's constructor which sets ``x`` to 42. Finally, when initializing ``y``, ``f()`` returns 42 causing ``y`` to be 42.
+
+- When storage structs are deleted, every storage slot that contains
+  a member of the struct is set to zero entirely. Formerly, padding space
+  was left untouched.
+  Consequently, if the padding space within a struct is used to store data
+  (e.g. in the context of a contract upgrade), you have to be aware that
+  ``delete`` will now also clear the added member (while it wouldn't
+  have been cleared in the past).
+>>>>>>> english/develop
 
   .. code-block:: solidity
 
@@ -75,14 +142,19 @@ cacher un comportement nouveau et différent dans le code existant.
       // SPDX-License-Identifier: GPL-3.0
       pragma solidity >=0.7.0;
       contract C {
-          function f(uint _a) public pure mod() returns (uint _r) {
-              _r = _a++;
+          function f(uint a) public pure mod() returns (uint r) {
+              r = a++;
           }
           modifier mod() { _; _; }
       }
 
+<<<<<<< HEAD
   Si vous exécutez ``f(0)`` dans l'ancien générateur de code, il retournera ``2``, alors
   qu'il retournera ``1`` en utilisant le nouveau générateur de code.
+=======
+  If you execute ``f(0)`` in the old code generator, it will return ``1``, while
+  it will return ``0`` when using the new code generator.
+>>>>>>> english/develop
 
   .. code-block:: solidity
 
@@ -113,6 +185,7 @@ cacher un comportement nouveau et différent dans le code existant.
   - Nouveau générateur de code : ``0`` car tous les paramètres, y compris les paramètres de retour, seront ré-initialisés avant
     chaque évaluation ``_;``.
 
+<<<<<<< HEAD
 - L'ordre d'initialisation des contrats a changé en cas d'héritage.
 
   L'ordre était auparavant le suivant :
@@ -185,6 +258,8 @@ Cela entraîne des différences dans certains contrats, par exemple :
   Maintenant, il renvoie ``0x6465616462656566000000000000000000000000000000000000000000000010`` (il a une
   longueur correcte, et des éléments corrects, mais il ne contient pas de données superflues).
 
+=======
+>>>>>>> english/develop
   .. index:: ! evaluation order; expression
 
 - Pour l'ancien générateur de code, l'ordre d'évaluation des expressions n'est pas spécifié.
@@ -198,15 +273,20 @@ Cela entraîne des différences dans certains contrats, par exemple :
       // SPDX-License-Identifier: GPL-3.0
       pragma solidity >=0.8.1;
       contract C {
-          function preincr_u8(uint8 _a) public pure returns (uint8) {
-              return ++_a + _a;
+          function preincr_u8(uint8 a) public pure returns (uint8) {
+              return ++a + a;
           }
       }
 
   La fonction ``preincr_u8(1)`` retourne les valeurs suivantes :
 
+<<<<<<< HEAD
   - Ancien générateur de code : 3 (``1 + 2``) mais la valeur de retour n'est pas spécifiée en général.
   - Nouveau générateur de code : 4 (``2 + 2``) mais la valeur de retour n'est pas garantie
+=======
+  - Old code generator: ``3`` (``1 + 2``) but the return value is unspecified in general
+  - New code generator: ``4`` (``2 + 2``) but the return value is not guaranteed
+>>>>>>> english/develop
 
   .. index:: ! evaluation order; function arguments
 
@@ -219,11 +299,11 @@ Cela entraîne des différences dans certains contrats, par exemple :
       // SPDX-License-Identifier: GPL-3.0
       pragma solidity >=0.8.1;
       contract C {
-          function add(uint8 _a, uint8 _b) public pure returns (uint8) {
-              return _a + _b;
+          function add(uint8 a, uint8 b) public pure returns (uint8) {
+              return a + b;
           }
-          function g(uint8 _a, uint8 _b) public pure returns (uint8) {
-              return add(++_a + ++_b, _a + _b);
+          function g(uint8 a, uint8 b) public pure returns (uint8) {
+              return add(++a + ++b, a + b);
           }
       }
 
@@ -278,7 +358,11 @@ Cela entraîne des différences dans certains contrats, par exemple :
           }
       }
 
+<<<<<<< HEAD
   La fonction `f()` se comporte comme suit :
+=======
+  The function ``f()`` behaves as follows:
+>>>>>>> english/develop
 
   - Ancien générateur de code : manque de gaz lors de la mise à zéro du contenu du tableau après la grande allocation de mémoire.
   - Nouveau générateur de code : retour en arrière en raison d'un débordement du pointeur de mémoire libre (ne tombe pas en panne sèche).
@@ -323,13 +407,13 @@ Par exemple :
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.8.1;
     contract C {
-        function f(uint8 _a) public pure returns (uint _r1, uint _r2)
+        function f(uint8 a) public pure returns (uint r1, uint r2)
         {
-            _a = ~_a;
+            a = ~a;
             assembly {
-                _r1 := _a
+                r1 := a
             }
-            _r2 = _a;
+            r2 = a;
         }
     }
 
@@ -338,6 +422,12 @@ La fonction ``f(1)`` renvoie les valeurs suivantes :
 - Ancien générateur de code: (``fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe``, ``00000000000000000000000000000000000000000000000000000000000000fe``)
 - Nouveau générateur de codes: (``00000000000000000000000000000000000000000000000000000000000000fe``, ``00000000000000000000000000000000000000000000000000000000000000fe``)
 
+<<<<<<< HEAD
 Notez que, contrairement au nouveau générateur de code, l'ancien générateur de code n'effectue pas de nettoyage après l'affectation bit-non (``_a = ~_a``).
 Il en résulte que des valeurs différentes sont assignées (dans le bloc d'assemblage en ligne) à la valeur de retour ``_r1`` entre l'ancien et le nouveau générateur de code.
 Cependant, les deux générateurs de code effectuent un nettoyage avant que la nouvelle valeur de ``_a`` soit assignée à ``_r2``.
+=======
+Note that, unlike the new code generator, the old code generator does not perform a cleanup after the bit-not assignment (``a = ~a``).
+This results in different values being assigned (within the inline assembly block) to return value ``r1`` between the old and new code generators.
+However, both code generators perform a cleanup before the new value of ``a`` is assigned to ``r2``.
+>>>>>>> english/develop
