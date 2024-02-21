@@ -150,8 +150,13 @@ lève une exception ou tombe en panne.
     utiliser "f.value(x).gas(g)()``. Cette méthode a été dépréciée dans Solidity 0.6.2 et n'est
     plus possible depuis Solidity 0.7.0.
 
+<<<<<<< HEAD
 Appels nominatifs et paramètres de fonctions anonymes
 ---------------------------------------------
+=======
+Function Calls with Named Parameters
+------------------------------------
+>>>>>>> english/develop
 
 Les arguments d'un appel de fonction peuvent être donnés par leur nom, dans n'importe quel ordre,
 s'ils sont entourés de ``{ }`` comme on peut le voir dans
@@ -173,14 +178,23 @@ paramètres de la déclaration de la fonction, mais peut être dans un ordre arb
         function set(uint key, uint value) public {
             data[key] = value;
         }
-
     }
 
+<<<<<<< HEAD
 Noms des paramètres de la fonction omise
 --------------------------------
 
 Les noms des paramètres non utilisés (en particulier les paramètres de retour) peuvent être omis.
 Ces paramètres seront toujours présents sur la pile, mais ils seront inaccessibles.
+=======
+Omitted Names in Function Definitions
+-------------------------------------
+
+The names of parameters and return values in the function declaration can be omitted.
+Those items with omitted names will still be present on the stack, but they are
+inaccessible by name. An omitted return value name
+can still return a value to the caller by use of the ``return`` statement.
+>>>>>>> english/develop
 
 .. code-block:: solidity
 
@@ -284,7 +298,7 @@ qui n'ont besoin d'être créés que s'il y a un différend.
                 salt,
                 keccak256(abi.encodePacked(
                     type(D).creationCode,
-                    arg
+                    abi.encode(arg)
                 ))
             )))));
 
@@ -363,16 +377,27 @@ Par exemple, l'exemple suivant n'est pas valide : ``(x, uint y) = (1, 2);``
     maintenant interdit, donc les deux côtés doivent avoir le même nombre de composants.
 
 .. warning::
+<<<<<<< HEAD
     Soyez prudent lorsque vous assignez à plusieurs variables en même temps
     lorsque des types de référence sont impliqués, car cela pourrait conduire à un
     comportement de copie inattendu.
+=======
+    Be careful when assigning to multiple variables at the same time when
+    reference types are involved, because it could lead to unexpected
+    copying behavior.
+>>>>>>> english/develop
 
 Complications pour les tableaux et les structures
 ------------------------------------
 
+<<<<<<< HEAD
 La sémantique des affectations est plus compliquée pour les types non-valeurs comme les tableaux et les structs,
 y compris les ``octets`` et les ``chaînes``, voir :ref:`L'emplacement des données et le comportement d'affectation <data-location-assignment>`
 pour plus de détails.
+=======
+The semantics of assignments are more complicated for non-value types like arrays and structs,
+including ``bytes`` and ``string``, see :ref:`Data location and assignment behavior <data-location-assignment>` for details.
+>>>>>>> english/develop
 
 Dans l'exemple ci-dessous, l'appel à ``g(x)`` n'a aucun effet sur ``x`` parce qu'il crée
 une copie indépendante de la valeur de stockage en mémoire. Cependant, ``h(x)`` modifie avec succès ``x``
@@ -510,7 +535,11 @@ vérifications supplémentaires.
 Depuis la version 0.8.0 de Solidity, toutes les opérations arithmétiques s'inversent par défaut en cas de dépassement inférieur ou supérieur,
 rendant ainsi inutile l'utilisation de ces bibliothèques.
 
+<<<<<<< HEAD
 Pour obtenir le comportement précédent, un bloc ``unchecked`` peut être utilisé :
+=======
+To obtain the previous behavior, an ``unchecked`` block can be used:
+>>>>>>> english/develop
 
 .. code-block:: solidity
 
@@ -647,9 +676,15 @@ par le compilateur dans les situations suivantes :
    modificateur ``payable`` (y compris le constructeur et la fonction de repli).
 #. Si votre contrat reçoit de l'Ether via une fonction publique getter.
 
+<<<<<<< HEAD
 Dans les cas suivants, les données d'erreur de l'appel externe
 (s'il est fourni) sont transférées. Cela signifie qu'il peut soit causer
 une `Error` ou une `Panic` (ou toute autre donnée) :
+=======
+For the following cases, the error data from the external call
+(if provided) is forwarded. This means that it can either cause
+an ``Error`` or a ``Panic`` (or whatever else was given):
+>>>>>>> english/develop
 
 #. Si un ``.transfer()`` échoue.
 #. Si vous appelez une fonction via un appel de message mais qu'elle
@@ -682,9 +717,15 @@ et ``assert`` pour vérifier les erreurs internes.
             require(msg.value % 2 == 0, "Even value required.");
             uint balanceBeforeTransfer = address(this).balance;
             addr.transfer(msg.value / 2);
+<<<<<<< HEAD
             // Puisque le transfert lève une exception en cas d'échec et que
             // ne peut pas rappeler ici, il ne devrait pas y avoir de moyen pour nous
             // d'avoir encore la moitié de l'argent.
+=======
+            // Since transfer throws an exception on failure and
+            // cannot call back here, there should be no way for us to
+            // still have half of the Ether.
+>>>>>>> english/develop
             assert(address(this).balance == balanceBeforeTransfer - msg.value / 2);
             return address(this).balance;
         }
@@ -717,8 +758,13 @@ L'instruction ``revert`` prend une erreur personnalisée comme argument direct s
 
     revert CustomError(arg1, arg2) ;
 
+<<<<<<< HEAD
 Pour des raisons de rétrocompatibilité, il existe également la fonction ``revert()``, qui utilise des parenthèses
 et accepte une chaîne de caractères :
+=======
+For backward-compatibility reasons, there is also the ``revert()`` function, which uses parentheses
+and accepts a string:
+>>>>>>> english/develop
 
     revert() ;
     revert("description") ;
