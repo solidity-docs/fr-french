@@ -13,6 +13,7 @@ options { tokenVocab=SolidityLexer; }
 sourceUnit: (
 	pragmaDirective
 	| importDirective
+	| usingDirective
 	| contractDefinition
 	| interfaceDefinition
 	| libraryDefinition
@@ -22,6 +23,7 @@ sourceUnit: (
 	| enumDefinition
 	| userDefinedValueTypeDefinition
 	| errorDefinition
+	| eventDefinition
 )* EOF;
 
 //@doc: inline
@@ -152,16 +154,22 @@ stateMutability: Pure | View | Payable;
  */
 overrideSpecifier: Override (LParen overrides+=identifierPath (Comma overrides+=identifierPath)* RParen)?;
 /**
+<<<<<<< HEAD
  * La définition des fonctions de contrat, de bibliothèque et d'interface.
  * Selon le contexte dans lequel la fonction est définie, d'autres restrictions peuvent s'appliquer.
  * Par exemple, les fonctions des interfaces doivent être non implémentées, c'est-à-dire qu'elles ne peuvent pas contenir de bloc de corps.
+=======
+ * The definition of contract, library, interface or free functions.
+ * Depending on the context in which the function is defined, further restrictions may apply,
+ * e.g. functions in interfaces have to be unimplemented, i.e. may not contain a body block.
+>>>>>>> english/develop
  */
 functionDefinition
 locals[
 	boolean visibilitySet = false,
 	boolean mutabilitySet = false,
 	boolean virtualSet = false,
-	boolean overrideSpecifierSet = false
+	boolean overrideSpecifierSet = false,
 ]
 :
 	Function (identifier | Fallback | Receive)
@@ -175,6 +183,7 @@ locals[
 	 )*
 	(Returns LParen returnParameters=parameterList RParen)?
 	(Semicolon | body=block);
+
 /**
  * La définition d'un modificateur.
  * Notez que dans le corps d'un modificateur, l'underscore ne peut pas être utilisé comme identifiant,
@@ -313,10 +322,42 @@ errorDefinition:
 	Semicolon;
 
 /**
+<<<<<<< HEAD
  * Utilisation de directives pour lier des fonctions de bibliothèques à des types.
  * Peut se produire dans les contrats et les bibliothèques.
+=======
+ * Operators that users are allowed to implement for some types with `using for`.
+>>>>>>> english/develop
  */
-usingDirective: Using identifierPath For (Mul | typeName) Semicolon;
+userDefinableOperator:
+	BitAnd
+	| BitNot
+	| BitOr
+	| BitXor
+	| Add
+	| Div
+	| Mod
+	| Mul
+	| Sub
+	| Equal
+	| GreaterThan
+	| GreaterThanOrEqual
+	| LessThan
+	| LessThanOrEqual
+	| NotEqual;
+
+/**
+ * Using directive to attach library functions and free functions to types.
+ * Can occur within contracts and libraries and at the file level.
+ */
+usingDirective:
+  Using (
+    identifierPath
+    | (LBrace usingAliases (Comma usingAliases)* RBrace)
+  ) For (Mul | typeName) Global? Semicolon;
+
+usingAliases: identifierPath (As userDefinableOperator)?;
+
 /**
  * Un nom de type peut être un type élémentaire, un type de fonction, un type de mappage, un type défini par l'utilisateur
  * (par exemple, un contrat ou un struct) ou un type de tableau.
@@ -348,7 +389,7 @@ dataLocation: Memory | Storage | Calldata;
  */
 expression:
 	expression LBrack index=expression? RBrack # IndexAccess
-	| expression LBrack start=expression? Colon end=expression? RBrack # IndexRangeAccess
+	| expression LBrack startIndex=expression? Colon endIndex=expression? RBrack # IndexRangeAccess
 	| expression Period (identifier | Address) # MemberAccess
 	| expression LBrace (namedArgument (Comma namedArgument)*)? RBrace # FunctionCallOptions
 	| expression callArgumentList # FunctionCall
@@ -369,12 +410,13 @@ expression:
 	| expression Or expression # OrOperation
 	|<assoc=right> expression Conditional expression Colon expression # Conditional
 	|<assoc=right> expression assignOp expression # Assignment
-	| New typeName # NewExpression
+	| New typeName # NewExpr
 	| tupleExpression # Tuple
 	| inlineArrayExpression # InlineArray
  	| (
 		identifier
 		| literal
+		| literalWithSubDenomination
 		| elementaryTypeName[false]
 	  ) # PrimaryExpression
 ;
@@ -390,9 +432,12 @@ inlineArrayExpression: LBrack (expression ( Comma expression)* ) RBrack;
 /**
  * Outre les identificateurs ordinaires sans mot-clé, certains mots-clés comme "from" et "error" peuvent également être utilisés comme identificateurs.
  */
-identifier: Identifier | From | Error | Revert;
+identifier: Identifier | From | Error | Revert | Global;
 
 literal: stringLiteral | numberLiteral | booleanLiteral | hexStringLiteral | unicodeStringLiteral;
+
+literalWithSubDenomination: numberLiteral SubDenomination;
+
 booleanLiteral: True | False;
 /**
  * Une chaîne de caractères complète est constituée d'une ou plusieurs chaînes de caractères consécutives entre guillemets.
@@ -410,7 +455,8 @@ unicodeStringLiteral: UnicodeStringLiteral+;
 /**
  * Les littéraux numériques peuvent être des nombres décimaux ou hexadécimaux avec une unité optionnelle.
  */
-numberLiteral: (DecimalNumber | HexNumber) NumberUnit?;
+numberLiteral: DecimalNumber | HexNumber;
+
 /**
  * Un bloc d'instructions avec des accolades. Ouvre sa propre portée.
  */
@@ -478,7 +524,13 @@ revertStatement: Revert expression callArgumentList Semicolon;
  * Le contenu d'un bloc d'assemblage en ligne utilise un analyseur/lexeur séparé, c'est-à-dire que l'ensemble des mots-clés et
  * d'identificateurs autorisés est différent à l'intérieur d'un bloc d'assemblage en ligne.
  */
-assemblyStatement: Assembly AssemblyDialect? AssemblyLBrace yulStatement* YulRBrace;
+assemblyStatement: Assembly AssemblyDialect? assemblyFlags? AssemblyLBrace yulStatement* YulRBrace;
+
+/**
+ * Assembly flags.
+ * Comma-separated list of double-quoted strings as flags.
+ */
+assemblyFlags: AssemblyBlockLParen AssemblyFlagString (AssemblyBlockComma AssemblyFlagString)* AssemblyBlockRParen;
 
 //@doc:inline
 variableDeclarationList: variableDeclarations+=variableDeclaration (Comma variableDeclarations+=variableDeclaration)*;
@@ -499,7 +551,7 @@ variableDeclarationTuple:
 variableDeclarationStatement: ((variableDeclaration (Assign expression)?) | (variableDeclarationTuple Assign expression)) Semicolon;
 expressionStatement: expression Semicolon;
 
-mappingType: Mapping LParen key=mappingKeyType DoubleArrow value=typeName RParen;
+mappingType: Mapping LParen key=mappingKeyType name=identifier? DoubleArrow value=typeName name=identifier? RParen;
 /**
  * Seuls les types élémentaires ou les types définis par l'utilisateur sont viables comme clés de mappage.
  */
