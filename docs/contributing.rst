@@ -58,7 +58,7 @@ Pour contribuer, merci de vous détacher de la branche ``develop`` et d'y faire 
 Vos messages de commit doivent détailler *pourquoi* vous avez fait votre changement
 en plus de *ce que vous avez fait (sauf si c'est un changement minuscule)*.
 
-Si vous avez besoin de retirer des changements de la branche ``develop`` après avoir fait votre fork (par
+Si vous avez besoin de retirer des changements de la branche ``develop`` après avoir fait votre fork 
 (par exemple, pour résoudre des conflits de fusion potentiels), évitez d'utiliser ``git merge``
 et à la place, ``git rebase`` votre branche. Cela nous aidera à revoir votre changement
 plus facilement.

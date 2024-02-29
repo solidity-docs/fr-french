@@ -12,9 +12,8 @@ Retrait des contrats
 
 La méthode recommandée pour envoyer des fonds après un effet
 est d'utiliser le modèle de retrait. Bien que la méthode la plus intuitive
-la méthode la plus intuitive pour envoyer de l'Ether, suite à un effet,
-est un appel direct de "transfert", ce n'est pas recommandé car il introduit un
-car elle introduit un risque potentiel de sécurité. Vous pouvez lire
+pour envoyer de l'Ether suite à un effet, est un appel direct de "transfert", 
+ce n'est pas recommandé car cela introduit un risque potentiel de sécurité. Vous pouvez lire
 plus d'informations à ce sujet sur la page :ref:`security_considerations`.
 
 Voici un exemple du schéma de retrait en pratique dans

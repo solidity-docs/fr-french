@@ -53,7 +53,7 @@ cet exemple absurde :
     }
 
 Ces appels de fonction sont traduits en simples sauts à l'intérieur de l'EVM. Cela a pour
-l'effet que la mémoire courante n'est pas effacée, c'est-à-dire que le passage des références de mémoire
+effet que la mémoire courante n'est pas effacée, c'est-à-dire que le passage des références de mémoire
 aux fonctions appelées en interne est très efficace. Seules les fonctions de la même
 instance de contrat peuvent être appelées en interne.
 
@@ -146,8 +146,8 @@ lève une exception ou tombe en panne.
     afin que votre contrat ne soit pas vulnérable à un exploit de réentraînement.
 
 .. note::
-    Avant Solidity 0.6.2, la manière recommandée de spécifier la valeur et le gaz était de
-    utiliser "f.value(x).gas(g)()``. Cette méthode a été dépréciée dans Solidity 0.6.2 et n'est
+    Avant Solidity 0.6.2, la manière recommandée de spécifier la valeur et le gaz était d'utiliser 
+    "f.value(x).gas(g)()``. Cette méthode a été dépréciée dans Solidity 0.6.2 et n'est
     plus possible depuis Solidity 0.7.0.
 
 Appels nominatifs et paramètres de fonctions anonymes
