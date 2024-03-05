@@ -187,12 +187,12 @@ L'exemple suivant est plus complexe :
         struct Data {
             uint a;
             bytes3 b;
-            mapping (uint => uint) map;
+            mapping(uint => uint) map;
             uint[3] c;
             uint[] d;
             bytes e;
         }
-        mapping (uint => mapping(bool => Data[])) public data;
+        mapping(uint => mapping(bool => Data[])) public data;
     }
 
 Il génère une fonction de la forme suivante. Le mappage et les tableaux (à
