@@ -42,8 +42,14 @@ pour les besoins de NatSpec.
 - Pour Solidity, vous pouvez choisir ``///`` pour les commentaires d'une ou plusieurs lignes
    commentaires, ou ``/**`` et se terminant par ``*/``.
 
+<<<<<<< HEAD
 - Pour Vyper, utilisez ``"""`` indenté jusqu'au contenu intérieur avec des
    commentaires. Voir la documentation de `Vyper <https://vyper.readthedocs.io/en/latest/natspec.html>`__.
+=======
+-  For Vyper, use ``"""`` indented to the inner contents with bare
+   comments. See the `Vyper
+   documentation <https://docs.vyperlang.org/en/latest/natspec.html>`__.
+>>>>>>> english/develop
 
 L'exemple suivant montre un contrat et une fonction utilisant toutes les balises disponibles.
 
@@ -55,7 +61,7 @@ L'exemple suivant montre un contrat et une fonction utilisant toutes les balises
 
   Ceci pourrait changer à l'avenir.
 
-.. code-block:: Solidity
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.8.2 < 0.9.0;
@@ -109,6 +115,7 @@ balise NatSpec et où elle peut être utilisée. Dans un cas particulier, si auc
 utilisée, le compilateur Solidity interprétera un commentaire ``///`` ou ``/**``
 de la même manière que s'il était balisé avec `@notice``.
 
+<<<<<<< HEAD
 =============== =================================================================================================== =============================
 Tag                                                                                                                 Contexte
 =============== =================================================================================================== =============================
@@ -121,6 +128,20 @@ Tag                                                                             
 ``@inheritdoc`` Copie toutes les étiquettes manquantes de la fonction de base (doit être suivi du nom du contrat).  function, public state variable
 ``@custom:...`` Balise personnalisée, la sémantique est définie par l'application.                                  everywhere
 =============== =================================================================================================== =============================
+=======
+=============== ====================================================================================== =============================
+Tag                                                                                                    Context
+=============== ====================================================================================== =============================
+``@title``      A title that should describe the contract/interface                                    contract, library, interface, struct, enum
+``@author``     The name of the author                                                                 contract, library, interface, struct, enum
+``@notice``     Explain to an end user what this does                                                  contract, library, interface, function, public state variable, event, struct, enum
+``@dev``        Explain to a developer any extra details                                               contract, library, interface, function, state variable, event, struct, enum
+``@param``      Documents a parameter just like in Doxygen (must be followed by parameter name)        function, event
+``@return``     Documents the return variables of a contract's function                                function, public state variable
+``@inheritdoc`` Copies all missing tags from the base function (must be followed by the contract name) function, public state variable
+``@custom:...`` Custom tag, semantics is application-defined                                           everywhere
+=============== ====================================================================================== =============================
+>>>>>>> english/develop
 
 Si votre fonction renvoie plusieurs valeurs, comme ``(int quotient, int remainder)``,
 alors utilisez plusieurs instructions ``return`` dans le même format que les instructions ``@param``.
@@ -151,10 +172,13 @@ to the end-user as:
 
 Si une fonction est appelée et que la valeur 10 est attribuée à l'entrée ``a``.
 
+<<<<<<< HEAD
 La spécification de ces expressions dynamiques n'entre pas dans le cadre de la documentation de Solidity.
 et vous pouvez en savoir plus à l'adresse suivante
 `le projet radspec <https://github.com/aragon/radspec>`__.
 
+=======
+>>>>>>> english/develop
 .. _header-inheritance:
 
 Notes sur l'héritage
@@ -180,7 +204,7 @@ l'autre à être utilisé par le développeur.
 Si le contrat ci-dessus est enregistré sous le nom de ``ex1.sol``, alors vous pouvez générer la
 documentation en utilisant :
 
-.. code::
+.. code-block:: shell
 
    solc --userdoc --devdoc ex1.sol
 
@@ -199,7 +223,7 @@ Documentation pour les utilisateurs
 La documentation ci-dessus produira la documentation utilisateur suivante
 Fichier JSON en sortie :
 
-.. code::
+.. code-block:: json
 
     {
       "version" : 1,
@@ -226,7 +250,7 @@ Documentation pour les développeurs
 Outre le fichier de documentation utilisateur, un fichier JSON
 de documentation pour les développeurs doit également être produit et doit ressembler à ceci :
 
-.. code::
+.. code-block:: json
 
     {
       "version" : 1,
