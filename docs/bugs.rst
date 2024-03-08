@@ -6,10 +6,18 @@
 Liste des bogues connus
 ##################
 
+<<<<<<< HEAD
 Ci-dessous, vous trouverez une liste, formatée en JSON, de certains des bogues connus relatifs à la sécurité dans le
 compilateur Solidity. Le fichier lui-même est hébergé dans le `dépositaire Github <https://github.com/ethereum/solidity/blob/develop/docs/bugs.json>`_.
 La liste remonte jusqu'à la version 0.3.0, les bogues connus pour être présents uniquement
 dans les versions précédentes ne sont pas listés.
+=======
+Below, you can find a JSON-formatted list of some of the known security-relevant bugs in the
+Solidity compiler. The file itself is hosted in the `GitHub repository
+<https://github.com/ethereum/solidity/blob/develop/docs/bugs.json>`_.
+The list stretches back as far as version 0.3.0, bugs known to be present only
+in versions preceding that are not listed.
+>>>>>>> english/develop
 
 Il existe un autre fichier appelé `bugs_by_version.json
 <https://github.com/ethereum/solidity/blob/develop/docs/bugs_by_version.json>`_,
@@ -66,6 +74,7 @@ conditions
     ou plus.
     Si aucune condition n'est donnée, on suppose que le bogue est présent.
 check
+<<<<<<< HEAD
     Ce champ contient différentes vérifications qui indiquent si le contrat intelligent
     contient ou non le bogue. Le premier type de vérification est constitué d'expressions régulières
     Javascript qui doivent être comparées au code source ("source-regex")
@@ -78,6 +87,20 @@ check
     est une expression `JsonPath <https://github.com/json-path/JsonPath>`_.
     Si au moins un chemin de l'AST Solidity correspond à la requête, le bogue est
     probablement présent.
+=======
+    This field contains different checks that report whether the smart contract
+    contains the bug or not. The first type of check are JavaScript regular
+    expressions that are to be matched against the source code ("source-regex")
+    if the bug is present.  If there is no match, then the bug is very likely
+    not present. If there is a match, the bug might be present.  For improved
+    accuracy, the checks should be applied to the source code after stripping
+    comments.
+    The second type of check are patterns to be checked on the compact AST of
+    the Solidity program ("ast-compact-json-path"). The specified search query
+    is a `JsonPath <https://github.com/json-path/JsonPath>`_ expression.
+    If at least one path of the Solidity AST matches the query, the bug is
+    likely present.
+>>>>>>> english/develop
 
 .. literalinclude:: bugs.json
    :language: js
